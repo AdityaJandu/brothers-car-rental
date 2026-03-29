@@ -1,3 +1,4 @@
+import { AuthHeader } from "@/modules/auth/ui/layout/AuthHeader";
 
 interface props {
     children: React.ReactNode;
@@ -5,8 +6,9 @@ interface props {
 
 const Layout = ({ children }: props) => {
     return (
-        <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
-            <div className="w-full max-w-sm md:max-w-3xl">
+        <div className="bg-muted flex min-h-svh">
+            <div className="w-full ">
+                <AuthHeader />
                 {children}
             </div>
         </div>

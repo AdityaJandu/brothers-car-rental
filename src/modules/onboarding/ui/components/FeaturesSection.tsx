@@ -56,7 +56,7 @@ export function FeaturesSection() {
                     </h2>
 
                     <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-lg">
-                        At Brothers, we don't just rent cars; we provide the freedom to explore with confidence. Our commitment to excellence ensures that every mile you drive is backed by our promise of quality and safety.
+                        At Brothers, we don&apos;t just rent cars; we provide the freedom to explore with confidence. Our commitment to excellence ensures that every mile you drive is backed by our promise of quality and safety.
                     </p>
 
                     {/* Checkmark List */}

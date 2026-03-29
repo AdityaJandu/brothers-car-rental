@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { MobileNav } from "@/components/layout/MobileNav";
-import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
+// Inter: For clinical, fast reading (data, labels, paragraphs)
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const poppins = Poppins({
+// Space Grotesk: For high-personality headers and massive numbers
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -31,12 +31,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} h-full antialiased`}
+      // Inject both optimized font variables into the root
+      className={`${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Header />
-        {children}
-        <MobileNav />
+      {/* font-sans makes Inter the absolute default for everything, 
+        unless explicitly overridden by font-display 
+      */}
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
         <Footer />
       </body>
     </html>

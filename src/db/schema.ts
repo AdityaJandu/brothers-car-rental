@@ -97,6 +97,7 @@ export const account = pgTable(
         refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
         scope: text("scope"),
         createdAt: timestamp("created_at").defaultNow().notNull(),
+        password: text("password"),
 
         updatedAt: timestamp("updated_at")
             .$onUpdate(() => /* @__PURE__ */ new Date())

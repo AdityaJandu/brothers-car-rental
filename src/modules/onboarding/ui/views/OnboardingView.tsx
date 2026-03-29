@@ -1,4 +1,4 @@
-import { Menu, Home, CarFront, Calendar, User } from 'lucide-react';
+
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import { StepComponent } from "../components/StepComponent";
@@ -7,8 +7,15 @@ import { LocationComponent } from '../components/LocationComponent';
 import { FeaturedFleet } from '../components/FeaturedFleet';
 import { FeaturesSection } from '../components/FeaturesSection';
 import { CTASection } from '../components/CTASection';
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import Link from "next/link";
 
-export function OnboardingView() {
+export async function OnboardingView() {
+    const isLoggedIn = await auth.api.getSession({
+        headers: await headers(),
+    });
+
     return (
         <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-sans overflow-x-hidden">
 
@@ -28,15 +35,21 @@ export function OnboardingView() {
                         </p>
 
                         <div className="flex flex-wrap items-center gap-4">
-                            <Button className="btn-executive-primary h-14 rounded-md px-8 text-base">
-                                Get Started
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="h-14 px-8 text-base bg-white font-medium text-primary rounded-md hover:bg-muted/50 transition-colors"
-                            >
-                                View Fleet
-                            </Button>
+                            <Link href={isLoggedIn ? "/browse" : "/sign-up"}>
+                                <Button className="btn-executive-primary h-14 rounded-md px-8 text-base">
+                                    {isLoggedIn ? "Go to Dashboard" : "Get Started"}
+                                </Button>
+                            </Link>
+
+                            {/* View Fleet */}
+                            <Link href={isLoggedIn ? "/browse" : "/sign-in"}>
+                                <Button
+                                    variant="outline"
+                                    className="h-14 px-8 text-base bg-white font-medium text-primary rounded-md hover:bg-muted/50 transition-colors"
+                                >
+                                    View Fleet
+                                </Button>
+                            </Link>
                         </div>
                     </div>
 
@@ -84,11 +97,7 @@ export function OnboardingView() {
                 <FeaturesSection />
             </section>
 
-            <section className="w-full py-10 bg-[#F4F6F9]">
-                <CTASection />
-            </section>
-
-
+            <CTASection />
 
         </div>
     );
