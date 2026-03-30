@@ -5,11 +5,12 @@ import Image from "next/image";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Edit2, Image as ImageIcon, CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import { Edit2, Image as ImageIcon, CheckCircle2, XCircle, ArrowLeft, MoreVertical } from "lucide-react";
 
 
 // Make sure to adjust this import path to wherever you saved AddCarForm!
 import { CarForm } from "../components/CarForm";
+import { cn } from "@/lib/utils";
 
 export function FleetClientView() {
     const trpc = useTRPC();
@@ -58,7 +59,7 @@ export function FleetClientView() {
 
     // --- RENDER: STANDARD FLEET TABLE VIEW ---
     return (
-        <div className=" mx-auto px-6 py-12 animate-in fade-in duration-300">
+        <div className="my-auto px-6 py-12 animate-in fade-in duration-300">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
@@ -76,81 +77,122 @@ export function FleetClientView() {
             </div>
 
             {/* Admin Data Table/List */}
-            <div className="bg-card border border-border/50 rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
                 {/* Table Header */}
-                <div className="grid grid-cols-12 gap-4 p-4 bg-muted/30 border-b border-border/50 text-xs font-bold text-muted-foreground uppercase tracking-wider font-sans">
-                    <div className="col-span-4">Vehicle</div>
+                <div className="grid grid-cols-12 items-center px-6 py-4 bg-[#f6f7fb] text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                    <div className="col-span-4">Car Details</div>
+                    <div className="col-span-2">Plate Number</div>
                     <div className="col-span-2">Status</div>
-                    <div className="col-span-2">Price/Day</div>
-                    <div className="col-span-4 text-right">Actions</div>
+                    <div className="col-span-2">Daily Rate</div>
+                    <div className="col-span-2 text-right">Actions</div>
                 </div>
 
                 {/* Table Rows */}
                 <div className="divide-y divide-border/50">
                     {cars.map((car) => (
                         <div key={car.id} className="flex flex-col">
-                            {/* Main Row */}
-                            <div className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-muted/10 transition-colors">
 
-                                {/* Vehicle Info */}
+                            {/* Main Row */}
+                            <div className=" grid grid-cols-12 items-center px-6 py-5 hover:bg-[#f6f7fb] transition-colors">
+
+                                {/* --- CAR DETAILS --- */}
                                 <div className="col-span-4 flex items-center gap-4">
-                                    <div className="relative w-16 h-12 bg-muted rounded-md overflow-hidden shrink-0 border border-border">
+                                    <div className="relative w-[80px] h-[50px] rounded-xl overflow-hidden bg-[#f1f3f9] shrink-0">
                                         <Image
                                             src={car.image || "https://placehold.co/800x600/1a1c23/ffffff?text=No+Photo"}
                                             alt={car.name}
                                             fill
                                             className="object-cover"
-                                            sizes="64px"
+                                            sizes="100px"
                                         />
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-primary font-sans">{car.name}</p>
-                                        <p className="text-xs text-muted-foreground">{car.plateNumber}</p>
+
+                                    <div className="flex flex-col justify-center">
+                                        <p className="text-[15px] font-extrabold text-[#0B0F3B]">
+                                            {car.name}
+                                        </p>
+                                        <p className="text-xs text-slate-400 font-medium">
+                                            {car.category || "—"}
+                                        </p>
                                     </div>
                                 </div>
 
-                                {/* Status */}
-                                <div className="col-span-2 flex items-center">
-                                    {car.status === "available" ? (
-                                        <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                                            <CheckCircle2 className="w-3.5 h-3.5" /> Active
+                                {/* --- PLATE NUMBER --- */}
+                                <div className="col-span-2">
+                                    <span className="text-sm font-semibold text-slate-500 tracking-wide uppercase">
+                                        {car.plateNumber}
+                                    </span>
+                                </div>
+
+                                {/* --- STATUS --- */}
+                                <div className="col-span-2">
+                                    {car.status === "available" && (
+                                        <span className="text-[11px] font-bold text-emerald-700 bg-[#e6f6ee] px-3 py-1.5 rounded-full uppercase tracking-widest">
+                                            Available
                                         </span>
-                                    ) : (
-                                        <span className="flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full capitalize">
-                                            <XCircle className="w-3.5 h-3.5" /> {car.status}
+                                    )}
+
+                                    {car.status === "rented" && (
+                                        <span className="text-[11px] font-bold text-[#4b5de4] bg-[#e7ebff] px-3 py-1.5 rounded-full uppercase tracking-widest">
+                                            Rented
+                                        </span>
+                                    )}
+
+                                    {car.status === "maintenance" && (
+                                        <span className="text-[11px] font-bold text-[#d94444] bg-[#fdecec] px-3 py-1.5 rounded-full uppercase tracking-widest">
+                                            Maintenance
                                         </span>
                                     )}
                                 </div>
 
-                                {/* Price */}
-                                <div className="col-span-2 font-mono text-sm font-medium text-primary">
-                                    ₹{car.pricePerDay}
+                                {/* --- PRICE --- */}
+                                <div className="col-span-2">
+                                    <span className="text-[16px] font-extrabold text-[#0B0F3B]">
+                                        ₹{car.pricePerDay.toLocaleString()}
+                                    </span>
                                 </div>
 
-                                {/* Actions */}
-                                <div className="col-span-4 flex items-center justify-end gap-2">
+                                {/* --- ACTIONS --- */}
+                                <div className="col-span-2 flex justify-end items-center gap-2">
                                     <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setEditingImageId(editingImageId === car.id ? null : car.id)}
-                                        className={editingImageId === car.id ? "bg-muted" : ""}
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() =>
+                                            setEditingImageId(
+                                                editingImageId === car.id ? null : car.id
+                                            )
+                                        }
+                                        className={cn(
+                                            "rounded-full",
+                                            editingImageId === car.id && "bg-[#eef1ff] text-[#0B0F3B]"
+                                        )}
                                     >
-                                        <ImageIcon className="w-4 h-4 mr-2" />
-                                        Media
+                                        <ImageIcon className="w-4 h-4" />
                                     </Button>
-                                    <Button variant="outline" size="sm">
-                                        <Edit2 className="w-4 h-4 mr-2" />
-                                        Edit
+
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="rounded-full"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                    </Button>
+
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="rounded-full text-slate-400 hover:text-[#0B0F3B]"
+                                    >
+                                        <MoreVertical className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </div>
 
-                            {/* The "Expandable" Uploader Section */}
+                            {/* --- EXPANDABLE MEDIA SECTION --- */}
                             {editingImageId === car.id && (
-                                <div className="bg-muted/10 border-t border-border/50 p-6 animate-in slide-in-from-top-2 duration-200">
+                                <div className="bg-[#f8f9fc] px-6 py-6 border-t border-[#eef0f5]">
                                     <div className="max-w-md mx-auto text-center text-sm text-muted-foreground">
-                                        {/* You can drop your ImageUploader component here later if you want standalone image editing! */}
-                                        Image Uploader goes here...
+                                        Image uploader goes here...
                                     </div>
                                 </div>
                             )}
