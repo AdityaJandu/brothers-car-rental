@@ -33,3 +33,4 @@ export const DataPagination = ({ page, onPageChange, totalPages }: DataPaginatio
         </div>
     );
 };
+

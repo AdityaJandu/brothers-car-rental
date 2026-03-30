@@ -1,21 +1,21 @@
-import { BrowseView } from "@/modules/browse/ui/views/BrowseView";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { BrowseView, BrowseViewLoading, BrowseViewError } from "@/modules/browse/ui/views/BrowseView";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { LoadingState } from "@/components/self/loading-state";
 import { ErrorBoundary } from "react-error-boundary";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-    // const session = await auth.api.getSession({
-    //     headers: await headers(),
-    // });
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
 
-    // if (!session) {
-    //     redirect("/sign-in");
-    // }
+    if (!session) {
+        redirect("/sign-in");
+    }
 
     // Pre-fetch
     const queryClient = getQueryClient();
@@ -23,12 +23,10 @@ export default async function Page() {
         trpc.browse.getAll.queryOptions({}),
     );
 
-
-
     return (
         <HydrationBoundary state={dehydrate(queryClient)} >
-            <Suspense fallback={<LoadingState title={"Please wait"} descr={"Please wait while we load the available cars."} />} >
-                <ErrorBoundary fallback={<div className="p-4 bg-red-100 text-red-800 rounded">An error occurred while loading the cars. Please try again later.</div>} >
+            <Suspense fallback={<BrowseViewLoading />} >
+                <ErrorBoundary fallback={<BrowseViewError />} >
                     <BrowseView />
                 </ErrorBoundary>
             </Suspense>

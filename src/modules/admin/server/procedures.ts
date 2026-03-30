@@ -1,7 +1,5 @@
 
-import { trpc } from "@/trpc/server";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import z from "zod";
 import { carInsertSchema } from "../schemas";
 import { car } from "@/db/schema";
 import { db } from "@/db";
@@ -12,7 +10,7 @@ export const adminRouter = createTRPCRouter({
         .input(
             carInsertSchema
         )
-        .mutation(async ({ input, ctx }) => {
+        .mutation(async ({ input }) => {
             const newCarId = crypto.randomUUID();
 
             // 2. Insert the data into PostgreSQL using Drizzle

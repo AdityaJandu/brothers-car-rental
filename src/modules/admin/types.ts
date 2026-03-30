@@ -7,3 +7,10 @@ import { InferSelectModel } from "drizzle-orm";
 export type CarInsertInput = z.infer<typeof carInsertSchema>;
 
 export type Car = InferSelectModel<typeof car>;
+
+export enum CarStatus {
+    Available = "available",
+    Rented = "rented",
+    Maintenance = "maintenance",
+};
+

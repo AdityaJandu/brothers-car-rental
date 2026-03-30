@@ -2,8 +2,9 @@ import { car } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import z from "zod";
-import { and, count, desc, eq, getTableColumns, ilike, inArray, sql } from "drizzle-orm";
+import { and, count, eq, getTableColumns, ilike } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
+import { CarStatus } from "@/modules/admin/types";
 
 
 
@@ -11,8 +12,8 @@ export const carRouterUser = createTRPCRouter({
 
     getAll: protectedProcedure
         .input(z.object({
-            page: z.number().default(1),
-            pageSize: z.number().min(1).max(100).default(10),
+            page: z.number().default(DEFAULT_PAGE),
+            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
             search: z.string().nullish(),
         }))
         .query(async ({ input }) => {
@@ -32,7 +33,7 @@ export const carRouterUser = createTRPCRouter({
                 .where(
                     and(
                         eq(car.status, "available"),
-                        searchCondition // Safely inject the condition
+                        searchCondition,
                     )
                 )
                 .limit(pageSize)
@@ -48,6 +49,54 @@ export const carRouterUser = createTRPCRouter({
                     and(
                         eq(car.status, "available"),
                         searchCondition
+                    )
+                );
+
+            const totalPages = Math.ceil(total.count / pageSize);
+
+            return {
+                items: data,
+                total: total.count,
+                totalPages,
+            };
+        }),
+
+
+    getAllAdmin: protectedProcedure
+        .input(z.object({
+            page: z.number().default(DEFAULT_PAGE),
+            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+            search: z.string().nullish(),
+            status: z.enum([
+                CarStatus.Available,
+                CarStatus.Maintenance,
+                CarStatus.Rented
+            ]).nullish(),
+        }))
+        .query(async ({ input }) => {
+            const { page, pageSize, search, status } = input;
+
+            const data = await db
+                .select({
+                    ...getTableColumns(car)
+                })
+                .from(car)
+                .where(
+                    and(
+                        search ? ilike(car.name, `%${search}%`) : undefined,
+                        status ? eq(car.status, status) : undefined
+                    )
+                )
+                .limit(pageSize)
+                .offset((page - 1) * pageSize);
+
+            const [total] = await db
+                .select({ count: count() })
+                .from(car)
+                .where(
+                    and(
+                        search ? ilike(car.name, `%${search}%`) : undefined,
+                        status ? eq(car.status, status) : undefined
                     )
                 );
 

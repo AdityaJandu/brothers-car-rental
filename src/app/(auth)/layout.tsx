@@ -1,3 +1,4 @@
+import { Footer } from "@/components/layout/Footer";
 import { AuthHeader } from "@/modules/auth/ui/layout/AuthHeader";
 
 interface props {
@@ -10,6 +11,7 @@ const Layout = ({ children }: props) => {
             <div className="w-full ">
                 <AuthHeader />
                 {children}
+                <Footer />
             </div>
         </div>
     )

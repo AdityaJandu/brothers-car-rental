@@ -13,7 +13,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { carInsertSchema } from "../../schemas"; // Adjust import path
 import { supabaseClient } from "@/lib/supabase-client"; // Adjust import path
-import { car } from "@/db/schema"; // Adjust import path
 
 import {
     Form,

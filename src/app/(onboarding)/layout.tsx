@@ -1,3 +1,4 @@
+import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileNav } from "@/components/layout/MobileNav";
 
@@ -11,6 +12,7 @@ const Layout = ({ children }: props) => {
             <Header />
             <main className="flex-1">{children}</main>
             <MobileNav />
+            <Footer />
         </div>
     );
 };

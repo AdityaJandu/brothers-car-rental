@@ -4,6 +4,8 @@ import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FiltersBar } from "../components/FiltersBar";
 import { CarGrid } from "../components/CarGrid";
+import { LoadingState } from "@/components/self/loading-state";
+import { ErrorState } from "@/components/self/error-state";
 
 export function BrowseView() {
     const trpc = useTRPC();
@@ -31,3 +33,22 @@ export function BrowseView() {
         </div>
     );
 }
+
+
+export const BrowseViewLoading = () => {
+    return (
+        <LoadingState
+            title="Loading data"
+            descr="This may take from a few seconds to a few minutes."
+        />
+    );
+};
+
+export const BrowseViewError = () => {
+    return (
+        <ErrorState
+            title="Failed to load data"
+            descr="Something went wrong while fetching cars. Try to refresh page."
+        />
+    );
+};

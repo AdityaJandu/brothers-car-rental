@@ -45,7 +45,6 @@ export default function RootLayout({
             <TooltipProvider>
               {children}
             </TooltipProvider>
-            <Footer />
           </body>
         </html>
       </TRPCReactProvider>
