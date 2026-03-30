@@ -1,8 +1,14 @@
-import { CarGrid } from "../components/CarGrid";
-import { FiltersBar } from "../components/FiltersBar";
+"use client";
 
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { FiltersBar } from "../components/FiltersBar";
+import { CarGrid } from "../components/CarGrid";
 
 export function BrowseView() {
+    const trpc = useTRPC();
+    const { data } = useSuspenseQuery(trpc.browse.getAll.queryOptions({}));
+
     return (
         <div className="min-h-screen px-6 lg:px-12 py-8">
 
@@ -20,7 +26,7 @@ export function BrowseView() {
             <FiltersBar />
 
             {/* Cars */}
-            <CarGrid />
+            <CarGrid cars={data.items} />
 
         </div>
     );

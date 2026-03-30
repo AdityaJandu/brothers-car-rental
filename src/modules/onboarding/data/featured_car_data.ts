@@ -1,5 +1,15 @@
 
-export const featuredCarData = [
+export interface FeaturedCar {
+    id: number;
+    name: string;
+    category: string;
+    price: string;
+    rating: string;
+    image: string;
+    isActive: boolean;
+};
+
+export const featuredCarData: FeaturedCar[] = [
     {
         id: 1,
         name: "Porsche 911 Carrera",

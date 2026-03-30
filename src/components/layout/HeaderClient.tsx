@@ -8,10 +8,22 @@ import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
 
-export function HeaderClient({ session }: { session: any }) {
+
+interface HeaderClientProps {
+    session: {
+        user?: {
+            id: string;
+            email: string;
+            name?: string | null;
+            image?: string | null;
+        };
+    } | null;
+}
+
+export function HeaderClient({ session }: HeaderClientProps) {
     const pathname = usePathname();
     const router = useRouter();
 

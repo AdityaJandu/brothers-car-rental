@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum, integer, real } from "drizzle-orm/pg-core";
 
 export const role = pgEnum("role", [
     "admin",
@@ -161,5 +161,69 @@ export const accountRelations = relations(account, ({ one }) => ({
     user: one(user, {
         fields: [account.userId],
         references: [user.id],
+    }),
+}));
+
+//  Create an enum for real-world inventory tracking
+export const carStatusEnum = pgEnum("car_status", ["available", "rented", "maintenance"]);
+
+export const transmissionEnum = pgEnum("transmission", ["automatic", "manual"]);
+
+export const fuelTypeEnum = pgEnum("fuel_type", ["petrol", "ev", "hybrid"]);
+
+export const car = pgTable("car", {
+    // --- IDENTIFICATION ---
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),           // "Porsche 911 Carrera"
+    make: text("make").notNull(),           // "Porsche" (Great for filtering)
+    model: text("model").notNull(),         // "911 Carrera"
+    year: integer("year").notNull(),        // 2024
+    category: text("category").notNull(),   // "Luxury Sports"
+
+    // --- FINANCIALS & METRICS ---
+    // Store price as an integer (e.g., whole Rupees) for accurate math
+    pricePerDay: integer("price_per_day").notNull(),
+    // Store rating as a real number (e.g., 4.8) for > < filtering
+    rating: real("rating").default(0).notNull(),
+
+    // --- SPECIFICATIONS (The "Precision" Details) ---
+    transmission: transmissionEnum("transmission").notNull(),
+    fuelType: fuelTypeEnum("fuel_type").notNull(),
+    seats: integer("seats").notNull(),
+
+    // --- MEDIA & UX ---
+    image: text("image").notNull(),
+    // Postgres arrays are amazing for listing features ("Sunroof", "Chauffeur", etc.)
+    features: text("features").array(),
+
+    // --- OPERATIONS & INVENTORY ---
+    plateNumber: text("plate_number").unique().notNull(), // Every physical car needs a unique plate
+    status: carStatusEnum("status").default("available").notNull(),
+    isActive: boolean("is_active").default(true).notNull(), // Soft delete/hide from UI
+
+    // --- AUDIT TIMESTAMPS ---
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+});
+
+export const booking = pgTable("booking", {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+    carId: text("car_id").notNull().references(() => car.id, { onDelete: "cascade" }),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    totalPrice: integer("total_price").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+});
+
+export const bookingRelations = relations(booking, ({ one }) => ({
+    user: one(user, {
+        fields: [booking.userId],
+        references: [user.id],
+    }),
+    car: one(car, {
+        fields: [booking.carId],
+        references: [car.id],
     }),
 }));

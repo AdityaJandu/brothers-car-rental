@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { TRPCReactProvider } from "@/trpc/client";
 
 // Inter: For clinical, fast reading (data, labels, paragraphs)
 const inter = Inter({
@@ -39,7 +40,7 @@ export default function RootLayout({
       */}
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <TooltipProvider>
-          {children}
+          <TRPCReactProvider>{children}</TRPCReactProvider>
         </TooltipProvider>
         <Footer />
       </body>
