@@ -4,6 +4,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/client";
+import { NuqsAdapter } from "nuqs/adapters/next";
 
 // Inter: For clinical, fast reading (data, labels, paragraphs)
 const inter = Inter({
@@ -30,20 +31,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      // Inject both optimized font variables into the root
-      className={`${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
-    >
-      {/* font-sans makes Inter the absolute default for everything, 
+    <NuqsAdapter>
+      <TRPCReactProvider>
+        <html
+          lang="en"
+          // Inject both optimized font variables into the root
+          className={`${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
+        >
+          {/* font-sans makes Inter the absolute default for everything, 
         unless explicitly overridden by font-display 
       */}
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        <TooltipProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </TooltipProvider>
-        <Footer />
-      </body>
-    </html>
+          <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
+            <Footer />
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </NuqsAdapter>
   );
 }

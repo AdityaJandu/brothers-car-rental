@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { baseProcedure, createTRPCRouter } from '../init';
 import { carRouterUser } from '@/modules/browse/server/procedures';
+import { adminRouter } from '@/modules/admin/server/procedures';
 
 export const appRouter = createTRPCRouter({
     hello: baseProcedure
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
             };
         }),
     browse: carRouterUser,
+    admin: adminRouter,
 });
 
 // export type definition of API

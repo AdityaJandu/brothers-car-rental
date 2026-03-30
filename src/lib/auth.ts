@@ -23,4 +23,15 @@ export const auth = betterAuth({
             ...schema
         }
     }),
+    user: {
+
+        additionalFields: {
+            role: {
+                type: "string",
+                required: false,
+                defaultValue: "customer",
+                input: false
+            }
+        }
+    },
 });

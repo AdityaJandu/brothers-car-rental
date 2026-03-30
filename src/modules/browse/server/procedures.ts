@@ -9,7 +9,6 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@
 
 export const carRouterUser = createTRPCRouter({
 
-
     getAll: protectedProcedure
         .input(z.object({
             page: z.number().default(1),

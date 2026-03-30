@@ -33,12 +33,12 @@ export const baseProcedure = t.procedure;
 // Create a protected procedure that requires authentication
 // using base procedure and middleware -> auth check middleware
 // Now at every point we'll use this protectedProcedure, we can be sure the user is authenticated:
-export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
+export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
 
-    if (!session || !session.user) {
+    if (!session) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Unauthorized" });
     }
 
