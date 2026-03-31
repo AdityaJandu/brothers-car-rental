@@ -8,23 +8,12 @@ import { DataTable } from "@/components/self/data-table";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/self/empty-state";
 import { DataPagination } from "@/components/self/data-pagination";
-import { useRouter } from "next/navigation";
 import { useCarFilters } from "../../hooks/user-car-filters";
-import { Button } from "@/components/ui/button";
-
-import { useState } from "react";
-
-import { ArrowLeft, PlusIcon } from "lucide-react";
-
-import { CarForm } from "../components/CarForm";
-import { VehicleInventoryHeader } from "../components/VehicleInventoryHeader";
 
 
 export function FleetClientView() {
-    const router = useRouter();
 
     const [filters, setFilters] = useCarFilters();
-    const [isAddingNew, setIsAddingNew] = useState(false);
 
 
     const trpc = useTRPC();
@@ -34,37 +23,6 @@ export function FleetClientView() {
         })
     );
 
-
-    // --- RENDER: ADD NEW VEHICLE VIEW ---
-    if (isAddingNew) {
-        return (
-            <div className="max-w-6xl mx-auto  px-6 py-12 animate-in fade-in duration-300">
-                <div className="flex items-center gap-6 mb-8">
-                    {/* Back Button */}
-                    <Button
-                        variant="outline"
-                        onClick={() => setIsAddingNew(false)}
-                        className="rounded-xl"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Fleet
-                    </Button>
-                    <div>
-                        <h1 className="text-3xl font-bold text-primary font-heading">Add New Vehicle</h1>
-                        <p className="text-muted-foreground mt-1 font-sans">Register a new car to your inventory.</p>
-                    </div>
-                </div>
-
-                {/* The Form we just built! */}
-                {/* When it successfully submits, we close the form and instantly refetch the table data */}
-                <CarForm
-                    onSuccess={() => {
-                        setIsAddingNew(false);
-                    }}
-                />
-            </div>
-        );
-    }
 
     if (data.items.length === 0) {
         return (

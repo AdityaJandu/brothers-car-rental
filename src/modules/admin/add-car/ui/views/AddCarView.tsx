@@ -58,6 +58,7 @@ import { supabaseClient } from "@/lib/supabase-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { LoadingState } from "@/components/self/loading-state";
+import { cn } from "@/lib/utils";
 
 export default function AddCarView() {
 
@@ -185,16 +186,30 @@ export default function AddCarView() {
     return (
         <div className="min-h-screen bg-muted/30 p-4 md:p-8">
 
+
             {/* HEADER */}
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between mb-8 gap-4">
-                <Button onClick={() => router.push('/dashboard')}>
-                    <ChevronLeft />
-                </Button>
-                <div>
-                    <h1 className="text-3xl font-bold">Add New Vehicle</h1>
-                    <p className="text-muted-foreground text-sm">
-                        Introduce a new asset to your premium rental gallery.
-                    </p>
+
+                <div className="flex items-center gap-4">
+                    {/* Back Button */}
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => router.push('/dashboard')}
+                        className="shrink-0"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                    </Button>
+
+                    {/* Title Section */}
+                    <div className="flex flex-col">
+                        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
+                            Add New Vehicle
+                        </h1>
+                        <p className="text-muted-foreground text-sm">
+                            Introduce a new asset to your premium rental gallery.
+                        </p>
+                    </div>
                 </div>
 
                 <div className="flex gap-3">
@@ -229,7 +244,7 @@ export default function AddCarView() {
                     <div className="lg:col-span-2 space-y-6">
 
                         {/* GENERAL INFO */}
-                        <Card className="rounded-2xl">
+                        <Card className="rounded-xl bg-white">
                             <CardContent className="p-6 space-y-5">
 
                                 <div className="flex items-center gap-2 mb-5">
@@ -245,7 +260,7 @@ export default function AddCarView() {
                                         <FormItem>
                                             <FormLabel>Car Display Name</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="2024 Mercedes-Benz S-Class" {...field} />
+                                                <Input className="bg-[#ebe9ff]" placeholder="2024 Mercedes-Benz S-Class" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -262,7 +277,7 @@ export default function AddCarView() {
                                             <FormItem>
                                                 <FormLabel>Make</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Mercedes" {...field} />
+                                                    <Input className="bg-[#ebe9ff]" placeholder="Mercedes" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -276,7 +291,7 @@ export default function AddCarView() {
                                             <FormItem>
                                                 <FormLabel>Model</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="S580" {...field} />
+                                                    <Input className="bg-[#ebe9ff]" placeholder="S580" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -291,6 +306,7 @@ export default function AddCarView() {
                                                 <FormLabel>Year</FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        className="bg-[#ebe9ff]"
                                                         type="number"
                                                         {...field}
                                                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -309,6 +325,7 @@ export default function AddCarView() {
                                                 <FormLabel>Daily Price</FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        className="bg-[#ebe9ff]"
                                                         type="number"
                                                         {...field}
                                                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -326,7 +343,7 @@ export default function AddCarView() {
                                             <FormItem>
                                                 <FormLabel>Plate Number</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="ABC-1234" {...field} />
+                                                    <Input className="bg-[#ebe9ff]" placeholder="ABC-1234" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -340,7 +357,7 @@ export default function AddCarView() {
                                             <FormItem>
                                                 <FormLabel>Category</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Luxury Sedan" {...field} />
+                                                    <Input className="bg-[#ebe9ff]" placeholder="Luxury Sedan" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -351,7 +368,7 @@ export default function AddCarView() {
                         </Card>
 
                         {/* MEDIA */}
-                        <Card className="rounded-2xl">
+                        <Card className="rounded-xl bg-white">
                             <CardContent className="p-6">
                                 <div className="flex items-center gap-2 mb-5">
                                     <ImageIcon size={18} />
@@ -359,7 +376,7 @@ export default function AddCarView() {
                                 </div>
 
                                 {/* Main Upload Dropzone */}
-                                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border/50 rounded-xl cursor-pointer hover:bg-muted/30 transition-colors mb-6 group">
+                                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border/50 rounded-xl cursor-pointer bg-[#ebe9ff] hover:bg-muted/30 transition-colors mb-6 group">
                                     {isUploading ? (
                                         <Loader2 className="w-8 h-8 animate-spin text-primary" />
                                     ) : (
@@ -376,60 +393,94 @@ export default function AddCarView() {
                                         onChange={handleImageSelect}
                                         disabled={isUploading}
                                         className="hidden"
+
                                     />
                                 </label>
 
                                 {/* Thumbnail Gallery Grid */}
-                                {currentImageUrls.length > 0 && (
-                                    <div className="space-y-3">
-                                        <p className="text-sm font-medium text-muted-foreground">Uploaded Photos</p>
-                                        <div className="flex flex-wrap gap-4">
+                                <div className="space-y-4">
+                                    {/* Header */}
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm font-medium text-muted-foreground">
+                                            Uploaded Photos
+                                        </p>
+
+                                        {currentImageUrls.length > 0 && (
+                                            <span className="text-xs text-muted-foreground">
+                                                {currentImageUrls.length} images
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Empty State */}
+                                    {currentImageUrls.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center border border-dashed rounded-xl p-8 text-center bg-muted/30">
+                                            <p className="text-sm font-medium">No images uploaded</p>
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Upload vehicle photos to showcase your listing
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        /* Gallery Grid */
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
                                             {currentImageUrls.map((url, index) => (
                                                 <div
                                                     key={url}
-                                                    className={`relative w-24 h-24 rounded-xl overflow-hidden border-2 group shadow-sm transition-all ${currentHeaderImage === url ? 'border-primary' : 'border-transparent'
-                                                        }`}
+                                                    className={
+                                                        cn(
+                                                            "relative aspect-square rounded-md overflow-hidden border group shadow-sm transition-all",
+                                                            currentHeaderImage === url
+                                                                ? "border-primary ring-2 ring-primary/20"
+                                                                : "border-transparent hover:border-border"
+                                                        )
+                                                    }
                                                 >
                                                     <Image
                                                         src={url}
                                                         alt={`Vehicle photo ${index + 1}`}
                                                         fill
-                                                        loading="eager"
                                                         className="object-cover"
-                                                        sizes="96px"
+                                                        sizes="120px"
                                                     />
 
-                                                    {/* Hover Actions */}
-                                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                                                    {/* Hover Overlay */}
+                                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-2">
                                                         {currentHeaderImage !== url && (
                                                             <button
                                                                 type="button"
-                                                                onClick={(e) => { e.preventDefault(); handleSetMainImage(url); }}
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    handleSetMainImage(url);
+                                                                }}
                                                                 className="text-[10px] bg-white text-black px-2 py-1 rounded font-semibold hover:bg-gray-200"
                                                             >
                                                                 Set Main
                                                             </button>
                                                         )}
+
                                                         <button
                                                             type="button"
-                                                            onClick={(e) => { e.preventDefault(); handleRemoveImage(url); }}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                handleRemoveImage(url);
+                                                            }}
                                                             className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                                                         >
                                                             <X size={14} />
                                                         </button>
                                                     </div>
 
-                                                    {/* "Main" Badge indicator */}
+                                                    {/* Main Badge */}
                                                     {currentHeaderImage === url && (
-                                                        <div className="absolute bottom-1 left-1 bg-white text-black text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                                                        <div className="absolute bottom-1 left-1 bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow">
                                                             Main
                                                         </div>
                                                     )}
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -439,7 +490,7 @@ export default function AddCarView() {
                     <div className="space-y-6 ">
 
                         {/* STATUS */}
-                        <Card className="rounded-2xl">
+                        <Card className="rounded-xl bg-white">
                             <CardContent className="p-6 ">
 
                                 <h2 className="font-semibold mb-6">Asset Status</h2>
@@ -448,7 +499,7 @@ export default function AddCarView() {
                                     control={form.control}
                                     name="status"
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <FormItem >
                                             <Select
                                                 onValueChange={field.onChange}
                                                 defaultValue={field.value}
@@ -477,7 +528,7 @@ export default function AddCarView() {
                         </Card>
 
                         {/* DESCRIPTION */}
-                        <Card className="rounded-2xl">
+                        <Card className="rounded-xl bg-white">
                             <CardContent className="p-6">
 
                                 <h2 className="font-semibold mb-4">Description</h2>
@@ -486,7 +537,7 @@ export default function AddCarView() {
                                     I left this disconnected because 'description' is not in your Zod schema defaultValues. 
                                     Let me know if you want it connected to a specific field! 
                                 */}
-                                <Textarea placeholder="Highlight features..." />
+                                <Textarea className="bg-[#ebe9ff]" placeholder="Highlight features..." />
 
                             </CardContent>
                         </Card>

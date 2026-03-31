@@ -1,20 +1,9 @@
-import { z } from 'zod';
-import { baseProcedure, createTRPCRouter } from '../init';
-import { carRouterUser } from '@/modules/browse/server/procedures';
+
+import { createTRPCRouter } from '../init';
+import { carRouterUser } from '@/modules/customer/browse/server/procedures';
 import { adminRouter } from '@/modules/admin/dashboard/server/procedures';
 
 export const appRouter = createTRPCRouter({
-    hello: baseProcedure
-        .input(
-            z.object({
-                text: z.string(),
-            }),
-        )
-        .query((opts) => {
-            return {
-                greeting: `hello ${opts.input.text}`,
-            };
-        }),
     browse: carRouterUser,
     admin: adminRouter,
 });

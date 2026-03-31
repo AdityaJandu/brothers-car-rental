@@ -25,7 +25,7 @@ export const columns: ColumnDef<CarRow>[] = [
             const car = row.original;
             return (
                 <div className="flex items-center gap-4">
-                    <div className="relative w-[80px] h-[50px] bg-slate-100 rounded-lg overflow-hidden shrink-0">
+                    <div className="relative w-20 h-12.5 bg-slate-100 rounded-lg overflow-hidden shrink-0">
                         <Image
                             src={car.headerImage || "./empty.svg"}
                             alt={car.name}
