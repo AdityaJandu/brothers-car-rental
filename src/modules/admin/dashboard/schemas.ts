@@ -29,8 +29,9 @@ export const carInsertSchema = z.object({
         .min(1, "Vehicle must have at least 1 seat")
         .max(60, "Exceeds maximum seat limit"),
 
-    // FIXED: z.url() to z.string().url()
-    image: z.string().url("Image must be a valid URL").optional(),
+    headerImage: z.url("Image must be a valid URL").optional(),
+
+    imageUrls: z.array(z.url("Image urls")).optional(),
 
     // Arrays can keep .default([]) because RHF handles empty arrays fine, 
     // but .optional() is safer if you aren't rendering a field for it yet.

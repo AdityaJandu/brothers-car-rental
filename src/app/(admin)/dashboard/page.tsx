@@ -6,9 +6,11 @@ import { redirect } from "next/navigation";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import { FleetViewError, FleetViewLoading, FleetClientView } from "@/modules/admin/ui/views/FleetClientView";
+import { FleetViewError, FleetViewLoading, FleetClientView } from "@/modules/admin/dashboard/ui/views/FleetClientView";
 import type { SearchParams } from "nuqs/server";
-import { loadSearchParams } from "@/modules/admin/params";
+import { loadSearchParams } from "@/modules/admin/dashboard/params";
+import { FleetListHeader } from "@/modules/admin/dashboard/ui/components/FleetListHeader";
+import { VehicleInventoryHeader } from "@/modules/admin/dashboard/ui/components/VehicleInventoryHeader";
 
 interface Props {
     searchParams: Promise<SearchParams>
@@ -35,13 +37,17 @@ const Page = async ({ searchParams }: Props) => {
     );
 
     return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <Suspense fallback={<FleetViewLoading />}>
-                <ErrorBoundary fallback={<FleetViewError />}>
-                    <FleetClientView />
-                </ErrorBoundary>
-            </Suspense>
-        </HydrationBoundary>
+        <>
+            <FleetListHeader />
+            <VehicleInventoryHeader />
+            <HydrationBoundary state={dehydrate(queryClient)}>
+                <Suspense fallback={<FleetViewLoading />}>
+                    <ErrorBoundary fallback={<FleetViewError />}>
+                        <FleetClientView />
+                    </ErrorBoundary>
+                </Suspense>
+            </HydrationBoundary>
+        </>
     );
 }
 

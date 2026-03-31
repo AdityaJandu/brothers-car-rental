@@ -164,7 +164,6 @@ export const accountRelations = relations(account, ({ one }) => ({
     }),
 }));
 
-//  Create an enum for real-world inventory tracking
 export const carStatusEnum = pgEnum("car_status", ["available", "rented", "maintenance"]);
 
 export const transmissionEnum = pgEnum("transmission", ["automatic", "manual"]);
@@ -192,7 +191,8 @@ export const car = pgTable("car", {
     seats: integer("seats").notNull(),
 
     // --- MEDIA & UX ---
-    image: text("image").notNull(),
+    headerImage: text("headerImage").notNull(),
+    imageUrls: text("imageUrls").array(),
     // Postgres arrays are amazing for listing features ("Sunroof", "Chauffeur", etc.)
     features: text("features").array(),
 

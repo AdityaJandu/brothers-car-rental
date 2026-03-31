@@ -4,7 +4,7 @@ import { db } from "@/db";
 import z from "zod";
 import { and, count, eq, getTableColumns, ilike } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
-import { CarStatus } from "@/modules/admin/types";
+import { CarStatus } from "@/modules/admin/dashboard/types";
 
 
 

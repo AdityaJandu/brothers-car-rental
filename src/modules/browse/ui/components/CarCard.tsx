@@ -25,7 +25,7 @@ export function CarCard({ car }: CarCardProps) {
                 </div>
 
                 <Image
-                    src={car.image}
+                    src={car.headerImage ?? "./empty.svg"}
                     alt={car.name}
                     fill
                     loading="eager"

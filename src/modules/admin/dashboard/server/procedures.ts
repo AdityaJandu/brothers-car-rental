@@ -19,7 +19,7 @@ export const adminRouter = createTRPCRouter({
                 .values({
                     id: newCarId,
                     ...input,
-                    image: input.image || "https://placehold.co/800x600/1a1c23/ffffff?text=Vehicle+Photo+Pending",
+                    headerImage: input.headerImage || "https://placehold.co/800x600/1a1c23/ffffff?text=Vehicle+Photo+Pending",
                 })
                 // .returning() forces Postgres to send the full newly created row back
                 .returning();

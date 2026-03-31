@@ -56,7 +56,7 @@ export function CarForm({ onSuccess, onCancel, initialValues }: CarFormProps) {
             status: initialValues?.status ?? "available",
             isActive: initialValues?.isActive ?? true,
             features: initialValues?.features ?? [],
-            image: initialValues?.image ?? undefined,
+            headerImage: initialValues?.headerImage ?? undefined,
         },
     });
 
@@ -117,7 +117,7 @@ export function CarForm({ onSuccess, onCancel, initialValues }: CarFormProps) {
                 .from('fleet-images')
                 .getPublicUrl(filePath);
 
-            form.setValue("image", publicUrl, { shouldValidate: true });
+            form.setValue("headerImage", publicUrl, { shouldValidate: true });
         } catch (error) {
             console.error("Upload failed:", error);
             toast.error("Failed to upload image. Please try again.");
@@ -147,7 +147,7 @@ export function CarForm({ onSuccess, onCancel, initialValues }: CarFormProps) {
     //     return <LoadingState title="Updating vehicle" descr="Please wait while we save your changes." />;
     // }
 
-    const currentImageUrl = form.watch("image");
+    const currentImageUrl = form.watch("headerImage");
 
     return (
         <Form {...form}>
@@ -156,13 +156,13 @@ export function CarForm({ onSuccess, onCancel, initialValues }: CarFormProps) {
                 {/* --- IMAGE UPLOAD FIELD --- */}
                 <FormField
                     control={form.control}
-                    name="image"
+                    name="headerImage"
                     render={() => (
                         <FormItem>
                             <FormLabel>Vehicle Photo</FormLabel>
                             <FormControl>
                                 {currentImageUrl ? (
-                                    <div className="relative w-full aspect-[21/9] rounded-xl overflow-hidden border border-border/50 group">
+                                    <div className="relative w-full aspect-21/9 rounded-xl overflow-hidden border border-border/50 group">
                                         <Image src={currentImageUrl} alt="Preview" fill className="object-cover" />
                                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <label className="cursor-pointer text-white font-bold bg-primary px-4 py-2 rounded-lg">

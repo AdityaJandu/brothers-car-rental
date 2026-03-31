@@ -17,6 +17,7 @@ import { useState } from "react";
 import { ArrowLeft, PlusIcon } from "lucide-react";
 
 import { CarForm } from "../components/CarForm";
+import { VehicleInventoryHeader } from "../components/VehicleInventoryHeader";
 
 
 export function FleetClientView() {
@@ -32,15 +33,6 @@ export function FleetClientView() {
             ...filters
         })
     );
-
-    if (data.items.length === 0) {
-        return (
-            <EmptyState
-                title="Create your first agent"
-                descr="Create an agent to join in meetings. Each agent will follow your instruction and can participate in discussion during calls."
-            />
-        );
-    };
 
 
     // --- RENDER: ADD NEW VEHICLE VIEW ---
@@ -74,40 +66,28 @@ export function FleetClientView() {
         );
     }
 
+    if (data.items.length === 0) {
+        return (
+            <EmptyState
+                title="Create your first car"
+                descr="Create a car first. Each car you added and marked avaliable will be shown to users."
+            />
+        );
+    };
+
     return (
-        <>
-            <div className="flex flex-col px-4 py-4 md:px-8 gap-y-4">
-                <div className="flex items-center justify-between mb-10">
-                    <div>
-                        <h1 className="text-3xl font-bold text-primary font-heading">Fleet Management</h1>
-                        <p className="text-muted-foreground mt-1 font-sans">Manage inventory, pricing, and media.</p>
-                    </div>
-                    {/* Trigger the state change to show the form! */}
-                    <Button
-                        onClick={() => setIsAddingNew(true)}
-                        className="h-12 px-8 font-bold rounded-md"
-                    >
-                        <PlusIcon />
-                        Add Car
-                    </Button>
-                </div>
-            </div>
-
-
-            <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
-                <DataTable
-                    columns={columns}
-                    data={data.items}
-                    onRowClick={(row) => { }}
-                />
-                <DataPagination
-                    page={filters.page}
-                    totalPages={data.totalPages}
-                    onPageChange={(page) => { setFilters({ page }) }}
-                />
-            </div>
-
-        </>
+        <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
+            <DataTable
+                columns={columns}
+                data={data.items}
+                onRowClick={(row) => { }}
+            />
+            <DataPagination
+                page={filters.page}
+                totalPages={data.totalPages}
+                onPageChange={(page) => { setFilters({ page }) }}
+            />
+        </div>
     );
 };
 

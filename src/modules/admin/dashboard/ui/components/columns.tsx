@@ -27,7 +27,7 @@ export const columns: ColumnDef<CarRow>[] = [
                 <div className="flex items-center gap-4">
                     <div className="relative w-[80px] h-[50px] bg-slate-100 rounded-lg overflow-hidden shrink-0">
                         <Image
-                            src={car.image || "https://placehold.co/800x600/1a1c23/ffffff?text=No+Photo"}
+                            src={car.headerImage || "./empty.svg"}
                             alt={car.name}
                             fill
                             className="object-cover"
@@ -70,14 +70,14 @@ export const columns: ColumnDef<CarRow>[] = [
     },
     {
         accessorKey: "pricePerDay",
-        header: "Daily Rate",
         cell: ({ row }) => {
+            const value = row.getValue("pricePerDay") as number;
             return (
-                <span className="font-extrabold text-[#0B0F3B] text-base">
-                    ₹{row.original.pricePerDay.toLocaleString()}
+                <span className="font-semibold">
+                    ₹ {value.toLocaleString("en-IN")}
                 </span>
             );
-        }
+        },
     },
     {
         id: "actions",
