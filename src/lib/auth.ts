@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
+import { admin } from "better-auth/plugins";
 
 export const auth = betterAuth({
     emailAndPassword: {
@@ -23,15 +24,18 @@ export const auth = betterAuth({
             ...schema
         }
     }),
-    user: {
+    // user: {
+    //     additionalFields: {
+    //         role: {
+    //             type: "string",
+    //             required: false,
+    //             defaultValue: "customer",
+    //             input: false
+    //         }
+    //     }
+    // },
 
-        additionalFields: {
-            role: {
-                type: "string",
-                required: false,
-                defaultValue: "customer",
-                input: false
-            }
-        }
-    },
+    plugins: [
+        admin()
+    ]
 });

@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 import {
     Tooltip,
     TooltipContent,
+    TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-
+import Image from "next/image";
 
 interface HeaderClientProps {
     session: {
@@ -19,6 +19,7 @@ interface HeaderClientProps {
             email: string;
             name?: string | null;
             image?: string | null;
+            role?: string | null;
         };
     } | null;
 }
@@ -28,12 +29,14 @@ export function HeaderClient({ session }: HeaderClientProps) {
     const router = useRouter();
 
     const isLoggedIn = !!session?.user;
+    const user = session?.user;
 
+    // Added requireAuth flag so guests can still click "Browse"
     const navItems = [
-        { name: "Home", href: "/" },
-        { name: "Browse", href: "/browse" },
-        { name: "Bookings", href: "/bookings" },
-        { name: "Profile", href: "/profile" },
+        { name: "Home", href: "/", requireAuth: false },
+        { name: "Browse", href: "/browse", requireAuth: false },
+        { name: "Bookings", href: "/bookings", requireAuth: true },
+        { name: "Profile", href: "/profile", requireAuth: true },
     ];
 
     return (
@@ -41,18 +44,20 @@ export function HeaderClient({ session }: HeaderClientProps) {
             <div className="flex items-center justify-between px-6 py-5 lg:px-12 lg:py-6">
 
                 {/* Logo */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Link href="/">
-                            <span className="text-2xl font-bold text-primary font-heading">
-                                Brothers
-                            </span>
-                        </Link>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Home</p>
-                    </TooltipContent>
-                </Tooltip>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Link href="/">
+                                <span className="text-2xl font-bold text-primary font-heading">
+                                    Brothers
+                                </span>
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Home</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
 
                 {/* Nav */}
                 <nav className="hidden md:flex gap-8 text-sm font-medium text-primary">
@@ -60,11 +65,15 @@ export function HeaderClient({ session }: HeaderClientProps) {
                         if (item.href === "/") return null;
 
                         const isActive = pathname === item.href;
+
+                        // If the route requires auth and they aren't logged in, redirect to sign-in
+                        const targetHref = item.requireAuth && !isLoggedIn ? "/sign-in" : item.href;
+
                         return (
                             <Link
                                 prefetch
                                 key={item.name}
-                                href={isLoggedIn ? item.href : "/sign-in"}
+                                href={targetHref}
                                 className={cn(
                                     "transition-all duration-300",
                                     isActive
@@ -81,9 +90,29 @@ export function HeaderClient({ session }: HeaderClientProps) {
                 {/* CTA */}
                 <div className="flex gap-3">
                     {isLoggedIn ? (
-                        <Button onClick={() => router.push("/profile")}>
-                            Dashboard
-                        </Button>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded mt-0.5 border border-indigo-500/20">
+                                {user?.name || "User"}
+                            </span>
+
+                            {/* Dynamic Avatar (Uses image from DB, or falls back to Initial) */}
+                            {user?.image ? (
+                                <Link href={"/profile"}>
+                                    <Image
+                                        src={user.image}
+                                        alt={user.name || "Profile"}
+                                        className="h-9 w-9 rounded-full object-cover border border-slate-700"
+                                        referrerPolicy="no-referrer"
+                                    />
+                                </Link>
+                            ) : (
+                                <Link href={"/profile"}>
+                                    <div className="h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border border-indigo-400">
+                                        {user?.name?.charAt(0).toUpperCase() || "A"}
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
                     ) : (
                         <>
                             <Button

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import { StepComponent } from "../components/StepComponent";
@@ -7,23 +6,17 @@ import { LocationComponent } from '../components/LocationComponent';
 import { FeaturedFleet } from '../components/FeaturedFleet';
 import { FeaturesSection } from '../components/FeaturesSection';
 import { CTASection } from '../components/CTASection';
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import Link from "next/link";
+import { Suspense } from "react";
+import { AuthButtons, AuthButtonsSkeleton } from "../components/AuthButtons"; // <-- Import the new components
 
-export async function OnboardingView() {
-    const isLoggedIn = await auth.api.getSession({
-        headers: await headers(),
-    });
-
+// Notice this no longer needs to fetch session at the top level
+export function OnboardingView() {
     return (
         <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-sans overflow-x-hidden">
 
-            {/* --- CONSTRAINED CONTENT (HERO & STEPS) --- */}
             <main className="container max-w-7xl mx-auto px-6 pt-12 lg:pt-24 lg:px-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
-                    {/* Left Column: Typography & CTAs */}
                     <div className="flex flex-col max-w-xl">
                         <h1 className="text-[3.5rem] leading-[1.05] lg:text-[4.5rem] font-bold font-heading mb-6 tracking-tight">
                             <span className="text-primary block">Rent Cars</span>
@@ -34,27 +27,14 @@ export async function OnboardingView() {
                             Experience the pinnacle of mobility with Brothers. From executive sedans to rugged SUVs, we curate the precision of your journey.
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-4">
-                            <Link href={isLoggedIn ? "/browse" : "/sign-up"}>
-                                <Button className="btn-executive-primary h-14 rounded-md px-8 text-base">
-                                    {isLoggedIn ? "Go to Dashboard" : "Get Started"}
-                                </Button>
-                            </Link>
-
-                            {/* View Fleet */}
-                            <Link href={isLoggedIn ? "/browse" : "/sign-in"}>
-                                <Button
-                                    variant="outline"
-                                    className="h-14 px-8 text-base bg-white font-medium text-primary rounded-md hover:bg-muted/50 transition-colors"
-                                >
-                                    View Fleet
-                                </Button>
-                            </Link>
-                        </div>
+                        {/* --- INJECT SUSPENSE HERE --- */}
+                        <Suspense fallback={<AuthButtonsSkeleton />}>
+                            <AuthButtons />
+                        </Suspense>
                     </div>
 
-                    {/* Right Column: Image (Hidden on Mobile/Tablet) */}
                     <div className="hidden lg:flex justify-end relative group">
+                        {/* Image section remains unchanged */}
                         <div className="card-showroom w-full max-w-150 aspect-4/3 bg-white flex items-center justify-center p-8 relative transition-all duration-500 ease-out group-hover:scale-[1.03] group-hover:-translate-y-2 shadow-ambient">
                             <Image
                                 loading="eager"
@@ -69,7 +49,6 @@ export async function OnboardingView() {
 
                 </div>
 
-                {/* --- BOTTOM SECTION: HOW IT WORKS --- */}
                 <section className="mt-24 lg:mt-32 flex flex-col items-center justify-center text-center">
                     <h2 className="text-3xl font-bold text-primary font-heading mb-4">
                         How It Works
@@ -77,14 +56,11 @@ export async function OnboardingView() {
                     <div className="w-16 h-1 bg-[#935B25] rounded-full"></div>
                 </section>
 
-                {/* --- STEPS COMPONENT --- */}
                 <div className="mt-10 lg:mt-20">
                     <StepComponent steps={steps} />
                 </div>
             </main>
 
-
-            {/* Moved outside of the 'container max-w-7xl' to allow edge-to-edge styling */}
             <section className="w-full mt-10 lg:mt-20">
                 <LocationComponent />
             </section>

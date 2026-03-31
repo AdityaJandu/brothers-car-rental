@@ -1,4 +1,4 @@
-import { BrowseView, BrowseViewLoading, BrowseViewError } from "@/modules/customer/browse/ui/views/BrowseView";
+import { BrowseView, BrowseViewLoading, BrowseViewError } from "@/modules/user/browse/ui/views/BrowseView";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";

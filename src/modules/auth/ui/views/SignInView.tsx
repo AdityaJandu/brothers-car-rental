@@ -48,10 +48,14 @@ export function SignInView() {
     });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        setError(null);
+        setLoading(true);
+
         try {
             await authClient.signIn.email({
                 email: data.email,
-                password: data.password
+                password: data.password,
+                callbackURL: "/",
             }, {
                 onSuccess() {
                     router.push("/");

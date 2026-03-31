@@ -28,7 +28,10 @@ export const user = pgTable("user", {
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
 
-    role: role("role").default("customer").notNull(),
+    role: text("role").default("customer"),
+    banned: boolean("banned").default(false),
+    banReason: text("ban_reason"),
+    banExpires: timestamp("ban_expires"),
 
     // NEW: soft delete / ban support
     isActive: boolean("is_active").default(true),
@@ -69,6 +72,7 @@ export const session = pgTable(
         userId: text("user_id")
             .notNull()
             .references(() => user.id, { onDelete: "cascade" }),
+        impersonatedBy: text("impersonated_by"),
     },
     (table) => [
         index("session_userId_idx").on(table.userId),

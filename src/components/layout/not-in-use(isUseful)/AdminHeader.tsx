@@ -1,11 +1,11 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { HeaderClient } from "./HeaderClient";
+import { HeaderAdmin } from "./HeaderAdmin";
 
-export async function Header() {
+export async function AdminHeader() {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
 
-    return <HeaderClient session={session} />;
+    return <HeaderAdmin session={session} />;
 }
