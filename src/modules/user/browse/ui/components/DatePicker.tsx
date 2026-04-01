@@ -1,13 +1,7 @@
 "use client"
 
-
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 import { type DateRange } from "react-day-picker"
-
-import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Field } from "@/components/ui/field"
 import {
     Popover,
     PopoverContent,
@@ -17,46 +11,27 @@ import {
 interface DatePickerProps {
     date: DateRange | undefined;
     setDate: (date: DateRange | undefined) => void;
-    desription: string;
+    children: React.ReactNode; // Accept any custom UI to act as the trigger
 }
 
-
-export function DatePicker({ date, setDate, desription }: DatePickerProps) {
-
+export function DatePicker({ date, setDate, children }: DatePickerProps) {
     return (
-        <Field className="mx-auto w-60">
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        id="date-picker-range"
-                        className="justify-start px-2.5 font-normal"
-                    >
-                        <CalendarIcon />
-                        {date?.from ? (
-                            date.to ? (
-                                <>
-                                    {format(date.from, "LLL dd, y")} -{" "}
-                                    {format(date.to, "LLL dd, y")}
-                                </>
-                            ) : (
-                                format(date.from, "LLL dd, y")
-                            )
-                        ) : (
-                            <span>{desription}</span>
-                        )}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                        mode="range"
-                        defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
-                        numberOfMonths={2}
-                    />
-                </PopoverContent>
-            </Popover>
-        </Field>
+        <Popover>
+            {/* asChild merges the trigger functionality onto our custom button */}
+            <PopoverTrigger asChild>
+                {children}
+            </PopoverTrigger>
+
+            <PopoverContent className="w-auto p-0 rounded-xl shadow-lg border-slate-100" align="start">
+                <Calendar
+                    mode="range"
+                    defaultMonth={date?.from}
+                    selected={date}
+                    onSelect={setDate}
+                    numberOfMonths={2}
+                    className="p-3"
+                />
+            </PopoverContent>
+        </Popover>
     )
 }

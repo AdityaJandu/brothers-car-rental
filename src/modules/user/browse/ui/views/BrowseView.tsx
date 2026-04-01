@@ -6,34 +6,44 @@ import { FiltersBar } from "../components/FiltersBar";
 import { CarGrid } from "../components/CarGrid";
 import { LoadingState } from "@/components/self/loading-state";
 import { ErrorState } from "@/components/self/error-state";
+import { useCarFiltersUser } from "../../hooks/use-car-filters-user";
+import { DataPagination } from "@/components/self/data-pagination";
 
 export function BrowseView() {
+
+
+    const [filters, setFilters] = useCarFiltersUser();
+
     const trpc = useTRPC();
-    const { data } = useSuspenseQuery(trpc.browse.getAll.queryOptions({}));
+    const { data } = useSuspenseQuery(
+        trpc.browse.getAll.queryOptions({
+            ...filters
+        })
+    );
 
     return (
-        <div className="min-h-screen px-6 lg:px-12 py-8">
-
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-primary font-heading">
-                    Browse Cars
-                </h1>
-                <p className="text-muted-foreground mt-1">
-                    Find the perfect ride for your journey
-                </p>
+        <>
+            <div className="flex-1 sm:hidden py-4 px-6 flex flex-col gap-y-4">
+                <DataPagination
+                    page={filters.page}
+                    totalPages={data.totalPages}
+                    onPageChange={(page) => { setFilters({ page }) }}
+                />
             </div>
-
-            {/* Filters */}
-            <FiltersBar />
-
-            {/* Cars */}
-            <CarGrid cars={data.items} />
-
-        </div>
+            <div className="min-h-screen max-w-350 bg-[#F8F9FA] px-6 lg:px-12 sm:py-10 font-sans">
+                {/* Cars Grid */}
+                <CarGrid cars={data.items} />
+            </div>
+            <div className="flex-1 pb-4 px-4 md:px-8 hidden md:flex md:flex-col gap-y-4">
+                <DataPagination
+                    page={filters.page}
+                    totalPages={data.totalPages}
+                    onPageChange={(page) => { setFilters({ page }) }}
+                />
+            </div>
+        </>
     );
 }
-
 
 export const BrowseViewLoading = () => {
     return (
