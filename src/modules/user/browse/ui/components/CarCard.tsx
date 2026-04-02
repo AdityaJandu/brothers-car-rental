@@ -80,7 +80,7 @@ export function CarCard({ car }: CarCardProps) {
                         </span>
                     </div>
 
-                    <Link href={`/checkout/${car.id}`}>
+                    <Link href={`/browse/${car.id}`}>
                         <Button className={`h-11 px-6 rounded-md font-semibold transition-all ${car.category?.toLowerCase() === 'electric'
                             ? 'bg-[#FF8C00] hover:bg-[#E67E00] text-white shadow-[0_4px_14px_0_rgba(255,140,0,0.39)]'
                             : 'bg-[#0F172A] hover:bg-[#1E293B] text-white'

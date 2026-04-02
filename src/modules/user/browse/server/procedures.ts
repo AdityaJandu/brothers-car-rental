@@ -5,10 +5,36 @@ import z from "zod";
 import { and, count, eq, getTableColumns, ilike } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { CarStatus } from "@/modules/admin/dashboard/types";
+import { TRPCError } from "@trpc/server";
 
 
 
 export const carRouterUser = createTRPCRouter({
+
+    getOne: protectedProcedure
+        .input(z.object({
+            id: z.string()
+        }))
+        .query(async ({ input }) => {
+            const { id } = input;
+
+            const [data] = await db
+                .select({
+                    ...getTableColumns(car),
+                })
+                .from(car)
+                .where(eq(car.id, id));
+
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Car not found or you don't have access to it.",
+                });
+            }
+
+            return data;
+        })
+    ,
 
     getAll: protectedProcedure
         .input(z.object({
@@ -53,6 +79,13 @@ export const carRouterUser = createTRPCRouter({
                 );
 
             const totalPages = Math.ceil(total.count / pageSize);
+
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Cars not found or you don't have access to it.",
+                });
+            }
 
             return {
                 items: data,
@@ -101,6 +134,13 @@ export const carRouterUser = createTRPCRouter({
                 );
 
             const totalPages = Math.ceil(total.count / pageSize);
+
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Car not found or you don't have access to it.",
+                });
+            }
 
             return {
                 items: data,

@@ -6,7 +6,6 @@ import { parseAsInteger, parseAsString, createLoader, parseAsStringEnum } from "
 export const filtersSearchParamsUser = {
     search: parseAsString.withDefault("").withOptions({ clearOnDefault: true }),
     page: parseAsInteger.withDefault(DEFAULT_PAGE).withOptions({ clearOnDefault: true }),
-
 };
 
 export const loadSearchParamsUser = createLoader(filtersSearchParamsUser);
