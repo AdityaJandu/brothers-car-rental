@@ -1,5 +1,6 @@
+
 import { auth } from "@/lib/auth";
-import { AllBookingViewLoading, AllBookingViewError, AllBookingView } from "@/modules/user/bookings/ui/views/AllBookingView";
+import { AdminBookingView, AdminBookingViewError, AdminBookingViewLoading } from "@/modules/admin/bookings/ui/views/AdminBookingView";
 import { loadSearchParamsBooking } from "@/modules/user/check-out/params";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
@@ -14,7 +15,6 @@ interface Props {
     searchParams: Promise<SearchParams>;
 };
 
-
 export default async function Page({ searchParams }: Props) {
     const filters = await loadSearchParamsBooking(searchParams);
     const session = await auth.api.getSession({
@@ -27,7 +27,7 @@ export default async function Page({ searchParams }: Props) {
 
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
-        trpc.booking.getAll.queryOptions({
+        trpc.booking.getAllAdmin.queryOptions({
             ...filters
         }),
     );
@@ -35,9 +35,9 @@ export default async function Page({ searchParams }: Props) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)} >
-            <Suspense fallback={<AllBookingViewLoading />} >
-                <ErrorBoundary fallback={<AllBookingViewError />} >
-                    <AllBookingView />
+            <Suspense fallback={<AdminBookingViewLoading />} >
+                <ErrorBoundary fallback={<AdminBookingViewError />} >
+                    <AdminBookingView />
                 </ErrorBoundary>
             </Suspense>
         </HydrationBoundary>

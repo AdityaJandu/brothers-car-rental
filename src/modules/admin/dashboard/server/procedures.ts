@@ -11,13 +11,11 @@ export const adminRouter = createTRPCRouter({
             carInsertSchema
         )
         .mutation(async ({ input }) => {
-            const newCarId = crypto.randomUUID();
 
             // 2. Insert the data into PostgreSQL using Drizzle
             const [newCar] = await db
                 .insert(car)
                 .values({
-                    id: newCarId,
                     ...input,
                     headerImage: input.headerImage || "https://placehold.co/800x600/1a1c23/ffffff?text=Vehicle+Photo+Pending",
                 })

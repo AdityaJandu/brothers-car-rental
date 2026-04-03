@@ -6,7 +6,7 @@ import { InferSelectModel } from "drizzle-orm";
 // Extract the TypeScript type from the Zod schema
 export type CarInsertInput = z.infer<typeof carInsertSchema>;
 
-export type Car = InferSelectModel<typeof car>;
+// export type Car = InferSelectModel<typeof car>;
 
 export enum CarStatus {
     Available = "available",

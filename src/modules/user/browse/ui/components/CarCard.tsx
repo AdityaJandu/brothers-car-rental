@@ -54,7 +54,7 @@ export function CarCard({ car }: CarCardProps) {
                 </div>
 
                 {/* Specs */}
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center font-display gap-4 mb-6">
                     <div className="flex items-center gap-1.5 text-slate-500">
                         <User className="w-4 h-4" />
                         <span className="text-sm font-medium">{car.seats} Seats</span>
@@ -66,16 +66,12 @@ export function CarCard({ car }: CarCardProps) {
                 </div>
 
                 {/* Price & CTA */}
-                <div className="mt-auto flex items-center justify-between pt-2">
+                <div className="mt-auto flex items-center font-display justify-between pt-2">
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-extrabold text-slate-900">
-                            {new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'USD',
-                                maximumFractionDigits: 0
-                            }).format(car.pricePerDay)}
+                            &#8377;{car.pricePerDay}
                         </span>
-                        <span className="text-sm font-medium text-slate-500">
+                        <span className="text-sm font-medium text-slate-400">
                             / day
                         </span>
                     </div>

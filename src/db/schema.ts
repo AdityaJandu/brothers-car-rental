@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index, pgEnum, integer, real } from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 
 export const role = pgEnum("role", [
     "admin",
@@ -168,59 +169,89 @@ export const accountRelations = relations(account, ({ one }) => ({
     }),
 }));
 
+// ----- Car and Booking Tables:
+
 export const carStatusEnum = pgEnum("car_status", ["available", "rented", "maintenance"]);
-
 export const transmissionEnum = pgEnum("transmission", ["automatic", "manual"]);
-
 export const fuelTypeEnum = pgEnum("fuel_type", ["petrol", "ev", "hybrid"]);
 
+// UPDATE: Added "cash" to the payment methods
+export const paymentMethodEnum = pgEnum("payment_method", ["card", "wallet", "cash"]);
+export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled", "completed"]);
+
+// --- TABLES ---
 export const car = pgTable("car", {
     // --- IDENTIFICATION ---
-    id: text("id").primaryKey(),
-    name: text("name").notNull(),           // "Porsche 911 Carrera"
-    make: text("make").notNull(),           // "Porsche" (Great for filtering)
-    model: text("model").notNull(),         // "911 Carrera"
-    year: integer("year").notNull(),        // 2024
-    category: text("category").notNull(),   // "Luxury Sports"
+    id: text("id").primaryKey().$defaultFn(() => nanoid()),
+    name: text("name").notNull(),
+    make: text("make").notNull(),
+    model: text("model").notNull(),
+    year: integer("year").notNull(),
+    category: text("category").notNull(),
+
+    tier: text("tier").notNull().default("Standard"),
+    description: text("description").notNull(),
 
     // --- FINANCIALS & METRICS ---
-    // Store price as an integer (e.g., whole Rupees) for accurate math
     pricePerDay: integer("price_per_day").notNull(),
-    // Store rating as a real number (e.g., 4.8) for > < filtering
     rating: real("rating").default(0).notNull(),
 
-    // --- SPECIFICATIONS (The "Precision" Details) ---
+    // --- SPECIFICATIONS ---
     transmission: transmissionEnum("transmission").notNull(),
     fuelType: fuelTypeEnum("fuel_type").notNull(),
     seats: integer("seats").notNull(),
 
     // --- MEDIA & UX ---
-    headerImage: text("headerImage").notNull(),
-    imageUrls: text("imageUrls").array(),
-    // Postgres arrays are amazing for listing features ("Sunroof", "Chauffeur", etc.)
+    headerImage: text("header_image").notNull(),
+    imageUrls: text("image_urls").array(),
     features: text("features").array(),
 
     // --- OPERATIONS & INVENTORY ---
-    plateNumber: text("plate_number").unique().notNull(), // Every physical car needs a unique plate
+    plateNumber: text("plate_number").unique().notNull(),
     status: carStatusEnum("status").default("available").notNull(),
-    isActive: boolean("is_active").default(true).notNull(), // Soft delete/hide from UI
+    isActive: boolean("is_active").default(true).notNull(),
 
     // --- AUDIT TIMESTAMPS ---
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
 });
 
+
 export const booking = pgTable("booking", {
-    id: text("id").primaryKey(),
+    id: text("id").primaryKey().$defaultFn(() => nanoid()),
     userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
     carId: text("car_id").notNull().references(() => car.id, { onDelete: "cascade" }),
+
+    // --- SCHEDULING ---
     startDate: timestamp("start_date").notNull(),
     endDate: timestamp("end_date").notNull(),
+
+    // --- FORM: PERSONAL DETAILS ---
+    fullName: text("full_name").notNull(),
+    email: text("email").notNull(),
+    phoneNumber: text("phone_number").notNull(),
+    licenseNumber: text("license_number").notNull(),
+
+    // --- FORM: PAYMENT ---
+    // UPDATE: Set default to "cash"
+    paymentMethod: paymentMethodEnum("payment_method").default("cash").notNull(),
+
+    // --- FINANCIAL BREAKDOWN ---
+    dailyRate: integer("daily_rate").notNull(),
+    days: integer("days").notNull(),
+    protectionFee: integer("protection_fee").notNull(),
+    surchargeFee: integer("surcharge_fee").notNull(),
     totalPrice: integer("total_price").notNull(),
+
+    // --- STATUS ---
+    status: bookingStatusEnum("status").default("pending").notNull(),
+
+    // --- AUDIT TIMESTAMPS ---
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
 });
 
+// --- RELATIONS ---
 export const bookingRelations = relations(booking, ({ one }) => ({
     user: one(user, {
         fields: [booking.userId],

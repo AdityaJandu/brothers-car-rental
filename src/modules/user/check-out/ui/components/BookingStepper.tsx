@@ -40,7 +40,7 @@ export function BookingStepper() {
 
                     {/* Connecting Line (Don't render after the last item) */}
                     {index < steps.length - 1 && (
-                        <div className={`flex-1 h-[2px] mx-4 lg:mx-6 rounded-full transition-colors
+                        <div className={`flex-1 h-0.5 mx-4 lg:mx-6 rounded-full transition-colors
                             ${step.status === 'complete' ? 'bg-slate-200' : 'bg-slate-100'}
                             ${step.status === 'current' && steps[index + 1].status === 'upcoming' ? 'bg-slate-100' : ''}
                         `}></div>

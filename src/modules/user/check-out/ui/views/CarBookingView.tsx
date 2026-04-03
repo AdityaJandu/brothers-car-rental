@@ -4,16 +4,25 @@ import { ErrorState } from "@/components/self/error-state";
 import { LoadingState } from "@/components/self/loading-state";
 import { CheckoutForm } from "../components/CheckoutForm";
 import { SummaryCard } from "../components/SummaryCard";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+// Form imports
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { bookingInsertSchema } from "../../schemas";
+import { Form } from "@/components/ui/form";
 
 interface CarBookingProps {
     carId: string;
 }
 
-
 export function CarBookingView({ carId }: CarBookingProps) {
-    const trpc = useTRPC()
+    const trpc = useTRPC();
+    const router = useRouter();
 
     const { data: car } = useSuspenseQuery(
         trpc.browse.getOne.queryOptions({
@@ -21,39 +30,74 @@ export function CarBookingView({ carId }: CarBookingProps) {
         })
     );
 
+    const createBooking = useMutation(
+        trpc.booking.create.mutationOptions({
+            onSuccess: async () => {
+                toast.success("Booking confirmed successfully!");
+                router.push("/");
+            },
+            onError: (error) => {
+                console.error("🚨 FULL TRPC ERROR:", error);
+                toast.error("Failed to process booking. Check console.");
+            },
+        }),
+    );
+
+    // Lift form state up to the parent
+    const form = useForm<z.infer<typeof bookingInsertSchema>>({
+        resolver: zodResolver(bookingInsertSchema) as any,
+        defaultValues: {
+            carId: car.id,
+            fullName: "",
+            email: "",
+            phoneNumber: "",
+            licenseNumber: "",
+            paymentMethod: "cash",
+            status: "pending",
+
+            startDate: new Date(),
+            endDate: new Date(new Date().getTime() + 86400000), // +1 day default
+            dailyRate: car.pricePerDay,
+            days: 1,
+            protectionFee: 12000,
+            surchargeFee: 4500,
+            totalPrice: car.pricePerDay + 12000 + 4500,
+        },
+    });
+
+    const onSubmit = (values: z.infer<typeof bookingInsertSchema>) => {
+        console.log("Form submitted:", values);
+        createBooking.mutate(values);
+    };
+
     return (
         <div className="min-h-screen bg-white font-display text-slate-900 pb-20">
+            <main className="mx-auto px-6 lg:px-12 pt-8">
 
-            <main className=" mx-auto px-6 lg:px-12 pt-8">
+                {/* Wrap the entire grid in the Form provider */}
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+                        <div className="grid grid-cols-1 order-2 lg:order-1 lg:grid-cols-14 gap-12 lg:gap-20">
 
+                            {/* Left Column: Form (Second on mobile, First on desktop) */}
+                            <div className="order-2 lg:order-1 lg:col-span-9 flex flex-col gap-12">
+                                <CheckoutForm isPending={createBooking.isPending} />
+                            </div>
 
-                {/* TODO: Progress Stepper */}
-                {/* We'll Probably work on it later */}
-                {/* <div className="mb-16">
-                    <BookingStepper />
-                </div> */}
+                            {/* Right Column: Order Summary (First on mobile, Second on desktop) */}
+                            <div className="order-1 lg:order-2 lg:col-span-5">
+                                <div className="sticky top-8">
+                                    <SummaryCard car={car} />
+                                </div>
+                            </div>
 
-                {/* Main Content Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-14 gap-12 lg:gap-20">
-
-                    {/* Left Column: Form (Takes up 7 columns on large screens) */}
-                    <div className="lg:col-span-9 flex flex-col gap-12">
-                        <CheckoutForm car={car} />
-                    </div>
-
-                    {/* Right Column: Order Summary (Takes up 5 columns on large screens) */}
-                    <div className="lg:col-span-5">
-                        <div className="sticky top-8">
-                            <SummaryCard car={car} />
                         </div>
-                    </div>
-
-                </div>
+                    </form>
+                </Form>
             </main>
         </div>
     );
 }
-
 
 export const CarBookingViewLoading = () => (
     <LoadingState

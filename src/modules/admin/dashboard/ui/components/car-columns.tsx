@@ -17,7 +17,7 @@ export type CarRow = Omit<InferSelectModel<typeof car>, "createdAt" | "updatedAt
 };
 
 // 3. Apply the fixed type to your ColumnDef
-export const columns: ColumnDef<CarRow>[] = [
+export const carColumns: ColumnDef<CarRow>[] = [
     {
         accessorKey: "name",
         header: "Car Details",

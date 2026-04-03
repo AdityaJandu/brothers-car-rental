@@ -5,10 +5,10 @@ import { LoadingState } from "@/components/self/loading-state";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DataTable } from "@/components/self/data-table";
-import { columns } from "../components/columns";
 import { EmptyState } from "@/components/self/empty-state";
 import { DataPagination } from "@/components/self/data-pagination";
 import { useCarFilters } from "../../hooks/user-car-filters";
+import { carColumns } from "../components/car-columns";
 
 
 export function FleetClientView() {
@@ -36,7 +36,7 @@ export function FleetClientView() {
     return (
         <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
             <DataTable
-                columns={columns}
+                columns={carColumns}
                 data={data.items}
                 onRowClick={(row) => { }}
             />

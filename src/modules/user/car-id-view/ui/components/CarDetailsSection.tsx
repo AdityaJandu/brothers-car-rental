@@ -37,10 +37,8 @@ export const CarDetailSection = ({ car }: CarDetailSectionProps) => {
             </h1>
 
             {/* Description */}
-            {/* TODO: replace with car.description from DB */}
             <p className="text-slate-500 text-lg leading-relaxed max-w-xl">
-                Experience the pinnacle of performance and engineering with the {car.name}.
-                A perfect blend of luxury, speed, and comfort for every journey.
+                {car.description}
             </p>
 
             {/* Specs */}
@@ -72,7 +70,7 @@ export const CarDetailSection = ({ car }: CarDetailSectionProps) => {
 
                 {/* TODO: replace with detailed description from DB */}
                 <p className="text-slate-500 leading-relaxed mb-4">
-                    Enjoy a premium driving experience with advanced features and superior comfort.
+                    {car.description}
                 </p>
 
                 <div className="flex flex-wrap gap-2">

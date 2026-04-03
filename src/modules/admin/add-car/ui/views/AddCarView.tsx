@@ -1,11 +1,8 @@
 "use client";
 
-// NPM
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-// Icons
 import {
     UploadCloud,
     Image as ImageIcon,
@@ -14,11 +11,9 @@ import {
     X,
     ChevronLeft,
 } from "lucide-react";
-
-// Next
 import Image from "next/image";
 
-// UI
+
 import {
     Card,
     CardContent,
@@ -60,7 +55,6 @@ import { LoadingState } from "@/components/self/loading-state";
 import { cn } from "@/lib/utils";
 
 export default function AddCarView() {
-
     const router = useRouter();
 
     const trpc = useTRPC();
@@ -76,6 +70,8 @@ export default function AddCarView() {
             model: "",
             year: new Date().getFullYear(),
             category: "",
+            tier: "Standard", // <-- NEW
+            description: "",  // <-- NEW
             pricePerDay: 0,
             transmission: "automatic",
             fuelType: "petrol",
@@ -107,7 +103,6 @@ export default function AddCarView() {
     const isCreatePending = createCar.isPending;
 
     const onSubmit = (values: z.infer<typeof carInsertSchema>) => {
-        // Ensure we don't submit if we are still uploading images
         if (isUploading) {
             toast.error("Please wait for images to finish uploading.");
             return;
@@ -181,16 +176,12 @@ export default function AddCarView() {
         );
     }
 
-
     return (
         <div className="min-h-screen bg-muted/30 p-4 md:p-8">
 
-
             {/* HEADER */}
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between mb-8 gap-4">
-
                 <div className="flex items-center gap-4">
-                    {/* Back Button */}
                     <Button
                         variant="outline"
                         size="icon"
@@ -199,8 +190,6 @@ export default function AddCarView() {
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-
-                    {/* Title Section */}
                     <div className="flex flex-col">
                         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
                             Add New Vehicle
@@ -215,9 +204,6 @@ export default function AddCarView() {
                     <Button variant="outline" type="button" onClick={() => form.reset()}>
                         Cancel
                     </Button>
-                    {/* FIX: Button is outside the form, so we link it using form="add-car-form".
-                        Added disabled state and loading spinner.
-                    */}
                     <Button
                         type="submit"
                         form="add-car-form"
@@ -236,16 +222,14 @@ export default function AddCarView() {
             </div>
 
             <Form {...form}>
-                {/* FIX: Added id="add-car-form" and onSubmit={form.handleSubmit(onSubmit)} */}
                 <form id="add-car-form" onSubmit={form.handleSubmit(onSubmit)} className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* LEFT */}
                     <div className="lg:col-span-2 space-y-6">
 
                         {/* GENERAL INFO */}
-                        <Card className="rounded-xl bg-white">
+                        <Card className="rounded-md bg-white">
                             <CardContent className="p-6 space-y-5">
-
                                 <div className="flex items-center gap-2 mb-5">
                                     <Info size={18} />
                                     <h2 className="font-semibold">General Information</h2>
@@ -268,7 +252,6 @@ export default function AddCarView() {
 
                                 {/* GRID */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-
                                     <FormField
                                         control={form.control}
                                         name="make"
@@ -282,7 +265,6 @@ export default function AddCarView() {
                                             </FormItem>
                                         )}
                                     />
-
                                     <FormField
                                         control={form.control}
                                         name="model"
@@ -296,7 +278,6 @@ export default function AddCarView() {
                                             </FormItem>
                                         )}
                                     />
-
                                     <FormField
                                         control={form.control}
                                         name="year"
@@ -315,13 +296,12 @@ export default function AddCarView() {
                                             </FormItem>
                                         )}
                                     />
-
                                     <FormField
                                         control={form.control}
                                         name="pricePerDay"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Daily Price</FormLabel>
+                                                <FormLabel>Daily Price (in cents/base unit)</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="bg-[#ebe9ff]"
@@ -334,7 +314,6 @@ export default function AddCarView() {
                                             </FormItem>
                                         )}
                                     />
-
                                     <FormField
                                         control={form.control}
                                         name="plateNumber"
@@ -348,7 +327,6 @@ export default function AddCarView() {
                                             </FormItem>
                                         )}
                                     />
-
                                     <FormField
                                         control={form.control}
                                         name="category"
@@ -362,19 +340,102 @@ export default function AddCarView() {
                                             </FormItem>
                                         )}
                                     />
+                                    {/* NEW: Tier */}
+                                    <FormField
+                                        control={form.control}
+                                        name="tier"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Tier Badge</FormLabel>
+                                                <FormControl>
+                                                    <Input className="bg-[#ebe9ff]" placeholder="Premium Tier, Elite Tier..." {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* SPECIFICATIONS */}
+                        <Card className="rounded-md bg-white">
+                            <CardContent className="p-6">
+                                <h2 className="font-semibold mb-5">Specifications</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="seats"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Seats</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        className="bg-[#ebe9ff]"
+                                                        type="number"
+                                                        {...field}
+                                                        onChange={(e) => field.onChange(Number(e.target.value))}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="transmission"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Transmission</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger className="bg-[#ebe9ff] border-none">
+                                                            <SelectValue placeholder="Select..." />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="automatic">Automatic</SelectItem>
+                                                        <SelectItem value="manual">Manual</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="fuelType"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Fuel Type</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger className="bg-[#ebe9ff] border-none">
+                                                            <SelectValue placeholder="Select..." />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="petrol">Petrol</SelectItem>
+                                                        <SelectItem value="ev">EV</SelectItem>
+                                                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* MEDIA */}
-                        <Card className="rounded-xl bg-white">
+                        <Card className="rounded-md bg-white">
                             <CardContent className="p-6">
                                 <div className="flex items-center gap-2 mb-5">
                                     <ImageIcon size={18} />
                                     <h2 className="font-semibold">Media Gallery</h2>
                                 </div>
 
-                                {/* Main Upload Dropzone */}
                                 <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border/50 rounded-xl cursor-pointer bg-[#ebe9ff] hover:bg-muted/30 transition-colors mb-6 group">
                                     {isUploading ? (
                                         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -392,84 +453,51 @@ export default function AddCarView() {
                                         onChange={handleImageSelect}
                                         disabled={isUploading}
                                         className="hidden"
-
                                     />
                                 </label>
 
-                                {/* Thumbnail Gallery Grid */}
                                 <div className="space-y-4">
-                                    {/* Header */}
                                     <div className="flex items-center justify-between">
-                                        <p className="text-sm font-medium text-muted-foreground">
-                                            Uploaded Photos
-                                        </p>
-
+                                        <p className="text-sm font-medium text-muted-foreground">Uploaded Photos</p>
                                         {currentImageUrls.length > 0 && (
-                                            <span className="text-xs text-muted-foreground">
-                                                {currentImageUrls.length} images
-                                            </span>
+                                            <span className="text-xs text-muted-foreground">{currentImageUrls.length} images</span>
                                         )}
                                     </div>
 
-                                    {/* Empty State */}
                                     {currentImageUrls.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center border border-dashed rounded-xl p-8 text-center bg-muted/30">
                                             <p className="text-sm font-medium">No images uploaded</p>
-                                            <p className="text-xs text-muted-foreground mt-1">
-                                                Upload vehicle photos to showcase your listing
-                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-1">Upload vehicle photos to showcase your listing</p>
                                         </div>
                                     ) : (
-                                        /* Gallery Grid */
                                         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
                                             {currentImageUrls.map((url, index) => (
                                                 <div
                                                     key={url}
-                                                    className={
-                                                        cn(
-                                                            "relative aspect-square rounded-md overflow-hidden border group shadow-sm transition-all",
-                                                            currentHeaderImage === url
-                                                                ? "border-primary ring-2 ring-primary/20"
-                                                                : "border-transparent hover:border-border"
-                                                        )
-                                                    }
+                                                    className={cn(
+                                                        "relative aspect-square rounded-md overflow-hidden border group shadow-sm transition-all",
+                                                        currentHeaderImage === url ? "border-primary ring-2 ring-primary/20" : "border-transparent hover:border-border"
+                                                    )}
                                                 >
-                                                    <Image
-                                                        src={url}
-                                                        alt={`Vehicle photo ${index + 1}`}
-                                                        fill
-                                                        className="object-cover"
-                                                        sizes="120px"
-                                                    />
-
-                                                    {/* Hover Overlay */}
+                                                    <Image src={url} alt={`Vehicle photo ${index + 1}`} fill className="object-cover" sizes="120px" />
                                                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-2">
                                                         {currentHeaderImage !== url && (
                                                             <button
                                                                 type="button"
-                                                                onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    handleSetMainImage(url);
-                                                                }}
+                                                                onClick={(e) => { e.preventDefault(); handleSetMainImage(url); }}
                                                                 className="text-[10px] bg-white text-black px-2 py-1 rounded font-semibold hover:bg-gray-200"
                                                             >
                                                                 Set Main
                                                             </button>
                                                         )}
-
                                                         <button
                                                             type="button"
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                handleRemoveImage(url);
-                                                            }}
+                                                            onClick={(e) => { e.preventDefault(); handleRemoveImage(url); }}
                                                             className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                                                         >
                                                             <X size={14} />
                                                         </button>
                                                     </div>
-
-                                                    {/* Main Badge */}
                                                     {currentHeaderImage === url && (
                                                         <div className="absolute bottom-1 left-1 bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow">
                                                             Main
@@ -482,27 +510,21 @@ export default function AddCarView() {
                                 </div>
                             </CardContent>
                         </Card>
-
                     </div>
 
                     {/* RIGHT */}
-                    <div className="space-y-6 ">
+                    <div className="space-y-6">
 
                         {/* STATUS */}
-                        <Card className="rounded-xl bg-white">
-                            <CardContent className="p-6 ">
-
+                        <Card className="rounded-md bg-white">
+                            <CardContent className="p-6">
                                 <h2 className="font-semibold mb-6">Asset Status</h2>
-
                                 <FormField
                                     control={form.control}
                                     name="status"
                                     render={({ field }) => (
-                                        <FormItem >
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                            >
+                                        <FormItem>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select status" />
@@ -518,26 +540,32 @@ export default function AddCarView() {
                                         </FormItem>
                                     )}
                                 />
-
-                                <div className="bg-muted p-4 rounded-xl text-sm mt-4">
+                                <div className="bg-muted p-4 rounded-md text-sm mt-4">
                                     Available cars are shown on homepage automatically.
                                 </div>
-
                             </CardContent>
                         </Card>
 
-                        {/* DESCRIPTION */}
-                        <Card className="rounded-xl bg-white">
+                        {/* NEW: DESCRIPTION */}
+                        <Card className="rounded-md bg-white">
                             <CardContent className="p-6">
-
                                 <h2 className="font-semibold mb-4">Description</h2>
-
-                                {/* Unconnected UI Element: 
-                                    I left this disconnected because 'description' is not in your Zod schema defaultValues. 
-                                    Let me know if you want it connected to a specific field! 
-                                */}
-                                <Textarea className="bg-[#ebe9ff]" placeholder="Highlight features..." />
-
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Textarea
+                                                    className="bg-[#ebe9ff] min-h-60 md:min-h-80 resize-none text-sm leading-relaxed p-4 focus:ring-2 focus:ring-[#0F172A]/10 rounded-md"
+                                                    placeholder="Experience the pinnacle of German engineering..."
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </CardContent>
                         </Card>
 
@@ -545,6 +573,8 @@ export default function AddCarView() {
 
                 </form>
             </Form>
+
+            <div className="pb-20 md:hidden"></div>
         </div>
     );
 }
