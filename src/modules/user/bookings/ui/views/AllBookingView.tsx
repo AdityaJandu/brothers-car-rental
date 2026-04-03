@@ -16,7 +16,7 @@ export function AllBookingView() {
     const trpc = useTRPC();
 
     const { data } = useSuspenseQuery(
-        trpc.booking.getAll.queryOptions({
+        trpc.userBookings.getAll.queryOptions({
             ...filters
         }),
     );
@@ -51,16 +51,18 @@ export function AllBookingView() {
 
 }
 
+
+// () -> means no need to write
 export const AllBookingViewLoading = () => (
     <LoadingState
-        title="Loading car"
+        title="Loading bookings"
         descr="This may take from a few seconds to a few minutes."
     />
 );
 
 export const AllBookingViewError = () => (
     <ErrorState
-        title="Failed to load car"
-        descr="Something went wrong while fetching car. Try to refresh page."
+        title="Failed to load bookings"
+        descr="Something went wrong while fetching bookings. Try to refresh page."
     />
 );

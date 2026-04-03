@@ -35,7 +35,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
         <div className="flex flex-col gap-4">
 
             {/* Dark Card */}
-            <div className="bg-[#172033] rounded-3xl overflow-hidden shadow-xl border border-slate-800">
+            <div className="bg-[#172033] rounded-md overflow-hidden shadow-xl border border-slate-800">
 
                 {/* Image */}
                 <div className="relative w-full h-56 bg-[#0A0F1A]">
@@ -126,7 +126,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
             </div>
 
             {/* Refund Notice */}
-            <div className="bg-[#F8F9FA] border rounded-xl p-4 flex gap-3">
+            <div className="bg-[#F8F9FA] border rounded-md p-4 flex gap-3">
                 <ShieldCheck className="w-5 h-5 text-[#D97706] shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-600 leading-relaxed">
                     Full refund available if cancelled 24 hours prior to pick-up.

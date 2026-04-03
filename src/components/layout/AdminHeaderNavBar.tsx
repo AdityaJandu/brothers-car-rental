@@ -34,7 +34,7 @@ export function AdminNavbar() {
 
                     {/* BRANDING LOGO */}
                     <Link href="/dashboard" className="flex items-center gap-2 group transition-transform hover:scale-105">
-                        <div className="bg-[#172033] p-1.5 rounded-lg shadow-sm group-hover:bg-[#0B0F3B] transition-colors">
+                        <div className="bg-[#172033] p-1.5 rounded-md shadow-sm group-hover:bg-[#0B0F3B] transition-colors">
                             <Car className="h-5 w-5 text-white" />
                         </div>
                         <div className="flex flex-col">

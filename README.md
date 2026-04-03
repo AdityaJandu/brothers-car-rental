@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Brothers Car Rental 🚗
 
-## Getting Started
+A premium, modern web application for luxury vehicle rentals built with Next.js, tRPC, Drizzle ORM, and Tailwind CSS. The platform natively provides an elegant client-facing booking experience alongside a comprehensive administrative dashboard for precise fleet management.
 
-First, run the development server:
+---
 
+## 🛠 Tech Stack
+
+*   **Framework**: Next.js (App Router, Server Components)
+*   **Database**: PostgreSQL
+*   **ORM**: Drizzle ORM
+*   **API/RPC Architecture**: tRPC
+*   **Authentication**: Better Auth
+*   **Storage**: Supabase Storage
+*   **UI Components**: Custom tailored Shadcn UI
+*   **Styling**: Tailwind CSS
+*   **Validation**: Zod & React Hook Form
+
+## ✨ Core Features
+
+*   **Public Fleet Discovery**: Beautifully mapped grid designs, dynamic filtering, and rich specification pages.
+*   **Secure Booking Engine**: A seamless transactional checkout flow dynamically verifying dates and structural integrity via strict Zod server schemas.
+*   **Administrative Management**: High-level dashboards isolating active rentals, confirming requests, and parsing incoming fleet additions directly into the database.
+*   **Cloud Image Uploading**: Seamless fleet-asset capturing securely handled client-side and dispatched directly to Supabase data buckets.
+*   **Optimized Design**: Custom responsive aesthetic adhering tightly to modern curved (`rounded-md` clamped bounds) and drop-shadow architectures.
+
+## 🚀 Getting Started
+
+First, ensure you have the required environment variables (`neon db string`, `auth secrets`, `supabase url` & `supabase anon key`) properly mapped inside your local `.env`.
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Prepare the Database 
+Push the local schema tracking parameters explicitly down to the remote PostgreSQL datastore organically:
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
+# or
+npx drizzle-kit push
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run the Development Server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) with your browser to experience the application dynamically.
 
-## Learn More
+## 🗺️ Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+The codebase is built on a highly modular **Domain-Driven Architecture**:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+*   `/src/app/` - The Next.js routing structure dynamically wrapping `(auth)`, `(onboarding)`, `(user)`, and `(admin)` zones.
+*   `/src/modules/` - The beating heart of the system storing all explicitly modular UI/Server pairs (`admin/dashboard`, `user/check-out`, `user/browse`, etc.)
+*   `/src/components/` - Shadcn UI layouts clamped universally safely beneath custom layout wrapping.
+*   `/src/db/` - Drizzle ORM database bindings mapping TypeScript logic strictly globally to postgres structures.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+*For an extreme deep-dive directly into the exact query hooks and `procedures.ts` tracking variables tied physically across each folder logic node, please refer to the `projectstructure.md` file!*
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 👮‍♂️ Admin Operations
+To interact dynamically with the admin endpoints (`/dashboard`, `/add-car`, `/admin-booking`), you must alter your authenticated user session role manually to `admin` directly within the Postgres database via the active neon dashboard.

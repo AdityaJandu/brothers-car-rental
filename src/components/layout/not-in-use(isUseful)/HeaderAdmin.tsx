@@ -53,7 +53,7 @@ export function HeaderAdmin({ session }: HeaderAdminProps) {
                 </div>
 
                 {/* Center: Admin Navigation (Desktop) */}
-                <nav className="hidden md:flex gap-1 items-center bg-slate-900/50 p-1 rounded-lg border border-slate-800">
+                <nav className="hidden md:flex gap-1 items-center bg-slate-900/50 p-1 rounded-md border border-slate-800">
                     {adminNav.map((item) => {
                         const Icon = item.icon;
                         // Match exact path OR sub-paths (e.g., active on both /admin/fleet AND /admin/fleet/new)

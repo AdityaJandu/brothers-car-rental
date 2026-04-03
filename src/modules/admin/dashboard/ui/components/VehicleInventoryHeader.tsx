@@ -4,7 +4,7 @@ import { LayoutGrid, List } from 'lucide-react';
 export function VehicleInventoryHeader() {
     return (
         <div className="px-4 md:px-8 py-2">
-            <div className="w-full bg-white rounded-t-3xl border border-gray-100 p-6 flex items-center justify-between font-sans">
+            <div className="w-full bg-white rounded-md border border-gray-100 p-6 flex items-center justify-between font-sans">
 
                 {/* Left side: Title and Count */}
                 <div className="flex items-center gap-4">

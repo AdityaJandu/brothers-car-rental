@@ -12,7 +12,7 @@ export function StepComponent({ steps }: { steps: Step[] }) {
             {steps.map((step, index) => (
                 <div
                     key={index}
-                    className="group relative bg-white rounded-xl p-6 transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-ambient"
+                    className="group relative bg-white rounded-md p-6 transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-ambient"
                 >
                     {/* Big Background Number */}
                     <span className="absolute top-4 right-6 text-6xl font-bold text-gray-200 opacity-40 pointer-events-none">
@@ -20,7 +20,7 @@ export function StepComponent({ steps }: { steps: Step[] }) {
                     </span>
 
                     {/* Icon */}
-                    <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-(--surface-high) mb-5 transition-all duration-300 group-hover:bg-primary">
+                    <div className="w-14 h-14 flex items-center justify-center rounded-md bg-(--surface-high) mb-5 transition-all duration-300 group-hover:bg-primary">
                         <step.icon className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-300" />
                     </div>
 

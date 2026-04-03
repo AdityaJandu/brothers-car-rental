@@ -180,7 +180,7 @@
 @layer components {
   /* The "Drive" Controls */
   .btn-executive-primary {
-    @apply bg-gradient-to-br from-primary to-[#23385E] text-primary-foreground rounded-xl border-0 transition-all duration-300 flex items-center justify-center font-medium;
+    @apply bg-gradient-to-br from-primary to-[#23385E] text-primary-foreground rounded-md border-0 transition-all duration-300 flex items-center justify-center font-medium;
   }
   .btn-executive-primary:hover {
     /* Subtle Orange bleed into the shadow on hover per spec */
@@ -188,12 +188,12 @@
   }
   
   .btn-executive-secondary {
-    @apply bg-transparent border border-border text-primary rounded-xl transition-all duration-300 flex items-center justify-center font-medium;
+    @apply bg-transparent border border-border text-primary rounded-md transition-all duration-300 flex items-center justify-center font-medium;
   }
   
   /* The "Showroom" Cards */
   .card-showroom {
-    @apply bg-card rounded-lg border-0 overflow-hidden;
+    @apply bg-card rounded-md border-0 overflow-hidden;
     box-shadow: var(--shadow-ambient);
   }
   

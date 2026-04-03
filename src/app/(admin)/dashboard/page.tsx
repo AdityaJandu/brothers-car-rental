@@ -31,7 +31,7 @@ const Page = async ({ searchParams }: Props) => {
 
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
-        trpc.browse.getAllAdmin.queryOptions({
+        trpc.adminDashboard.getAllAdmin.queryOptions({
             ...filters
         })
     );

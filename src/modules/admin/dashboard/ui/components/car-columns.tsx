@@ -25,7 +25,7 @@ export const carColumns: ColumnDef<CarRow>[] = [
             const car = row.original;
             return (
                 <div className="flex items-center gap-4">
-                    <div className="relative w-20 h-12.5 bg-slate-100 rounded-lg overflow-hidden shrink-0">
+                    <div className="relative w-20 h-12.5 bg-slate-100 rounded-md overflow-hidden shrink-0">
                         <Image
                             src={car.headerImage || "./empty.svg"}
                             alt={car.name}
@@ -94,7 +94,7 @@ export const carColumns: ColumnDef<CarRow>[] = [
                                 <MoreVertical className="h-5 w-5" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-xl shadow-sm border-slate-100">
+                        <DropdownMenuContent align="end" className="rounded-md shadow-sm border-slate-100">
                             <DropdownMenuItem className="cursor-pointer font-medium text-slate-600" onClick={() => console.log("Edit Media", car.id)}>
                                 <ImageIcon className="mr-2 h-4 w-4" /> Edit Media
                             </DropdownMenuItem>

@@ -2,7 +2,6 @@
 
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { FiltersBar } from "../components/FiltersBar";
 import { CarGrid } from "../components/CarGrid";
 import { LoadingState } from "@/components/self/loading-state";
 import { ErrorState } from "@/components/self/error-state";
@@ -11,12 +10,11 @@ import { DataPagination } from "@/components/self/data-pagination";
 
 export function BrowseView() {
 
-
     const [filters, setFilters] = useCarFiltersUser();
 
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(
-        trpc.browse.getAll.queryOptions({
+        trpc.userBrowse.getAll.queryOptions({
             ...filters
         })
     );
@@ -34,6 +32,7 @@ export function BrowseView() {
                 {/* Cars Grid */}
                 <CarGrid cars={data.items} />
             </div>
+            <div className="pb-10 sm:hidden"></div>
             <div className="flex-1 pb-4 px-4 md:px-8 hidden md:flex md:flex-col gap-y-4">
                 <DataPagination
                     page={filters.page}

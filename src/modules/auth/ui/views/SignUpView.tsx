@@ -102,7 +102,7 @@ export function SignUpView() {
             </div>
 
             {/* --- FORM CARD --- */}
-            <Card className="relative z-10 w-full max-w-md overflow-hidden backdrop-blur-md shadow-ambient rounded-2xl">
+            <Card className="relative z-10 w-full max-w-md overflow-hidden backdrop-blur-md shadow-ambient rounded-md">
                 <CardContent className="p-8">
 
                     <Form {...form}>

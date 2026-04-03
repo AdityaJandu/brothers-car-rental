@@ -6,7 +6,7 @@ import { AppRouter } from "@/trpc/routers/_app";
 export type BookingInsertInput = z.infer<typeof bookingInsertSchema>;
 
 // Extracts the entire return object: { items: [...], total: number, totalPages: number }
-export type BookingGetAllOutput = inferRouterOutputs<AppRouter>["booking"]["getAll"];
+export type BookingGetAllOutput = inferRouterOutputs<AppRouter>["userBookings"]["getAll"];
 
 // Extracts just the array of bookings to use in your Table/Columns
 export type BookingGetMany = BookingGetAllOutput["items"];

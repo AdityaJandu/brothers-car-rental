@@ -18,7 +18,7 @@ export function FleetClientView() {
 
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(
-        trpc.browse.getAllAdmin.queryOptions({
+        trpc.adminDashboard.getAllAdmin.queryOptions({
             ...filters
         })
     );

@@ -22,10 +22,10 @@ export function FiltersBar() {
         <div className="flex flex-col px-6 lg:px-12 gap-8">
 
             {/* Top Search Bar */}
-            <div className="bg-white rounded-3xl p-3 shadow-sm border border-slate-100 flex flex-col lg:flex-row items-center gap-3">
+            <div className="bg-white rounded-lg p-3 shadow-sm border border-slate-100 flex flex-col lg:flex-row items-center gap-3">
 
                 {/* Location Input Group */}
-                <div className="flex-1 flex items-center bg-[#F4F5F7] rounded-xl px-4 py-3 w-full">
+                <div className="flex-1 flex items-center bg-[#F4F5F7] rounded-md px-4 py-3 w-full">
                     <Car className="w-5 h-5 text-slate-400 mr-3" />
                     <div className="flex flex-col flex-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -54,7 +54,7 @@ export function FiltersBar() {
                         }}
                     >
                         {/* We use a <button> so it receives focus and click events properly via asChild */}
-                        <button className="flex items-center bg-[#F4F5F7] hover:bg-[#E2E4E9] rounded-xl px-4 py-3 w-full text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+                        <button className="flex items-center bg-[#F4F5F7] hover:bg-[#E2E4E9] rounded-md px-4 py-3 w-full text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
                             <Calendar className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
                             <div className="flex flex-col flex-1">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
@@ -77,7 +77,7 @@ export function FiltersBar() {
                 </div>
 
                 {/* Search Button */}
-                <Button className="w-full lg:w-auto h-full min-h-14 px-8 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-xl font-medium transition-colors flex items-center gap-2">
+                <Button className="w-full lg:w-auto h-full min-h-14 px-8 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-md font-medium transition-colors flex items-center gap-2">
                     <Search className="w-4 h-4" />
                     Search
                 </Button>

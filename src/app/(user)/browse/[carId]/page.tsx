@@ -28,7 +28,7 @@ const Page = async ({ params }: Props) => {
 
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
-        trpc.browse.getOne.queryOptions({ id: carId }),
+        trpc.userBrowse.getOne.queryOptions({ id: carId }),
     );
 
 

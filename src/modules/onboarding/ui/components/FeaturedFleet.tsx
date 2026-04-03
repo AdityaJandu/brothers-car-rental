@@ -109,7 +109,7 @@ export function FeaturedFleet() {
 
                                 {/* Book Now Button */}
                                 <Button
-                                    className="w-full h-12 rounded-xl text-base font-medium transition-all bg-muted text-primary border-0 hover:bg-primary hover:text-white"
+                                    className="w-full h-12 rounded-md text-base font-medium transition-all bg-muted text-primary border-0 hover:bg-primary hover:text-white"
                                 >
                                     Book Now
                                 </Button>

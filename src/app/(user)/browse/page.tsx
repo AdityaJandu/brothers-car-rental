@@ -29,7 +29,7 @@ export default async function Page({ searchParams }: Props) {
     // Pre-fetch
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
-        trpc.browse.getAll.queryOptions({
+        trpc.userBrowse.getAll.queryOptions({
             ...filters
         }),
     );

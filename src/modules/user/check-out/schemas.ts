@@ -11,6 +11,8 @@ export const bookingInsertSchema = z.object({
     // Fixed: Zod expects 'required_error' and 'invalid_type_error'
     startDate: z.coerce.date({
         error: "Please choose a valid date"
+    }).refine((date) => date >= new Date(new Date().setHours(0,0,0,0)), {
+        message: "Pick-up date cannot be in the past"
     }),
 
     endDate: z.coerce.date({

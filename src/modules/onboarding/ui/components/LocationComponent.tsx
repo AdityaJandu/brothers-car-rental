@@ -34,7 +34,7 @@ export function LocationComponent() {
                     {locations.map((loc, index) => (
                         <div
                             key={index}
-                            className="group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out"
+                            className="group relative rounded-md overflow-hidden cursor-pointer transition-all duration-500 ease-out"
                         >
                             {/* Image */}
                             <Image

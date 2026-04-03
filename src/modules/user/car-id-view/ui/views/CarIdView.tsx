@@ -15,7 +15,7 @@ export const CarIdView = ({ carId }: CarIdViewProps) => {
     const trpc = useTRPC();
 
     const { data: car } = useSuspenseQuery(
-        trpc.browse.getOne.queryOptions({ id: carId })
+        trpc.userBrowse.getOne.queryOptions({ id: carId })
     );
 
     const images = car.imageUrls?.length ? car.imageUrls : [car.headerImage];

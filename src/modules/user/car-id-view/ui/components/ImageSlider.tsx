@@ -14,7 +14,7 @@ export const ImageSlider = ({ images, name }: ImageSliderProps) => {
     const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
     return (
-        <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-sm">
+        <div className="relative w-full h-80 rounded-md overflow-hidden shadow-sm">
 
             <Image
                 src={images[index]}

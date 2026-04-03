@@ -86,10 +86,10 @@ export default function AddCarView() {
     });
 
     const createCar = useMutation(
-        trpc.admin.create.mutationOptions({
+        trpc.adminAddCar.create.mutationOptions({
             onSuccess: async () => {
                 await queryClient.invalidateQueries(
-                    trpc.browse.getAll.queryOptions({ pageSize: 50 })
+                    trpc.adminDashboard.getAllAdmin.queryOptions({ pageSize: 50 })
                 );
                 toast.success("Vehicle successfully added to the fleet!");
                 form.reset();
@@ -436,7 +436,7 @@ export default function AddCarView() {
                                     <h2 className="font-semibold">Media Gallery</h2>
                                 </div>
 
-                                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border/50 rounded-xl cursor-pointer bg-[#ebe9ff] hover:bg-muted/30 transition-colors mb-6 group">
+                                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border/50 rounded-md cursor-pointer bg-[#ebe9ff] hover:bg-muted/30 transition-colors mb-6 group">
                                     {isUploading ? (
                                         <Loader2 className="w-8 h-8 animate-spin text-primary" />
                                     ) : (
@@ -465,7 +465,7 @@ export default function AddCarView() {
                                     </div>
 
                                     {currentImageUrls.length === 0 ? (
-                                        <div className="flex flex-col items-center justify-center border border-dashed rounded-xl p-8 text-center bg-muted/30">
+                                        <div className="flex flex-col items-center justify-center border border-dashed rounded-md p-8 text-center bg-muted/30">
                                             <p className="text-sm font-medium">No images uploaded</p>
                                             <p className="text-xs text-muted-foreground mt-1">Upload vehicle photos to showcase your listing</p>
                                         </div>

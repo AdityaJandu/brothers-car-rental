@@ -62,7 +62,7 @@ export const CarDetailSection = ({ car }: CarDetailSectionProps) => {
             </div>
 
             {/* Experience Section */}
-            <div className="bg-[#F8FAFC] rounded-3xl p-7 border border-slate-200">
+            <div className="bg-[#F8FAFC] rounded-md p-7 border border-slate-200">
 
                 <h3 className="text-lg font-bold text-[#0F172A] mb-3">
                     The Experience

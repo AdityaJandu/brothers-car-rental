@@ -19,13 +19,13 @@ export function CarCard({ car }: CarCardProps) {
     };
 
     return (
-        <div className="bg-white rounded-lg p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group">
+        <div className="bg-white rounded-md p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group">
 
             {/* --- IMAGE & BADGE --- */}
-            <div className="relative w-full aspect-[1.6] bg-slate-100 rounded-xl overflow-hidden mb-5">
+            <div className="relative w-full aspect-[1.6] bg-slate-100 rounded-md overflow-hidden mb-5">
 
                 {/* Rating Badge */}
-                <div className="absolute top-3 right-3 z-10 bg-white px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                <div className="absolute top-3 right-3 z-10 bg-white px-2.5 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm">
                     <Star className="w-3.5 h-3.5 fill-[#D97706] text-[#D97706]" />
                     <span className="text-xs font-bold text-slate-800">{car.rating ?? "4.9"}</span>
                 </div>

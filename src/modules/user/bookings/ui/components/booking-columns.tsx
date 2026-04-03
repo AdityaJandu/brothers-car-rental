@@ -98,17 +98,17 @@ export const bookingColumns: ColumnDef<BookingRow>[] = [
                                 <MoreVertical className="h-5 w-5" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-xl shadow-sm border-slate-100 p-1">
+                        <DropdownMenuContent align="end" className="rounded-md shadow-sm border-slate-100 p-1">
 
-                            <DropdownMenuItem className="cursor-pointer font-medium text-slate-600 rounded-lg" onClick={() => console.log("View Booking", booking.id)}>
+                            <DropdownMenuItem className="cursor-pointer font-medium text-slate-600 rounded-md" onClick={() => console.log("View Booking", booking.id)}>
                                 <Eye className="mr-2 h-4 w-4" /> View Details
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className="cursor-pointer font-medium text-[#4b5de4] focus:text-[#4b5de4] focus:bg-[#e4e7fa] rounded-lg mt-1" onClick={() => console.log("Confirm Booking", booking.id)}>
+                            <DropdownMenuItem className="cursor-pointer font-medium text-[#4b5de4] focus:text-[#4b5de4] focus:bg-[#e4e7fa] rounded-md mt-1" onClick={() => console.log("Confirm Booking", booking.id)}>
                                 <CheckCircle className="mr-2 h-4 w-4" /> Mark Confirmed
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className="cursor-pointer font-medium text-[#d94444] focus:text-[#d94444] focus:bg-[#fae5e5] rounded-lg mt-1" onClick={() => console.log("Cancel Booking", booking.id)}>
+                            <DropdownMenuItem className="cursor-pointer font-medium text-[#d94444] focus:text-[#d94444] focus:bg-[#fae5e5] rounded-md mt-1" onClick={() => console.log("Cancel Booking", booking.id)}>
                                 <XCircle className="mr-2 h-4 w-4" /> Cancel Booking
                             </DropdownMenuItem>
 

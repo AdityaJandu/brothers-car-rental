@@ -10,7 +10,7 @@ interface PricingCarProps {
 export const PricingCard = ({ car }: PricingCarProps) => {
     return (
         <>
-            <div className="bg-[#1E2A44] text-white rounded-lg p-7 shadow-2xl font-display">
+            <div className="bg-[#1E2A44] text-white rounded-md p-7 shadow-2xl font-display">
                 {/* Price Section */}
                 <div className="flex justify-between items-start mb-8">
                     <div>
@@ -44,7 +44,7 @@ export const PricingCard = ({ car }: PricingCarProps) => {
                 </div>
 
                 <Link href={`/check-out/${car.id}`}>
-                    <Button className="w-full h-16 bg-[#FF8C00] hover:bg-[#E67E00] text-white text-lg font-bold rounded-xl shadow-lg transition-all">
+                    <Button className="w-full h-16 bg-[#FF8C00] hover:bg-[#E67E00] text-white text-lg font-bold rounded-md shadow-lg transition-all">
                         Book Now
                     </Button>
                 </Link>

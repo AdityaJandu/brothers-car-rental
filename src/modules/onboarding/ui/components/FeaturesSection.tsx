@@ -22,7 +22,7 @@ export function FeaturesSection() {
                             <div
                                 key={feature.id}
                                 className={cn(
-                                    "p-8 rounded-3xl transition-transform duration-300 hover:-translate-y-1",
+                                    "p-8 rounded-md transition-transform duration-300 hover:-translate-y-1",
                                     feature.isDark
                                         ? "bg-primary text-white shadow-ambient"
                                         : "bg-white text-primary shadow-sm hover:shadow-ambient"

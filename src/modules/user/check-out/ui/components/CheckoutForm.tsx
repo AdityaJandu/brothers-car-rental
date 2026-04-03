@@ -68,10 +68,14 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
                     <p className="text-sm text-slate-500">Select your pick-up and drop-off dates.</p>
                 </div>
 
-                <DatePicker date={{ from: startDate, to: endDate }} setDate={handleDateChange}>
+                <DatePicker
+                    date={{ from: startDate, to: endDate }}
+                    setDate={handleDateChange}
+                    disabled={{ before: new Date() }}
+                >
                     <button
                         type="button"
-                        className="flex items-center justify-between w-full bg-[#F8F9FA] hover:bg-slate-100 border border-transparent focus:ring-2 focus:ring-[#0F172A]/10 rounded-xl px-5 py-4 transition-colors text-left"
+                        className="flex items-center justify-between w-full bg-[#F8F9FA] hover:bg-slate-100 border border-transparent focus:ring-2 focus:ring-[#0F172A]/10 rounded-md px-5 py-4 transition-colors text-left"
                     >
                         <div className="flex flex-col gap-1">
                             <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -121,7 +125,7 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
                                         <input
                                             type={field.type}
                                             {...formField}
-                                            className="bg-[#F8F9FA] rounded-xl px-4 py-3.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0F172A]/10 w-full"
+                                            className="bg-[#F8F9FA] rounded-md px-4 py-3.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0F172A]/10 w-full"
                                         />
                                     </FormControl>
                                     <FormMessage className="text-xs text-red-500" />
@@ -172,18 +176,18 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
 
                 {/* CARD INPUTS */}
                 {paymentMethod === "card" && (
-                    <div className="bg-white rounded-lg border p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="bg-white rounded-md border p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
                         <div className="sm:col-span-2 flex flex-col gap-2">
                             <label className="text-xs font-semibold uppercase text-slate-500">Card Number</label>
-                            <input placeholder="0000 0000 0000 0000" className="bg-[#F8F9FA] rounded-xl px-4 py-3 w-full font-mono" />
+                            <input placeholder="0000 0000 0000 0000" className="bg-[#F8F9FA] rounded-md px-4 py-3 w-full font-mono" />
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-semibold uppercase text-slate-500">Expiry Date</label>
-                            <input placeholder="MM/YY" className="bg-[#F8F9FA] rounded-xl px-4 py-3 w-full font-mono" />
+                            <input placeholder="MM/YY" className="bg-[#F8F9FA] rounded-md px-4 py-3 w-full font-mono" />
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-semibold uppercase text-slate-500">CVV</label>
-                            <input placeholder="123" maxLength={4} className="bg-[#F8F9FA] rounded-xl px-4 py-3 w-full font-mono" />
+                            <input placeholder="123" maxLength={4} className="bg-[#F8F9FA] rounded-md px-4 py-3 w-full font-mono" />
                         </div>
                     </div>
                 )}

@@ -27,7 +27,7 @@ export default async function Page({ searchParams }: Props) {
 
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
-        trpc.booking.getAll.queryOptions({
+        trpc.userBookings.getAll.queryOptions({
             ...filters
         }),
     );

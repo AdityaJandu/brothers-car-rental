@@ -25,13 +25,13 @@ export function CarBookingView({ carId }: CarBookingProps) {
     const router = useRouter();
 
     const { data: car } = useSuspenseQuery(
-        trpc.browse.getOne.queryOptions({
+        trpc.userBrowse.getOne.queryOptions({
             id: carId
         })
     );
 
     const createBooking = useMutation(
-        trpc.booking.create.mutationOptions({
+        trpc.userCheckout.create.mutationOptions({
             onSuccess: async () => {
                 toast.success("Booking confirmed successfully!");
                 router.push("/");
