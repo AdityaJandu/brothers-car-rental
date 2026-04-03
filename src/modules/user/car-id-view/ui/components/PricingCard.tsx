@@ -43,7 +43,7 @@ export const PricingCard = ({ car }: PricingCarProps) => {
                     </div>
                 </div>
 
-                <Link href={`/bookings/${car.id}`}>
+                <Link href={`/check-out/${car.id}`}>
                     <Button className="w-full h-16 bg-[#FF8C00] hover:bg-[#E67E00] text-white text-lg font-bold rounded-xl shadow-lg transition-all">
                         Book Now
                     </Button>

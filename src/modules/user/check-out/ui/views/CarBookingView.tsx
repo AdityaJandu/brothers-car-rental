@@ -22,7 +22,7 @@ export function CarBookingView({ carId }: CarBookingProps) {
     );
 
     return (
-        <div className="min-h-screen bg-white font-sans text-slate-900 pb-20">
+        <div className="min-h-screen bg-white font-display text-slate-900 pb-20">
 
             <main className=" mx-auto px-6 lg:px-12 pt-8">
 
@@ -34,10 +34,10 @@ export function CarBookingView({ carId }: CarBookingProps) {
                 </div> */}
 
                 {/* Main Content Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-13 gap-12 lg:gap-20">
+                <div className="grid grid-cols-1 lg:grid-cols-14 gap-12 lg:gap-20">
 
                     {/* Left Column: Form (Takes up 7 columns on large screens) */}
-                    <div className="lg:col-span-8 flex flex-col gap-12">
+                    <div className="lg:col-span-9 flex flex-col gap-12">
                         <CheckoutForm car={car} />
                     </div>
 

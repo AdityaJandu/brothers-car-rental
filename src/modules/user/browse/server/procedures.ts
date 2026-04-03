@@ -9,7 +9,7 @@ import { TRPCError } from "@trpc/server";
 
 
 
-export const carRouterUser = createTRPCRouter({
+export const carRouter = createTRPCRouter({
 
     getOne: protectedProcedure
         .input(z.object({
@@ -148,4 +148,5 @@ export const carRouterUser = createTRPCRouter({
                 totalPages,
             };
         }),
+
 });

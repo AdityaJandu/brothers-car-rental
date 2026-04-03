@@ -1,7 +1,6 @@
 
 import { auth } from "@/lib/auth";
-import { CarBookingView, CarBookingViewError, CarBookingViewLoading } from "@/modules/user/booking/ui/views/CarBookingView";
-import { CarIdViewLoading, CarIdViewError, CarIdView } from "@/modules/user/car-id-view/ui/views/CarIdView";
+import { CarBookingView, CarBookingViewError, CarBookingViewLoading } from "@/modules/user/check-out/ui/views/CarBookingView";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { headers } from "next/headers";

@@ -21,10 +21,19 @@ export const CarIdView = ({ carId }: CarIdViewProps) => {
     const images = car.imageUrls?.length ? car.imageUrls : [car.headerImage];
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <CarDetailSection car={car} />
-            <CarBookingSection car={car} images={images} />
-        </div>
+        <div className="min-h-screen bg-white text-slate-900 pb-20">
+            <main className=" mx-auto px-6 lg:px-12 pt-8">
+                <div className="grid grid-cols-1 lg:grid-cols-13 gap-12 lg:gap-20">
+                    <div className="lg:col-span-8 flex flex-col">
+                        <CarDetailSection car={car} />
+                    </div>
+                    <div className="lg:col-span-5">
+                        <CarBookingSection car={car} images={images} />
+                    </div>
+                </div>
+            </main>
+
+        </div >
     );
 };
 
