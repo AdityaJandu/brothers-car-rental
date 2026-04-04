@@ -123,25 +123,14 @@ export const verification = pgTable(
         id: text("id").primaryKey(),
         identifier: text("identifier").notNull(),
         value: text("value").notNull(),
-
-        // NEW: distinguish verification types
-        // e.g. email_verification | password_reset | otp
-        type: text("type").notNull(),
-
         expiresAt: timestamp("expires_at").notNull(),
         createdAt: timestamp("created_at").defaultNow().notNull(),
-
         updatedAt: timestamp("updated_at")
             .defaultNow()
             .$onUpdate(() => /* @__PURE__ */ new Date())
             .notNull(),
     },
-    (table) => [
-        index("verification_identifier_idx").on(table.identifier),
-
-        // NEW: faster token lookup
-        index("verification_value_idx").on(table.value),
-    ],
+    (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
 // Define relations between tables

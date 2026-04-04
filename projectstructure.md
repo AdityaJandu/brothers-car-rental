@@ -135,7 +135,7 @@ The pure marketing and branding UX architecture.
 <br/>
 
 ### 🔑 `auth`
-*   `ui/views/SignInView.tsx` & `SignUpView.tsx`: Styled NextJS Client Components natively interfacing with BetterAuth APIs.
+*   `ui/views/SignInView.tsx` & `SignUpView.tsx`: Styled NextJS Client Components natively interfacing with BetterAuth APIs including structured Error catching boundaries and seamless native Google OAuth social logins.
 *   `ui/layout/AuthHeader.tsx`: Wrapper injecting context UI logic appropriately.
 
 <br/>

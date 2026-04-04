@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import * as z from "zod";
 import { OctagonAlertIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -85,6 +86,32 @@ export function SignUpView() {
             setLoading(false);
         }
 
+    };
+
+    const onGoogleSignIn = async () => {
+        setError(null);
+        setLoading(true);
+
+        try {
+            await authClient.signIn.social(
+                {
+                    provider: "google",
+                    callbackURL: "/",
+                },
+                {
+                    onError: ({ error }) => {
+                        setError(error.message);
+                    },
+                }
+            );
+        } catch (err) {
+            // Catch any unhandled promise rejections
+            console.error(err);
+            setError("Something went wrong. Please try again.");
+        } finally {
+            // Always stop loading no matter what
+            setLoading(false);
+        }
     };
 
     return (
@@ -196,6 +223,24 @@ export function SignUpView() {
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                                 <span className="bg-card text-muted-foreground relative z-10 px-2">Or continue with</span>
                             </div>
+
+                            {/* Google Sign In */}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full h-12 flex items-center justify-center gap-3 bg-white hover:bg-slate-50 border-slate-200"
+                                onClick={onGoogleSignIn}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <Spinner />
+                                ) : (
+                                    <>
+                                        <Image src="/google-icon.svg" alt="Google" width={20} height={20} className="w-5 h-5" />
+                                        <span className="text-slate-700 font-semibold">Continue with Google</span>
+                                    </>
+                                )}
+                            </Button>
 
 
                             {/* Footer */}

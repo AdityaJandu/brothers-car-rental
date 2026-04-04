@@ -11,6 +11,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface HeaderClientProps {
     session: {
@@ -98,12 +99,10 @@ export function HeaderClient({ session }: HeaderClientProps) {
                             {/* Dynamic Avatar (Uses image from DB, or falls back to Initial) */}
                             {user?.image ? (
                                 <Link href={"/profile"}>
-                                    <Image
-                                        src={user.image}
-                                        alt={user.name || "Profile"}
-                                        className="h-9 w-9 rounded-full object-cover border border-slate-700"
-                                        referrerPolicy="no-referrer"
-                                    />
+                                    <Avatar className="size-9" >
+                                        <AvatarImage src={user.image} />
+                                        <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                                    </Avatar>
                                 </Link>
                             ) : (
                                 <Link href={"/profile"}>

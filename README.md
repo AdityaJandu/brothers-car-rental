@@ -10,7 +10,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 *   **Database**: PostgreSQL
 *   **ORM**: Drizzle ORM
 *   **API/RPC Architecture**: tRPC
-*   **Authentication**: Better Auth
+*   **Authentication**: Better Auth (Email/Password & Google OAuth)
 *   **Storage**: Supabase Storage
 *   **UI Components**: Custom tailored Shadcn UI
 *   **Styling**: Tailwind CSS
