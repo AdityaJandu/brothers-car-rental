@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Star, CheckCircle2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const EmailBadge = ({ verified }: { verified: boolean }) => {
     if (verified) {
@@ -21,14 +22,10 @@ export const ProfileHeader = ({ name, email, image, emailVerified }: ProfileHead
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <div className="relative">
                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                        <Image
-                            src={image}
-                            alt="Profile picture"
-                            className="w-full h-full object-cover"
-                            width={128}
-                            height={128}
-                            loading="eager"
-                        />
+                        <Avatar className="size-32" >
+                            <AvatarImage src={image} />
+                            <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
+                        </Avatar>
                     </div>
                     <div className="absolute bottom-1 right-1 bg-[#FF8C00] text-white p-1 rounded-full border-2 border-white">
                         <CheckCircle2 className="w-5 h-5" />
