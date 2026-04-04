@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Star, CheckCircle2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { GeneratedAvatar } from "@/components/self/generated-avatar";
 
 export const EmailBadge = ({ verified }: { verified: boolean }) => {
     if (verified) {
@@ -12,7 +13,7 @@ export const EmailBadge = ({ verified }: { verified: boolean }) => {
 interface ProfileHeaderProps {
     name: string;
     email: string;
-    image: string;
+    image: string | null;
     emailVerified: boolean;
 }
 
@@ -22,10 +23,14 @@ export const ProfileHeader = ({ name, email, image, emailVerified }: ProfileHead
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <div className="relative">
                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                        <Avatar className="size-32" >
-                            <AvatarImage src={image} />
-                            <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
-                        </Avatar>
+                        {image ?
+                            <Avatar className="size-32" >
+                                <AvatarImage src={image} />
+                                <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            :
+                            <GeneratedAvatar className="size-32" seed={name} variant={"initials"} />
+                        }
                     </div>
                     <div className="absolute bottom-1 right-1 bg-[#FF8C00] text-white p-1 rounded-full border-2 border-white">
                         <CheckCircle2 className="w-5 h-5" />

@@ -31,7 +31,7 @@ export const ProfileView = () => {
 
     const name = userData.name || "Jonathan Doe";
     const email = userData.email || "jonathan.doe@executive-suite.com";
-    const image = userData.image || "./empty.svg";
+    const image = userData.image;
 
     const logOut = async () => {
         setLoggingOut(true);
