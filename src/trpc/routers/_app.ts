@@ -3,6 +3,7 @@ import { createTRPCRouter } from '../init';
 import { carRouter } from '@/modules/user/browse/server/procedures';
 import { bookingRouter } from '@/modules/user/check-out/server/procedures';
 import { userBookingsRouter } from '@/modules/user/bookings/server/procedures';
+import { userProfile } from '@/modules/user/profile/server/procedures';
 
 import { adminDashboardRouter } from '@/modules/admin/dashboard/server/procedures';
 import { adminAddCarRouter } from '@/modules/admin/add-car/server/procedures';
@@ -12,7 +13,8 @@ export const appRouter = createTRPCRouter({
     userBrowse: carRouter,
     userCheckout: bookingRouter,
     userBookings: userBookingsRouter,
-    
+    userProfile: userProfile,
+
     adminDashboard: adminDashboardRouter,
     adminAddCar: adminAddCarRouter,
     adminBookings: adminBookingsRouter,
