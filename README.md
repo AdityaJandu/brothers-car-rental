@@ -56,7 +56,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to experie
 The codebase is built on a highly modular **Domain-Driven Architecture**:
 
 *   `/src/app/` - The Next.js routing structure dynamically wrapping `(auth)`, `(onboarding)`, `(user)`, and `(admin)` zones.
-*   `/src/modules/` - The beating heart of the system storing all explicitly modular UI/Server pairs (`user/profile`, `admin/dashboard`, `user/check-out`, `user/browse`, etc.)
+*   `/src/modules/` - The beating heart of the system storing all explicitly modular UI/Server pairs (`user/profile`, `admin/dashboard`, `user/check-out`, `user/browse`, etc.). Complex views are decomposed into focused sub-components within their module's `ui/components/` directory (e.g., `admin/add-car` splits into `AddCarHeader`, `GeneralInfoCard`, `SpecificationsCard`, `MediaGalleryCard`, and `StatusSidebarCard`).
 *   `/src/components/` - Shadcn UI layouts clamped universally safely beneath custom layout wrapping.
 *   `/src/db/` - Drizzle ORM database bindings mapping TypeScript logic strictly globally to postgres structures.
 

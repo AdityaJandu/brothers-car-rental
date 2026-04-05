@@ -60,7 +60,13 @@ The application is logically decoupled into independent, self-contained business
 Handles appending new car assets to the system.
 *   **`server/procedures.ts`**:
     *   `create` **(Mutation)**: Inserts a strictly validated payload mapped to the `carInsertSchema` into the Postgres database natively.
-*   `ui/views/AddCarView.tsx`: Client-side UI capturing the multipart-form details including vehicle metrics, features, and native image uploads via Supabase.
+*   `ui/views/AddCarView.tsx`: Composition root managing form state, image upload handlers, and tRPC mutation logic. Delegates all rendering to modular sub-components below.
+*   `ui/components/`: Modular presentation components decomposed from the monolithic view:
+    *   `AddCarHeader.tsx`: Page header with car icon badge, title/subtitle, and action buttons (Cancel / Add Vehicle) with enhanced hover states.
+    *   `GeneralInfoCard.tsx`: Card capturing vehicle identity fields (name, make, model, year, price, plate, category, tier) with colored section icons and uppercase tracking labels.
+    *   `SpecificationsCard.tsx`: Card for seats, transmission, and fuel type fields with amber-tinted section icon and consistent input styling.
+    *   `MediaGalleryCard.tsx`: Image upload drop-zone with animated icon, gallery grid with gradient hover overlays, main-image selection via ring-offset highlights, and empty-state placeholder.
+    *   `StatusSidebarCard.tsx`: Right sidebar containing Asset Status (with color-coded status dots) and Description textarea, each in their own styled card.
 
 <br/>
 

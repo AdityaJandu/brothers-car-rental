@@ -3,45 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import {
-    UploadCloud,
-    Image as ImageIcon,
-    Info,
-    Loader2,
-    X,
-    ChevronLeft,
-} from "lucide-react";
-import Image from "next/image";
 
-
-import {
-    Card,
-    CardContent,
-} from "@/components/ui/card";
-import {
-    Input,
-} from "@/components/ui/input";
-import {
-    Button,
-} from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Textarea,
-} from "@/components/ui/textarea";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 
 // Schema
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
@@ -50,13 +13,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { supabaseClient } from "@/lib/supabase-client";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { LoadingState } from "@/components/self/loading-state";
-import { cn } from "@/lib/utils";
+
+// Sub-components
+import { AddCarHeader } from "../components/AddCarHeader";
+import { GeneralInfoCard } from "../components/GeneralInfoCard";
+import { SpecificationsCard } from "../components/SpecificationsCard";
+import { MediaGalleryCard } from "../components/MediaGalleryCard";
+import { StatusSidebarCard } from "../components/StatusSidebarCard";
+import { useRouter } from "next/navigation";
 
 export default function AddCarView() {
     const router = useRouter();
-
     const trpc = useTRPC();
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -69,9 +37,9 @@ export default function AddCarView() {
             make: "",
             model: "",
             year: new Date().getFullYear(),
+            tier: "",
+            description: "",
             category: "",
-            tier: "Standard", // <-- NEW
-            description: "",  // <-- NEW
             pricePerDay: 0,
             transmission: "automatic",
             fuelType: "petrol",
@@ -93,6 +61,7 @@ export default function AddCarView() {
                 );
                 toast.success("Vehicle successfully added to the fleet!");
                 form.reset();
+                router.push("/dashboard");
             },
             onError: (error) => {
                 toast.error(`Failed to create car: ${error.message}`);
@@ -179,398 +148,34 @@ export default function AddCarView() {
     return (
         <div className="min-h-screen bg-muted/30 p-4 md:p-8">
 
-            {/* HEADER */}
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between mb-8 gap-4">
-                <div className="flex items-center gap-4">
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => router.push('/dashboard')}
-                        className="shrink-0"
-                    >
-                        <ChevronLeft className="h-4 w-4" />
-                    </Button>
-                    <div className="flex flex-col">
-                        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
-                            Add New Vehicle
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Introduce a new asset to your premium rental gallery.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="flex gap-3">
-                    <Button variant="outline" type="button" onClick={() => form.reset()}>
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        form="add-car-form"
-                        disabled={isCreatePending || isUploading}
-                    >
-                        {isCreatePending ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Adding...
-                            </>
-                        ) : (
-                            "Add Vehicle"
-                        )}
-                    </Button>
-                </div>
-            </div>
+            <AddCarHeader
+                form={form}
+                isCreatePending={isCreatePending}
+                isUploading={isUploading}
+            />
 
             <Form {...form}>
-                <form id="add-car-form" onSubmit={form.handleSubmit(onSubmit)} className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    {/* LEFT */}
+                <form
+                    id="add-car-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6"
+                >
+                    {/* Left Column */}
                     <div className="lg:col-span-2 space-y-6">
-
-                        {/* GENERAL INFO */}
-                        <Card className="rounded-md bg-white">
-                            <CardContent className="p-6 space-y-5">
-                                <div className="flex items-center gap-2 mb-5">
-                                    <Info size={18} />
-                                    <h2 className="font-semibold">General Information</h2>
-                                </div>
-
-                                {/* NAME */}
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Car Display Name</FormLabel>
-                                            <FormControl>
-                                                <Input className="bg-[#ebe9ff]" placeholder="2024 Mercedes-Benz S-Class" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                {/* GRID */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="make"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Make</FormLabel>
-                                                <FormControl>
-                                                    <Input className="bg-[#ebe9ff]" placeholder="Mercedes" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="model"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Model</FormLabel>
-                                                <FormControl>
-                                                    <Input className="bg-[#ebe9ff]" placeholder="S580" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="year"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Year</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="bg-[#ebe9ff]"
-                                                        type="number"
-                                                        {...field}
-                                                        onChange={(e) => field.onChange(Number(e.target.value))}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="pricePerDay"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Daily Price (in cents/base unit)</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="bg-[#ebe9ff]"
-                                                        type="number"
-                                                        {...field}
-                                                        onChange={(e) => field.onChange(Number(e.target.value))}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="plateNumber"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Plate Number</FormLabel>
-                                                <FormControl>
-                                                    <Input className="bg-[#ebe9ff]" placeholder="ABC-1234" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="category"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Category</FormLabel>
-                                                <FormControl>
-                                                    <Input className="bg-[#ebe9ff]" placeholder="Luxury Sedan" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    {/* NEW: Tier */}
-                                    <FormField
-                                        control={form.control}
-                                        name="tier"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Tier Badge</FormLabel>
-                                                <FormControl>
-                                                    <Input className="bg-[#ebe9ff]" placeholder="Premium Tier, Elite Tier..." {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* SPECIFICATIONS */}
-                        <Card className="rounded-md bg-white">
-                            <CardContent className="p-6">
-                                <h2 className="font-semibold mb-5">Specifications</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="seats"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Seats</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="bg-[#ebe9ff]"
-                                                        type="number"
-                                                        {...field}
-                                                        onChange={(e) => field.onChange(Number(e.target.value))}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="transmission"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Transmission</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger className="bg-[#ebe9ff] border-none">
-                                                            <SelectValue placeholder="Select..." />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="automatic">Automatic</SelectItem>
-                                                        <SelectItem value="manual">Manual</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="fuelType"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Fuel Type</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger className="bg-[#ebe9ff] border-none">
-                                                            <SelectValue placeholder="Select..." />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="petrol">Petrol</SelectItem>
-                                                        <SelectItem value="ev">EV</SelectItem>
-                                                        <SelectItem value="hybrid">Hybrid</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* MEDIA */}
-                        <Card className="rounded-md bg-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center gap-2 mb-5">
-                                    <ImageIcon size={18} />
-                                    <h2 className="font-semibold">Media Gallery</h2>
-                                </div>
-
-                                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border/50 rounded-md cursor-pointer bg-[#ebe9ff] hover:bg-muted/30 transition-colors mb-6 group">
-                                    {isUploading ? (
-                                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                                    ) : (
-                                        <>
-                                            <UploadCloud className="w-8 h-8 text-muted-foreground mb-2 group-hover:text-primary transition-colors" />
-                                            <span className="text-sm font-medium">Click to upload high-res photos</span>
-                                            <span className="text-xs text-muted-foreground mt-1">PNG, JPG or WebP up to 10MB each</span>
-                                        </>
-                                    )}
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleImageSelect}
-                                        disabled={isUploading}
-                                        className="hidden"
-                                    />
-                                </label>
-
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-sm font-medium text-muted-foreground">Uploaded Photos</p>
-                                        {currentImageUrls.length > 0 && (
-                                            <span className="text-xs text-muted-foreground">{currentImageUrls.length} images</span>
-                                        )}
-                                    </div>
-
-                                    {currentImageUrls.length === 0 ? (
-                                        <div className="flex flex-col items-center justify-center border border-dashed rounded-md p-8 text-center bg-muted/30">
-                                            <p className="text-sm font-medium">No images uploaded</p>
-                                            <p className="text-xs text-muted-foreground mt-1">Upload vehicle photos to showcase your listing</p>
-                                        </div>
-                                    ) : (
-                                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                                            {currentImageUrls.map((url, index) => (
-                                                <div
-                                                    key={url}
-                                                    className={cn(
-                                                        "relative aspect-square rounded-md overflow-hidden border group shadow-sm transition-all",
-                                                        currentHeaderImage === url ? "border-primary ring-2 ring-primary/20" : "border-transparent hover:border-border"
-                                                    )}
-                                                >
-                                                    <Image src={url} alt={`Vehicle photo ${index + 1}`} fill className="object-cover" sizes="120px" />
-                                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-2">
-                                                        {currentHeaderImage !== url && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={(e) => { e.preventDefault(); handleSetMainImage(url); }}
-                                                                className="text-[10px] bg-white text-black px-2 py-1 rounded font-semibold hover:bg-gray-200"
-                                                            >
-                                                                Set Main
-                                                            </button>
-                                                        )}
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e) => { e.preventDefault(); handleRemoveImage(url); }}
-                                                            className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                                                        >
-                                                            <X size={14} />
-                                                        </button>
-                                                    </div>
-                                                    {currentHeaderImage === url && (
-                                                        <div className="absolute bottom-1 left-1 bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow">
-                                                            Main
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <GeneralInfoCard form={form} />
+                        <SpecificationsCard form={form} />
+                        <MediaGalleryCard
+                            isUploading={isUploading}
+                            currentImageUrls={currentImageUrls}
+                            currentHeaderImage={currentHeaderImage}
+                            onImageSelect={handleImageSelect}
+                            onRemoveImage={handleRemoveImage}
+                            onSetMainImage={handleSetMainImage}
+                        />
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="space-y-6">
-
-                        {/* STATUS */}
-                        <Card className="rounded-md bg-white">
-                            <CardContent className="p-6">
-                                <h2 className="font-semibold mb-6">Asset Status</h2>
-                                <FormField
-                                    control={form.control}
-                                    name="status"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select status" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="available">Available</SelectItem>
-                                                    <SelectItem value="rented">Rented</SelectItem>
-                                                    <SelectItem value="maintenance">Maintenance</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="bg-muted p-4 rounded-md text-sm mt-4">
-                                    Available cars are shown on homepage automatically.
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* NEW: DESCRIPTION */}
-                        <Card className="rounded-md bg-white">
-                            <CardContent className="p-6">
-                                <h2 className="font-semibold mb-4">Description</h2>
-                                <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Textarea
-                                                    className="bg-[#ebe9ff] min-h-60 md:min-h-80 resize-none text-sm leading-relaxed p-4 focus:ring-2 focus:ring-[#0F172A]/10 rounded-md"
-                                                    placeholder="Experience the pinnacle of German engineering..."
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </CardContent>
-                        </Card>
-
-                    </div>
-
+                    {/* Right Column */}
+                    <StatusSidebarCard form={form} />
                 </form>
             </Form>
 
