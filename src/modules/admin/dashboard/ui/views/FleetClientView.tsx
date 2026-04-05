@@ -38,7 +38,7 @@ export function FleetClientView() {
             <DataTable
                 columns={carColumns}
                 data={data.items}
-                onRowClick={(row) => { }}
+                onRowClick={() => { }}
             />
             <DataPagination
                 page={filters.page}

@@ -35,8 +35,6 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
     // Initialize local state for the select dropdown
     const [status, setStatus] = useState(data?.status.toLowerCase() || 'pending');
 
-    if (!data) return null;
-
     const updateStatus = useMutation(
         trpc.adminBookings.updateOneAdmin.mutationOptions({
             onSuccess: () => {
@@ -63,6 +61,8 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
     };
 
     const hasChanged = status !== data.status.toLowerCase();
+
+    if (!data) return null;
 
     return (
         <div className="min-h-screen bg-muted p-4 md:p-8 w-full">

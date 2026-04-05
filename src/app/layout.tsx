@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next";

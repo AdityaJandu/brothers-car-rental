@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, Car, LayoutDashboard, Users, CalendarDays, Settings } from "lucide-react";
+import Image from "next/image";
 
 interface HeaderAdminProps {
     session: {
@@ -89,11 +90,13 @@ export function HeaderAdmin({ session }: HeaderAdminProps) {
 
                     {/* Dynamic Avatar (Uses image from DB, or falls back to Initial) */}
                     {user?.image ? (
-                        <img
+                        <Image
                             src={user.image}
                             alt={user.name || "Profile"}
                             className="h-9 w-9 rounded-full object-cover border border-slate-700"
                             referrerPolicy="no-referrer"
+                            width={36}
+                            height={36}
                         />
                     ) : (
                         <div className="h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border border-indigo-400">

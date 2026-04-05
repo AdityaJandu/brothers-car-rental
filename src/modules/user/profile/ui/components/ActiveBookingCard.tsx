@@ -1,5 +1,6 @@
 import { Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export const ActiveBookingCard = () => {
     return (
@@ -8,10 +9,11 @@ export const ActiveBookingCard = () => {
                 <span className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest text-[#0F172A] shadow-sm">
                     Current Rental
                 </span>
-                <img
+                <Image
                     src="https://images.unsplash.com/photo-1620882814836-98a44910248a?q=80&w=1000&auto=format&fit=crop"
                     alt="Mercedes EQS"
                     className="w-full h-full object-cover"
+                    fill
                 />
             </div>
             <div className="w-full sm:w-1/2 flex flex-col py-4 pr-4">

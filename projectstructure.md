@@ -107,9 +107,11 @@ Publicly facing gallery modules for vehicle discovery.
 Transactional engine powering the reservation logic.
 *   **`server/procedures.ts`**:
     *   `create` **(Mutation)**: Heavily validated ingest taking secure frontend parameters formatting and committing them transactionally to the tracking system. Protected by two rate-limiting layers: the general `rateLimitedProtectedProcedure` (30 req/min) and a stricter inline `bookingRateLimit` (5 bookings/min).
-*   `schemas.ts`: Strict Zod validation (e.g., date-barrier logic enforcing rules like `startDate > date.now()`).
-*   `ui/views/CarBookingView.tsx`: Page wrapping logic managing stepper rendering.
-*   `ui/components/BookingStepper.tsx`, `CheckoutForm.tsx`, `SummaryCard.tsx`: Client-side data intake fields linked automatically dynamically resolving prices synchronously.
+*   `schemas.ts`: Dual-schema architecture for **Zod 4 + react-hook-form compatibility**:
+    *   `bookingInsertSchema` — **Server-side** (used by tRPC procedures). Uses `z.coerce.date()` to handle JSON string → Date coercion from the network, and a top-level `.refine()` for cross-field validation (`endDate > startDate`).
+    *   `bookingFormSchema` — **Client-side** (used by react-hook-form + `zodResolver`). Uses `z.date()` instead of `z.coerce.date()` (since `z.coerce` infers its input as `unknown` in Zod 4, breaking type inference), and omits top-level `.refine()` (which wraps `ZodObject` into `ZodEffects`, also breaking react-hook-form types). Field-level `.refine()` is still used.
+*   `ui/views/CarBookingView.tsx`: Page wrapping logic managing form state via `useForm<z.infer<typeof bookingFormSchema>>` with properly typed `zodResolver(bookingFormSchema)`.
+*   `ui/components/CheckoutForm.tsx`, `SummaryCard.tsx`: Client-side data intake fields linked automatically dynamically resolving prices synchronously.
 
 <br/>
 

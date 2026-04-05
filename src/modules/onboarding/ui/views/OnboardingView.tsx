@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import { StepComponent } from "../components/StepComponent";
 import { steps } from "../../data/onboarding_step";

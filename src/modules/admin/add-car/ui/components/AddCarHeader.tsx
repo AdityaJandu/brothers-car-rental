@@ -1,8 +1,7 @@
 "use client";
 
-import { ChevronLeft, Loader2, Car } from "lucide-react";
+import { Loader2, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
@@ -14,7 +13,6 @@ interface AddCarHeaderProps {
 }
 
 export function AddCarHeader({ form, isCreatePending, isUploading }: AddCarHeaderProps) {
-    const router = useRouter();
 
     return (
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between mb-8 gap-4">

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Star, CheckCircle2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GeneratedAvatar } from "@/components/self/generated-avatar";

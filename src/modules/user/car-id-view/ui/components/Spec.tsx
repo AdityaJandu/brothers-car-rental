@@ -1,6 +1,7 @@
+import { LucideIcon } from "lucide-react";
 
 interface SpecProps {
-    icon: any;
+    icon: LucideIcon;
     label: string;
     value: string;
 };

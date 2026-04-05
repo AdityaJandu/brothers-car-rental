@@ -36,7 +36,7 @@ export const PersonalInfoCard = ({ name, phone }: PersonalInfoCardProps) => {
                 </div>
                 <div className="border-b border-slate-100 pb-4 flex items-center justify-between cursor-pointer group">
                     <div>
-                        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Driver's License</p>
+                        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Driver&apos;s License</p>
                         <p className="text-base font-semibold text-[#0F172A]">•••• •••• 9821 (Exp: 2027)</p>
                     </div>
                     <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-500 transition-colors" />

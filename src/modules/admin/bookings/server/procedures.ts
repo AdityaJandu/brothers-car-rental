@@ -12,7 +12,7 @@ export const adminBookingsRouter = createTRPCRouter({
             page: z.number().default(DEFAULT_PAGE),
             pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
         }))
-        .query(async ({ input, ctx }) => {
+        .query(async ({ input }) => {
             const { page, pageSize } = input;
 
             const allBookings = await db

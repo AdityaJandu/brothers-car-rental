@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { bookingInsertSchema } from "../../schemas";
+import { bookingFormSchema } from "../../schemas";
 import { Form } from "@/components/ui/form";
 
 interface CarBookingProps {
@@ -44,9 +44,11 @@ export function CarBookingView({ carId }: CarBookingProps) {
     );
 
     // Lift form state up to the parent
-    const form = useForm<z.infer<typeof bookingInsertSchema>>({
-        resolver: zodResolver(bookingInsertSchema) as any,
+    const form = useForm<z.infer<typeof bookingFormSchema>>({
+        resolver: zodResolver(bookingFormSchema),
         defaultValues: {
+            userId: undefined,
+            id: undefined,
             carId: car.id,
             fullName: "",
             email: "",
@@ -54,9 +56,8 @@ export function CarBookingView({ carId }: CarBookingProps) {
             licenseNumber: "",
             paymentMethod: "cash",
             status: "pending",
-
             startDate: new Date(),
-            endDate: new Date(new Date().getTime() + 86400000), // +1 day default
+            endDate: new Date(new Date().getTime() + 86400000),
             dailyRate: car.pricePerDay,
             days: 1,
             protectionFee: 12000,
@@ -65,7 +66,7 @@ export function CarBookingView({ carId }: CarBookingProps) {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof bookingInsertSchema>) => {
+    const onSubmit = (values: z.infer<typeof bookingFormSchema>) => {
         console.log("Form submitted:", values);
         createBooking.mutate(values);
     };

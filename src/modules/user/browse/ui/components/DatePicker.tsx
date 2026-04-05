@@ -13,7 +13,7 @@ interface DatePickerProps {
     date: DateRange | undefined;
     setDate: (date: DateRange | undefined) => void;
     children: React.ReactNode; // Accept any custom UI to act as the trigger
-    disabled?: any;
+    disabled?: boolean | { before: Date };
 }
 
 export function DatePicker({ date, setDate, children, disabled }: DatePickerProps) {

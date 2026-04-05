@@ -10,7 +10,7 @@ export const RewardsStatusCard = () => {
             <div className="relative z-10">
                 <h3 className="text-white text-xl font-bold tracking-wide">Rewards Status</h3>
                 <p className="text-slate-400 text-sm mt-3 leading-relaxed max-w-[90%]">
-                    You're 2,150 points away from your next free weekend rental.
+                    You&apos;re 2,150 points away from your next free weekend rental.
                 </p>
             </div>
             <div className="relative z-10 mt-10">
