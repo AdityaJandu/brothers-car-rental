@@ -1,6 +1,5 @@
 
 import { createTRPCRouter, rateLimitedProtectedProcedure } from "@/trpc/init";
-import { carInsertSchema } from "../schemas";
 import { car } from "@/db/schema";
 import { db } from "@/db";
 

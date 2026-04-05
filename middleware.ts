@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authRateLimit } from "@/lib/ratelimit";
 
-export async function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest): Promise<NextResponse> {
     // Rate limit auth endpoints only
     if (req.nextUrl.pathname.startsWith("/api/auth")) {
         // Prefer real IP from proxy header (Vercel, Cloudflare, etc.)
@@ -35,6 +35,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
 }
 
+// This tells Next.js to run the middleware for all requests that match the pattern.
+// Important line:
 export const config = {
     matcher: ["/api/auth/:path*"],
 };
