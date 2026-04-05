@@ -1,11 +1,11 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, rateLimitedProtectedProcedure } from "@/trpc/init";
 import { carInsertSchema } from "../../dashboard/schemas";
 import { car } from "@/db/schema";
 import { db } from "@/db";
 import { TRPCError } from "@trpc/server";
 
 export const adminAddCarRouter = createTRPCRouter({
-    create: protectedProcedure
+    create: rateLimitedProtectedProcedure
         .input(
             carInsertSchema
         )

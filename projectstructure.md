@@ -100,7 +100,7 @@ Publicly facing gallery modules for vehicle discovery.
 ### 💳 `user/check-out`
 Transactional engine powering the reservation logic.
 *   **`server/procedures.ts`**:
-    *   `create` **(Mutation)**: Heavily validated ingest taking secure frontend parameters formatting and committing them transactionally to the tracking system natively.
+    *   `create` **(Mutation)**: Heavily validated ingest taking secure frontend parameters formatting and committing them transactionally to the tracking system. Protected by two rate-limiting layers: the general `rateLimitedProtectedProcedure` (30 req/min) and a stricter inline `bookingRateLimit` (5 bookings/min).
 *   `schemas.ts`: Strict Zod validation (e.g., date-barrier logic enforcing rules like `startDate > date.now()`).
 *   `ui/views/CarBookingView.tsx`: Page wrapping logic managing stepper rendering.
 *   `ui/components/BookingStepper.tsx`, `CheckoutForm.tsx`, `SummaryCard.tsx`: Client-side data intake fields linked automatically dynamically resolving prices synchronously.
@@ -155,7 +155,10 @@ Drizzle ORM central mapping architecture.
 
 ## 📁 `src/trpc/` (Backend RPC Architecture)
 Server-Client bridge guaranteeing purely typed data-fetching.
-*   `init.ts`: The baseline core tRPC initialization creating `createTRPCRouter` alongside auth-middleware mapping (`protectedProcedure` validating session cookies).
+*   `init.ts`: The baseline core tRPC initialization creating `createTRPCRouter` alongside layered auth/rate-limit middleware:
+    *   `baseProcedure`: Raw tRPC procedure with no middleware.
+    *   `protectedProcedure`: Validates session via Better Auth (auth-only, no rate limit).
+    *   `rateLimitedProtectedProcedure`: Extends `protectedProcedure` with a general per-user rate limit (30 req/min via Upstash Redis). **Used by all application procedures.**
 *   `routers/_app.ts`: The central router multiplexer tying `adminAddCarRouter`, `carRouter`, `bookingRouter`, `userProfile`, etc. natively back into one overarching namespace root.
 *   `client.tsx`: React-Query provider wrapper enabling `trpc.module.endpoint.useQuery` natively on frontend UI code.
 *   `server.tsx`: Server-side context hydration pipeline for RSC payload handling.
@@ -180,5 +183,10 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 ## 📁 `src/lib/` (Utilities & Configs)
 *   `auth.ts`: Better-Auth server-side configuration mapping DB constraints dynamically to logical providers.
 *   `auth-client.ts`: Equivalent client SDK for managing triggers.
+*   `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure.
+*   `ratelimit.ts`: Upstash rate limiter definitions with three tiers:
+    *   `authRateLimit` — IP-based, 10 req/60s (used in edge middleware for auth endpoints).
+    *   `generalRateLimit` — User-based, 30 req/60s (used in `rateLimitedProtectedProcedure` for all tRPC procedures).
+    *   `bookingRateLimit` — User-based, 5 req/60s (stricter inline limit for booking mutations).
 *   `supabase-client.ts`: CDN bucket connector providing external file payload resolution securely.
 *   `utils.ts`: Tailwind utility merge logic (`cn()`).

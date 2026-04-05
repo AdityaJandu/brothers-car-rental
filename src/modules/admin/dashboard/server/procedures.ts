@@ -1,5 +1,5 @@
 
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, rateLimitedProtectedProcedure } from "@/trpc/init";
 import { carInsertSchema } from "../schemas";
 import { car } from "@/db/schema";
 import { db } from "@/db";
@@ -11,7 +11,7 @@ import { TRPCError } from "@trpc/server";
 import z from "zod";
 
 export const adminDashboardRouter = createTRPCRouter({
-    getAllAdmin: protectedProcedure
+    getAllAdmin: rateLimitedProtectedProcedure
         .input(z.object({
             page: z.number().default(DEFAULT_PAGE),
             pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),

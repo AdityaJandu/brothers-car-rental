@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { headers } from 'next/headers';
+import { generalRateLimit } from '@/lib/ratelimit';
 
 /**
  * This context creator accepts `headers` so it can be reused in both
@@ -44,3 +45,24 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 
     return next({ ctx: { ...ctx, auth: session } });
 });
+
+/**
+ * Rate-limited protected procedure.
+ * Applies the general rate limiter (30 req/min) keyed on userId + path.
+ * Use this instead of protectedProcedure wherever you want per-user limits.
+ */
+export const rateLimitedProtectedProcedure = protectedProcedure.use(
+    async ({ ctx, path, next }) => {
+        const identifier = `${ctx.auth.user.id}:${path}`;
+        const { success } = await generalRateLimit.limit(identifier);
+
+        if (!success) {
+            throw new TRPCError({
+                code: "TOO_MANY_REQUESTS",
+                message: "Too many requests. Please slow down and try again shortly.",
+            });
+        }
+
+        return next({ ctx });
+    }
+);
