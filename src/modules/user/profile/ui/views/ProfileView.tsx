@@ -29,8 +29,8 @@ export const ProfileView = () => {
     );
 
 
-    const name = userData.name || "Jonathan Doe";
-    const email = userData.email || "jonathan.doe@executive-suite.com";
+    const name = userData.name;
+    const email = userData.email;
     const image = userData.image;
 
     const logOut = async () => {
