@@ -49,7 +49,7 @@ export const BookingIdView = ({ bookingId }: BookingIdViewProps) => {
                     endDate={data.endDate}
                 />
 
-                <BookingActions bookingData={data} bookingId={data.id} />
+                <BookingActions bookingData={data} />
             </div>
         </div>
     )
