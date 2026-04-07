@@ -60,8 +60,8 @@ export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCar
                 </div>
 
                 {/* Pin Icon and gradients */}
-                <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
-                <div className="absolute border-2 border-white/20 w-32 h-32 rounded-full inset-0 m-auto mt-16 blur-[8px]"></div>
+                <div className="absolute inset-x-0 bottom-0 h-[80%] bg-linear-to-t from-black/50 via-black/10 to-transparent"></div>
+                <div className="absolute border-2 border-white/20 w-32 h-32 rounded-full inset-0 m-auto mt-16 blur-sm"></div>
                 <MapPin className="w-24 h-24 text-[#353C47] fill-[#232830] absolute" />
 
                 {/* Overlay Button */}
