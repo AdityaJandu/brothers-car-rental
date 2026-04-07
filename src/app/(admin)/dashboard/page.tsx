@@ -39,10 +39,10 @@ const Page = async ({ searchParams }: Props) => {
     return (
         <>
             <FleetListHeader />
-            <VehicleInventoryHeader />
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <Suspense fallback={<FleetViewLoading />}>
                     <ErrorBoundary fallback={<FleetViewError />}>
+                        <VehicleInventoryHeader />
                         <FleetClientView />
                     </ErrorBoundary>
                 </Suspense>

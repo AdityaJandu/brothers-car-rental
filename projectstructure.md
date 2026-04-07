@@ -30,7 +30,8 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
 *   `browse/page.tsx`: The main Fleet Gallery allowing users to filter and view available cars.
 *   `browse/[carId]/page.tsx`: Detailed specification page for a single vehicle.
 *   `check-out/[carId]/page.tsx`: The multi-step booking checkout form.
-*   `bookings/page.tsx`: Display of the authenticated user\'s internal booking history.
+*   `bookings/page.tsx`: Display of the authenticated user's internal booking history.
+*   `bookings/[bookingId]/page.tsx`: Detailed breakdown and summary for a specific user booking.
 
 <br/>
 
@@ -119,7 +120,16 @@ Transactional engine powering the reservation logic.
 Customer dashboard tracking standard historical reservations.
 *   **`server/procedures.ts`**:
     *   `getAllUser` **(Query)**: Fetches and structures booking receipts locally bound specifically to the contextual `userId` authenticated session token.
+    *   `getOne` **(Query)**: Fetches detailed information for a specific booking by ID.
 *   `ui/views/AllBookingView.tsx` & `ui/components/booking-columns.tsx`: Frontend mapped React Tables rendering state outputs transparently.
+*   `ui/views/BookingIdView.tsx`: Displays a comprehensive breakdown of a single booking.
+*   `ui/components/`: Modular child components for the booking details page:
+    *   `BookingHeader.tsx`: Shows booking ID and status badge.
+    *   `BookedCarCard.tsx`: Displays the reserved vehicle's image and basic info.
+    *   `CustomerInfoCard.tsx`: Outlines the reserving user's credentials.
+    *   `PaymentSummaryCard.tsx`: Provides financial breakdown (fare, tax, total).
+    *   `ScheduleLocationCard.tsx`: Details pickup/drop-off dates and locations.
+    *   `BookingActions.tsx`: Provides action buttons for the booking (e.g., cancel, contact support).
 
 <br/>
 

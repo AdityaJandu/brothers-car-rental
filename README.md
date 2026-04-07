@@ -21,6 +21,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 
 *   **Public Fleet Discovery**: Beautifully mapped grid designs, dynamic filtering, and rich specification pages.
 *   **Secure Booking Engine**: A seamless transactional checkout flow with a dual-schema architecture — `bookingInsertSchema` (server, `z.coerce.date` + `.refine()`) and `bookingFormSchema` (client, `z.date()`) — ensuring full Zod 4 + react-hook-form type safety without `as any` casts.
+*   **Customer Booking Dashboard**: Comprehensive tracking of historical and active reservations, featuring polished breakdown views for individual bookings with interactive action controls.
 *   **Administrative Management**: High-level dashboards isolating active rentals, confirming requests, and parsing incoming fleet additions directly into the database.
 *   **Cloud Image Uploading**: Seamless fleet-asset capturing securely handled client-side and dispatched directly to Supabase data buckets.
 *   **Multi-Layered Rate Limiting**: IP-based auth rate limiting at the edge middleware, per-user general tRPC rate limiting (30 req/min) via `rateLimitedProtectedProcedure`, and stricter domain-specific limits (e.g., 5 bookings/min) for critical mutations.

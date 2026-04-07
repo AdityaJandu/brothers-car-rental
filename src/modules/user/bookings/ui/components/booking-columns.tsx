@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreVertical, Eye, CheckCircle, XCircle } from "lucide-react"
+import { MoreVertical, Eye, XCircle } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
@@ -87,7 +87,6 @@ export const bookingColumns: ColumnDef<BookingRow>[] = [
         id: "actions",
         header: () => <div className="text-right">Actions</div>,
         cell: ({ row }) => {
-            const booking = row.original;
 
             return (
                 <div className="flex justify-end">
@@ -100,15 +99,11 @@ export const bookingColumns: ColumnDef<BookingRow>[] = [
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="rounded-md shadow-sm border-slate-100 p-1">
 
-                            <DropdownMenuItem className="cursor-pointer font-medium text-slate-600 rounded-md" onClick={() => console.log("View Booking", booking.id)}>
+                            <DropdownMenuItem className="cursor-pointer font-medium text-slate-600 rounded-md" onClick={() => console.log("View Booking")}>
                                 <Eye className="mr-2 h-4 w-4" /> View Details
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className="cursor-pointer font-medium text-[#4b5de4] focus:text-[#4b5de4] focus:bg-[#e4e7fa] rounded-md mt-1" onClick={() => console.log("Confirm Booking", booking.id)}>
-                                <CheckCircle className="mr-2 h-4 w-4" /> Mark Confirmed
-                            </DropdownMenuItem>
-
-                            <DropdownMenuItem className="cursor-pointer font-medium text-[#d94444] focus:text-[#d94444] focus:bg-[#fae5e5] rounded-md mt-1" onClick={() => console.log("Cancel Booking", booking.id)}>
+                            <DropdownMenuItem className="cursor-pointer font-medium text-[#d94444] focus:text-[#d94444] focus:bg-[#fae5e5] rounded-md mt-1" onClick={() => console.log("Cancel Booking")}>
                                 <XCircle className="mr-2 h-4 w-4" /> Cancel Booking
                             </DropdownMenuItem>
 

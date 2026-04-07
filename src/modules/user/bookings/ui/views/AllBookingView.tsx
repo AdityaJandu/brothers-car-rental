@@ -8,8 +8,11 @@ import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { bookingColumns } from "../components/booking-columns";
 import { useBookingFiltersUser } from "@/modules/user/check-out/hooks/use-booking-filters-user";
+import { useRouter } from "next/navigation";
 
 export function AllBookingView() {
+
+    const router = useRouter();
 
     const [filters, setFilters] = useBookingFiltersUser();
 
@@ -36,7 +39,7 @@ export function AllBookingView() {
                 <DataTable
                     columns={bookingColumns}
                     data={data.items}
-                    onRowClick={(row) => { }}
+                    onRowClick={(row) => { router.push(`/bookings/${row.id}`) }}
                 />
             </div>
             <div className="flex-1 pb-4 px-4 md:px-8 hidden md:flex md:flex-col gap-y-4">

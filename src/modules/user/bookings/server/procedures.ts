@@ -50,4 +50,27 @@ export const userBookingsRouter = createTRPCRouter({
                 totalPages,
             };
         }),
+
+
+    getOne: rateLimitedProtectedProcedure
+        .input(z.object({
+            bookingId: z.string(),
+        })).query(async ({ input }) => {
+            const { bookingId } = input;
+
+            const [data] = await db
+                .select({
+                    ...getTableColumns(booking)
+                })
+                .from(booking).where(eq(booking.id, bookingId));
+
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Booking not found",
+                });
+            }
+
+            return data;
+        })
 });
