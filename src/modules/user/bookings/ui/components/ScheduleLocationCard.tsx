@@ -62,7 +62,7 @@ export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCar
                     }}>
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-tr from-slate-200/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-tr from-slate-200/50 to-transparent"></div>
 
                 {/* Pin Icon in center */}
                 <MapPin className="w-16 h-16 text-slate-300 absolute drop-shadow-md" />

@@ -12,7 +12,7 @@ interface BookedCarCardProps {
 
 export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
     const trpc = useTRPC();
-    
+
     const { data: car, isLoading, error } = useQuery(
         trpc.userBrowse.getOne.queryOptions({
             id: carId
@@ -35,12 +35,12 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
 
     if (error || !car) {
         return (
-             <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-center h-[300px]">
-                 <div className="flex flex-col items-center text-slate-400">
-                     <Car className="w-10 h-10 mb-2" />
-                     <p className="font-medium">Car details unavailable</p>
-                 </div>
-             </div>
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-center h-[300px]">
+                <div className="flex flex-col items-center text-slate-400">
+                    <Car className="w-10 h-10 mb-2" />
+                    <p className="font-medium">Car details unavailable</p>
+                </div>
+            </div>
         );
     }
 
@@ -48,15 +48,15 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
         <div className="bg-white rounded-[32px] p-2 pb-5 shadow-sm border border-slate-100/60">
             {/* Hero Image Section */}
             <div className="relative w-full h-[280px] sm:h-[350px] rounded-[28px] overflow-hidden">
-                <Image 
-                    src={car.headerImage} 
+                <Image
+                    src={car.headerImage}
                     alt={`${car.make} ${car.model}`}
                     fill
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F3B]/90 via-[#0B0F3B]/30 to-transparent" />
-                
+                <div className="absolute inset-0 bg-linear-to-t from-[#0B0F3B]/90 via-[#0B0F3B]/30 to-transparent" />
+
                 <div className="absolute bottom-6 left-8 right-8">
                     <h2 className="text-white text-3xl sm:text-[40px] font-bold tracking-tight mb-1 leading-none shadow-sm">
                         {car.make} {car.model}
@@ -69,7 +69,7 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3 px-3">
-                
+
                 <div className="bg-[#F8F9FA] rounded-2xl p-4 flex flex-col justify-center">
                     <Zap className="w-5 h-5 text-[#FF8C00] mb-2" />
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Transmission</span>
