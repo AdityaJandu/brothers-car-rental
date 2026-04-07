@@ -9,11 +9,10 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { BookingPDFDocument, BookingPdfDataInterface } from "../../utils/BookingPdf";
 
 interface BookingActionsProps {
-    bookingId: string;
     bookingData: GetOneBooking;
 }
 
-export const BookingActions = ({ bookingId, bookingData }: BookingActionsProps) => {
+export const BookingActions = ({ bookingData }: BookingActionsProps) => {
     const trpc = useTRPC();
 
     const { data: userdata, isLoading: isUserLoading } = useQuery(trpc.userProfile.getUser.queryOptions());
