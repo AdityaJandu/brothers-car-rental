@@ -4,9 +4,6 @@ import { ErrorState } from "@/components/self/error-state"
 import { LoadingState } from "@/components/self/loading-state"
 import { useTRPC } from "@/trpc/client"
 import { useSuspenseQuery } from "@tanstack/react-query";
-
-import { ChevronLeft } from "lucide-react"
-import Link from "next/link"
 import { BookingHeader } from "../components/BookingHeader"
 import { PaymentSummaryCard } from "../components/PaymentSummaryCard"
 import { BookedCarCard } from "../components/BookedCarCard"
@@ -26,44 +23,33 @@ export const BookingIdView = ({ bookingId }: BookingIdViewProps) => {
     );
 
     return (
-        <div className="min-h-screen bg-[#F8F9FA] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-sans">
-            <div className="max-w-4xl mx-auto">
-                <div className="mb-8">
-                    <Link href="/bookings" className="inline-flex items-center text-sm font-bold text-slate-500 hover:text-[#0F172A] transition-colors">
-                        <ChevronLeft className="w-4 h-4 mr-1" />
-                        Back to Bookings
-                    </Link>
-                </div>
+        <div className="min-h-screen bg-[#F4F5F7] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="px-10 mx-auto space-y-6" id="booking-invoice-content">
 
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6 sm:p-8 mb-8">
-                    <BookingHeader
-                        id={data.id}
+                <BookingHeader
+                    id={data.id}
+                    status={data.status}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-6 items-stretch">
+                    <BookedCarCard carId={data.carId} />
+
+                    <PaymentSummaryCard
+                        dailyRate={data.dailyRate}
+                        days={data.days}
+                        protectionFee={data.protectionFee}
+                        surchargeFee={data.surchargeFee}
+                        totalPrice={data.totalPrice}
                         status={data.status}
                     />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 items-start">
-                    <div className="space-y-6">
-                        <BookedCarCard carId={data.carId} />
-                        <ScheduleLocationCard
-                            startDate={data.startDate}
-                            endDate={data.endDate}
-                        />
-                    </div>
+                <ScheduleLocationCard
+                    startDate={data.startDate}
+                    endDate={data.endDate}
+                />
 
-                    <div className="sticky top-8">
-                        <PaymentSummaryCard
-                            dailyRate={data.dailyRate}
-                            days={data.days}
-                            protectionFee={data.protectionFee}
-                            surchargeFee={data.surchargeFee}
-                            totalPrice={data.totalPrice}
-                            status={data.status}
-                        />
-                    </div>
-                </div>
-
-                <BookingActions />
+                <BookingActions bookingData={data} bookingId={data.id} />
             </div>
         </div>
     )

@@ -20,9 +20,9 @@ export const PaymentSummaryCard = ({
 }: PaymentSummaryCardProps) => {
 
     return (
-        <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-sm border border-slate-100/60">
+        <div className="bg-white rounded-[32px] font-display p-6 sm:p-8 shadow-sm border border-slate-100/60">
             <div className="flex items-center gap-3 mb-8">
-                <ReceiptText className="w-6 h-6 text-[#8B4513]" /> {/* A brownish tone like the ref */}
+                <ReceiptText className="w-6 h-6 text-[#8B4513]" />
                 <h2 className="text-xl font-bold text-[#0B0F3B]">Price Breakdown</h2>
             </div>
 

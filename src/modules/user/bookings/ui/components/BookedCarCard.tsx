@@ -45,9 +45,9 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
     }
 
     return (
-        <div className="bg-white rounded-[32px] p-2 pb-5 shadow-sm border border-slate-100/60">
+        <div className="bg-white rounded-[24px] p-2 pb-2 shadow-sm flex flex-col h-full">
             {/* Hero Image Section */}
-            <div className="relative w-full h-[280px] sm:h-[350px] rounded-[28px] overflow-hidden">
+            <div className="relative w-full h-[260px] sm:h-[300px] rounded-[20px] overflow-hidden shrink-0">
                 <Image
                     src={car.headerImage}
                     alt={`${car.make} ${car.model}`}
@@ -55,43 +55,43 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-[#0B0F3B]/90 via-[#0B0F3B]/30 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#0B0F3B] via-[#0B0F3B]/50 to-transparent" />
 
-                <div className="absolute bottom-6 left-8 right-8">
-                    <h2 className="text-white text-3xl sm:text-[40px] font-bold tracking-tight mb-1 leading-none shadow-sm">
+                <div className="absolute bottom-5 left-6 right-6">
+                    <h2 className="text-white text-3xl font-extrabold tracking-tight mb-1">
                         {car.make} {car.model}
                     </h2>
-                    <p className="text-white/80 font-medium text-sm sm:text-base">
+                    <p className="text-white/80 font-medium text-sm">
                         {car.year} • {car.tier} {car.category}
                     </p>
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3 px-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 px-1 flex-1 pb-1">
 
-                <div className="bg-[#F8F9FA] rounded-2xl p-4 flex flex-col justify-center">
-                    <Zap className="w-5 h-5 text-[#FF8C00] mb-2" />
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Transmission</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-sm">{car.transmission}</span>
+                <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
+                    <Zap className="w-4 h-4 text-[#FF8C00] mb-2" />
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Transmission</span>
+                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.transmission}</span>
                 </div>
 
-                <div className="bg-[#F8F9FA] rounded-2xl p-4 flex flex-col justify-center">
-                    <BatteryCharging className="w-5 h-5 text-[#D94444] mb-2" />
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Fuel Type</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-sm">{car.fuelType}</span>
+                <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
+                    <BatteryCharging className="w-4 h-4 text-[#B87A3D] mb-2" />
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Fuel Type</span>
+                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.fuelType}</span>
                 </div>
 
-                <div className="bg-[#F8F9FA] rounded-2xl p-4 flex flex-col justify-center">
-                    <Gauge className="w-5 h-5 text-[#4B5DE4] mb-2" />
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Category</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-sm">{car.category}</span>
+                <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
+                    <Gauge className="w-4 h-4 text-[#B87A3D] mb-2" />
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Category</span>
+                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.category}</span>
                 </div>
 
-                <div className="bg-[#F8F9FA] rounded-2xl p-4 flex flex-col justify-center">
-                    <Users className="w-5 h-5 text-amber-700 mb-2" />
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Capacity</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-sm">{car.seats} Seats</span>
+                <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
+                    <Users className="w-4 h-4 text-[#B87A3D] mb-2" />
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Capacity</span>
+                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.seats} Seats</span>
                 </div>
 
             </div>

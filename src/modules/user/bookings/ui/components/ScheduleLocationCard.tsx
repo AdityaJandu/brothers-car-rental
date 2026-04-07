@@ -1,4 +1,4 @@
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Map } from "lucide-react";
 import { format } from "date-fns";
 
 interface ScheduleLocationCardProps {
@@ -12,68 +12,64 @@ export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCar
     const eDate = new Date(endDate);
 
     return (
-        <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-sm border border-slate-100/60 flex flex-col md:flex-row gap-8 items-center w-full mt-6">
-
+        <div className="bg-white rounded-[24px] p-6 sm:p-8 shadow-sm flex flex-col md:flex-row justify-between items-stretch w-full gap-8">
             {/* Left Timeline Side */}
-            <div className="flex-1 w-full pl-2">
-                <div className="relative">
-
+            <div className="flex-1 w-full pl-2 md:pl-4 py-2">
+                <div className="relative h-full flex flex-col justify-between min-h-[140px]">
                     {/* Vertical connecting line */}
-                    <div className="absolute left-[11px] top-[30px] bottom-[30px] w-0.5 bg-slate-300"></div>
+                    <div className="absolute left-[11px] top-[24px] bottom-[24px] w-[2px] bg-slate-200"></div>
 
                     {/* Pick-Up */}
-                    <div className="flex items-start gap-5 relative mb-10">
-                        <div className="w-6 h-6 rounded-full bg-[#0B0F3B] flex items-center justify-center shrink-0 z-10 ring-4 ring-white">
+                    <div className="flex items-start gap-6 relative">
+                        <div className="w-6 h-6 rounded-full bg-[#1C2333] flex items-center justify-center shrink-0 z-10 ring-[6px] ring-white">
                             <MapPin className="w-3 h-3 text-white" />
                         </div>
                         <div className="pt-0.5">
-                            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5 block">Pick-up</span>
-                            <h3 className="text-lg font-bold text-[#0B0F3B] mb-1">Executive Lounge Terminal</h3>
-                            <p className="text-slate-500 font-medium text-sm">
+                            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1.5 block">Pick-up</span>
+                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">London Heathrow Airport (LHR)</h3>
+                            <p className="text-slate-500 font-medium text-[13px]">
                                 {format(sDate, "MMM dd, yyyy")} • {format(sDate, "hh:mm a")}
                             </p>
                         </div>
                     </div>
 
+                    {/* Spacer for spacing out visually */}
+                    <div className="h-10"></div>
+
                     {/* Drop-Off */}
-                    <div className="flex items-start gap-5 relative">
-                        <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-slate-300 flex items-center justify-center shrink-0 z-10 ring-4 ring-white">
-                            <MapPin className="w-3 h-3 text-slate-400" />
+                    <div className="flex items-start gap-6 relative">
+                        <div className="w-6 h-6 rounded-full bg-white border-[2.5px] border-slate-200 flex items-center justify-center shrink-0 z-10 ring-[6px] ring-white">
+                            <MapPin className="w-3 h-3 text-[#1C2333]" />
                         </div>
                         <div className="pt-0.5">
-                            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5 block">Drop-off</span>
-                            <h3 className="text-lg font-bold text-[#0B0F3B] mb-1">Executive Lounge Terminal</h3>
-                            <p className="text-slate-500 font-medium text-sm">
+                            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1.5 block">Drop-off</span>
+                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">London City Centre Terminal</h3>
+                            <p className="text-slate-500 font-medium text-[13px]">
                                 {format(eDate, "MMM dd, yyyy")} • {format(eDate, "hh:mm a")}
                             </p>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             {/* Right Map Side */}
-            <div className="w-full md:w-[400px] h-[200px] bg-slate-100 rounded-3xl relative overflow-hidden flex items-center justify-center shrink-0">
-                {/* CSS Patterns Map Mockup */}
-                <div className="absolute inset-0 opacity-10"
-                    style={{
-                        backgroundImage: `radial-gradient(circle at 2px 2px, #0B0F3B 1px, transparent 0)`,
-                        backgroundSize: '20px 20px'
-                    }}>
+            <div className="w-full md:w-[350px] lg:w-[420px] bg-[#686E78] rounded-[16px] relative overflow-hidden flex items-center justify-center shrink-0 shadow-inner h-[200px]">
+                {/* Simulated Map Background */}
+                <div className="absolute inset-0 bg-[#686E78]">
+                    <svg className="w-full h-full text-[#7B8390] opacity-40" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="mapPattern" patternUnits="userSpaceOnUse" width="40" height="40"><path d="M0 40L40 0z" stroke="currentColor" strokeWidth="2" /><path d="M40 40L0 0z" stroke="currentColor" strokeWidth="1" /></pattern></defs><rect width="100%" height="100%" fill="url(#mapPattern)" /></svg>
                 </div>
 
-                <div className="absolute inset-0 bg-linear-to-tr from-slate-200/50 to-transparent"></div>
-
-                {/* Pin Icon in center */}
-                <MapPin className="w-16 h-16 text-slate-300 absolute drop-shadow-md" />
+                {/* Pin Icon and gradients */}
+                <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
+                <div className="absolute border-2 border-white/20 w-32 h-32 rounded-full inset-0 m-auto mt-16 blur-[8px]"></div>
+                <MapPin className="w-24 h-24 text-[#353C47] fill-[#232830] absolute" />
 
                 {/* Overlay Button */}
-                <button className="relative z-10 bg-white hover:bg-slate-50 text-[#0B0F3B] font-bold text-sm px-6 py-3 rounded-full flex items-center gap-2 shadow-lg transition-transform hover:scale-105">
-                    <Navigation className="w-4 h-4 text-[#FF8C00]" />
+                <button className="relative z-10 bg-white hover:bg-slate-50 text-[#0B0F3B] font-bold text-[14px] px-6 py-3 rounded-full flex items-center gap-2 shadow-xl transition-transform hover:scale-[1.02]">
+                    <Map className="w-4 h-4 text-[#B87A3D]" />
                     View Route Details
                 </button>
             </div>
-
         </div>
     );
 };
