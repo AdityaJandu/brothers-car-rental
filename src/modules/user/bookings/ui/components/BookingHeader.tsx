@@ -33,7 +33,7 @@ export const BookingHeader = ({ id, status }: BookingHeaderProps) => {
                 </h1>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center gap-4 min-w-[200px]">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex items-center gap-4 min-w-50">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${config.bg}`}>
                     {config.icon}
                 </div>

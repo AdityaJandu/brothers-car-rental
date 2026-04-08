@@ -5,15 +5,18 @@ import Image from "next/image";
 export const ActiveBookingCard = () => {
     return (
         <div className="bg-white rounded-2xl p-4 lg:col-span-2 shadow-sm border border-slate-100 flex flex-col sm:flex-row gap-6 items-center">
-            <div className="relative w-full sm:w-1/2 h-48 sm:h-full bg-slate-100 rounded-xl overflow-hidden min-h-[220px]">
+            <div className="relative w-full sm:w-1/2 h-48 sm:h-full bg-slate-100 rounded-xl overflow-hidden min-h-55">
                 <span className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest text-[#0F172A] shadow-sm">
                     Current Rental
                 </span>
                 <Image
-                    src="https://images.unsplash.com/photo-1620882814836-98a44910248a?q=80&w=1000&auto=format&fit=crop"
+                    src="https://images.pexels.com/photos/14667492/pexels-photo-14667492.jpeg"
                     alt="Mercedes EQS"
                     className="w-full h-full object-cover"
                     fill
+                    loading="eager"
+                    style={{ objectFit: "cover" }}
+                    sizes="(max-width: 768px) 100vw, 33vw"
                 />
             </div>
             <div className="w-full sm:w-1/2 flex flex-col py-4 pr-4">

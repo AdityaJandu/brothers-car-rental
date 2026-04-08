@@ -28,7 +28,7 @@ export const PersonalInfoCard = ({ name, phone }: PersonalInfoCardProps) => {
                             <input
                                 type="tel"
                                 placeholder="+1 (555) 000-0000"
-                                className="bg-white border border-slate-200 rounded-md px-3 py-1.5 text-sm w-full max-w-[250px] outline-none focus:ring-2 focus:ring-[#FF8C00] transition-shadow shadow-sm"
+                                className="bg-white border border-slate-200 rounded-md px-3 py-1.5 text-sm w-full max-w-62.5 outline-none focus:ring-2 focus:ring-[#FF8C00] transition-shadow shadow-sm"
                             />
                             <Button size="sm" className="bg-[#1E293B] text-white hover:bg-slate-800 rounded-md h-8">Save</Button>
                         </div>

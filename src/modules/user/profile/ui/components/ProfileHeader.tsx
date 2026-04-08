@@ -52,11 +52,11 @@ export const ProfileHeader = ({ name, email, image, emailVerified }: ProfileHead
             </div>
 
             <div className="flex items-center gap-4 mt-4 md:mt-0">
-                <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5 min-w-[120px] flex flex-col items-center">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5 min-w-30 flex flex-col items-center">
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Total Trips</span>
                     <span className="text-2xl font-bold text-[#0F172A]">24</span>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5 min-w-[140px] flex flex-col items-center">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5 min-w-35 flex flex-col items-center">
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Loyalty Points</span>
                     <span className="text-2xl font-bold text-[#FF8C00]">12,850</span>
                 </div>

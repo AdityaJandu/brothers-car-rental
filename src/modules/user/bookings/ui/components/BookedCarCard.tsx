@@ -22,12 +22,12 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
     if (isLoading) {
         return (
             <div className="bg-white rounded-3xl p-2 pb-6 shadow-sm border border-slate-100">
-                <Skeleton className="w-full h-[300px] rounded-2xl" />
+                <Skeleton className="w-full h-75 rounded-2xl" />
                 <div className="grid grid-cols-4 gap-3 mt-4 px-4">
-                    <Skeleton className="h-[80px] rounded-xl" />
-                    <Skeleton className="h-[80px] rounded-xl" />
-                    <Skeleton className="h-[80px] rounded-xl" />
-                    <Skeleton className="h-[80px] rounded-xl" />
+                    <Skeleton className="h-20 rounded-xl" />
+                    <Skeleton className="h-20 rounded-xl" />
+                    <Skeleton className="h-20 rounded-xl" />
+                    <Skeleton className="h-20 rounded-xl" />
                 </div>
             </div>
         );
@@ -35,7 +35,7 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
 
     if (error || !car) {
         return (
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-center h-[300px]">
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-center h-75">
                 <div className="flex flex-col items-center text-slate-400">
                     <Car className="w-10 h-10 mb-2" />
                     <p className="font-medium">Car details unavailable</p>
@@ -45,9 +45,9 @@ export const BookedCarCard = ({ carId }: BookedCarCardProps) => {
     }
 
     return (
-        <div className="bg-white rounded-[24px] p-2 pb-2 shadow-sm flex flex-col h-full">
+        <div className="bg-white rounded-3xl p-2 pb-2 shadow-sm flex flex-col h-full">
             {/* Hero Image Section */}
-            <div className="relative w-full h-[260px] sm:h-[300px] rounded-[20px] overflow-hidden shrink-0">
+            <div className="relative w-full h-65 sm:h-75 rounded-[20px] overflow-hidden shrink-0">
                 <Image
                     src={car.headerImage}
                     alt={`${car.make} ${car.model}`}

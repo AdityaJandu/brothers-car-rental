@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export const RewardsStatusCard = () => {
     return (
-        <div className="bg-[#1E293B] rounded-2xl p-7 lg:col-span-1 shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[300px]">
+        <div className="bg-[#1E293B] rounded-2xl p-7 lg:col-span-1 shadow-lg relative overflow-hidden flex flex-col justify-between min-h-75">
             <div className="absolute -bottom-10 -right-10 opacity-10">
                 <Star className="w-48 h-48" />
             </div>

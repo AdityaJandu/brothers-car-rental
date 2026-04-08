@@ -86,7 +86,7 @@ export const bookingColumns: ColumnDef<BookingRow>[] = [
     {
         id: "actions",
         header: () => <div className="text-right">Actions</div>,
-        cell: ({ row }) => {
+        cell: ({ }) => {
 
             return (
                 <div className="flex justify-end">
