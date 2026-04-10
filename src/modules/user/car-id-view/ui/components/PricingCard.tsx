@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 
-import { GetOne } from "@/modules/user/browse/types";
+import { CarGetOne } from "@/modules/user/browse/types";
 import Link from "next/link";
 
 
 interface PricingCarProps {
-    car: GetOne
+    car: CarGetOne
 }
 export const PricingCard = ({ car }: PricingCarProps) => {
     return (

@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import { ChevronsRight, ShieldCheck } from "lucide-react";
-import { GetOne } from "@/modules/user/browse/types";
+import { CarGetOne } from "@/modules/user/browse/types";
 import { format } from "date-fns";
 import { useFormContext } from "react-hook-form";
 import * as z from "zod";
 import { bookingInsertSchema } from "../../schemas";
 
 interface SummaryCardProps {
-    car: GetOne;
+    car: CarGetOne;
 }
 
 export function SummaryCard({ car }: SummaryCardProps) {

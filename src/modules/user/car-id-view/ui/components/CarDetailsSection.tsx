@@ -1,9 +1,9 @@
 import { Fuel, Gauge, Settings2, Star, Users } from "lucide-react";
 import { Spec } from "./Spec";
-import { GetOne } from "@/modules/user/browse/types";
+import { CarGetOne } from "@/modules/user/browse/types";
 
 interface CarDetailSectionProps {
-    car: GetOne;
+    car: CarGetOne;
 };
 
 export const CarDetailSection = ({ car }: CarDetailSectionProps) => {

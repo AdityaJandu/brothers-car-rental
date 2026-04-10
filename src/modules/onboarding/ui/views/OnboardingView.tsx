@@ -6,10 +6,10 @@ import { FeaturedFleet } from '../components/FeaturedFleet';
 import { FeaturesSection } from '../components/FeaturesSection';
 import { CTASection } from '../components/CTASection';
 import { Suspense } from "react";
-import { AuthButtons, AuthButtonsSkeleton } from "../components/AuthButtons"; // <-- Import the new components
+import { AuthButtons, AuthButtonsSkeleton } from "../components/AuthButtons";
 
 // Notice this no longer needs to fetch session at the top level
-export function OnboardingView() {
+export async function OnboardingView() {
     return (
         <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-sans overflow-x-hidden">
 

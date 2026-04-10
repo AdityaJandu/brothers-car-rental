@@ -1,11 +1,11 @@
 
 import { PricingCard } from "./PricingCard";
 import { ImageSlider } from "./ImageSlider";
-import { GetOne } from "@/modules/user/browse/types";
+import { CarGetOne } from "@/modules/user/browse/types";
 
 
 interface CarBookingSectionProps {
-    car: GetOne;
+    car: CarGetOne;
     images: string[];
 };
 

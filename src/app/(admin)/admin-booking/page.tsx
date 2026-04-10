@@ -25,6 +25,10 @@ export default async function Page({ searchParams }: Props) {
         redirect("/sign-in");
     }
 
+    if (session.user.role !== 'admin') {
+        redirect('/');
+    }
+
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
         trpc.adminBookings.getAllAdmin.queryOptions({

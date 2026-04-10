@@ -4,9 +4,15 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { featuredCarData } from '../../data/featured_car_data';
+import { useTRPC } from '@/trpc/client';
+import { useQuery } from '@tanstack/react-query';
+import { LoadingState } from '@/components/self/loading-state';
+import { CarGetOne } from '@/modules/user/browse/types';
+import { useRouter } from 'next/navigation';
 
 export function FeaturedFleet() {
+    const router = useRouter();
+
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     // Smooth scroll handler for the Chevron buttons
@@ -22,6 +28,19 @@ export function FeaturedFleet() {
             });
         }
     };
+
+    const trpc = useTRPC();
+    const { data, isLoading } = useQuery(
+        trpc.userBrowse.getAll.queryOptions({})
+    );
+
+    if (!data) {
+        return null;
+    }
+
+    if (isLoading) {
+        return <LoadingState title={'Loading Cars'} descr={'Please wait while we load the cars'} />
+    }
 
     return (
         <section className="w-full max-w-7xl mx-auto px-6 py-16 lg:px-12 overflow-hidden">
@@ -57,66 +76,68 @@ export function FeaturedFleet() {
                     ref={scrollContainerRef}
                     className="flex overflow-x-auto gap-6 lg:gap-8 snap-x snap-mandatory pb-8 pt-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
-                    {featuredCarData.map((car) => (
-                        <div
-                            key={car.id}
-                            /* Responsive sizing:
-                              Mobile: 100% width (1 card)
-                              Tablet: 50% width minus half the gap (2 cards)
-                              Desktop: 33.333% width minus two-thirds of the gap (3 cards)
-                            */
-                            className="flex-none snap-start w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-21px)] group bg-card rounded-[20px] p-2 border border-border/40 hover:shadow-ambient transition-all duration-300"
-                        >
-                            {/* Image Container */}
-                            <div className="relative w-full aspect-[1.5] bg-[#1a1c23] rounded-t-[14px] rounded-b-sm overflow-hidden mb-4">
-                                {/* Badge */}
-                                <div className="absolute top-3 right-3 z-10 bg-white px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
-                                    <Star className="w-3.5 h-3.5 fill-[#D97706] text-[#D97706]" />
-                                    <span className="text-xs font-bold text-primary">{car.rating}</span>
+                    {
+                        data.items.map((car: CarGetOne) => (
+                            <div
+                                key={car.id}
+                                /* Responsive sizing:
+                                  Mobile: 100% width (1 card)
+                                  Tablet: 50% width minus half the gap (2 cards)
+                                  Desktop: 33.333% width minus two-thirds of the gap (3 cards)
+                                */
+                                className="flex-none snap-start w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-21px)] group bg-card rounded-[20px] p-2 border border-border/40 hover:shadow-ambient transition-all duration-300"
+                            >
+                                {/* Image Container */}
+                                <div className="relative w-full aspect-[1.5] bg-[#1a1c23] rounded-t-[14px] rounded-b-sm overflow-hidden mb-4">
+                                    {/* Badge */}
+                                    <div className="absolute top-3 right-3 z-10 bg-white px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
+                                        <Star className="w-3.5 h-3.5 fill-[#D97706] text-[#D97706]" />
+                                        <span className="text-xs font-bold text-primary">{car.rating}</span>
+                                    </div>
+
+                                    {/* Car Image */}
+                                    <Image
+                                        priority={true}
+                                        src={car.headerImage}
+                                        alt={car.name}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                                    />
                                 </div>
 
-                                {/* Car Image */}
-                                <Image
-                                    priority={true}
-                                    src={car.image}
-                                    alt={car.name}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-                                />
+                                {/* Content Container */}
+                                <div className="px-3 pb-3">
+                                    {/* Title & Price Row */}
+                                    <div className="flex justify-between items-start mb-1">
+                                        <h3 className="text-[1.15rem] font-bold text-primary font-heading leading-tight truncate mr-2">
+                                            {car.name}
+                                        </h3>
+                                        <span className="text-[1.15rem] font-bold text-primary text-right leading-tight whitespace-nowrap">
+                                            {car.pricePerDay}
+                                        </span>
+                                    </div>
+
+                                    {/* Category & Per Day Row */}
+                                    <div className="flex justify-between items-center mb-6">
+                                        <p className="text-sm text-muted-foreground font-medium truncate">
+                                            {car.category}
+                                        </p>
+                                        <p className="text-[0.65rem] font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                                            Per Day
+                                        </p>
+                                    </div>
+
+                                    {/* Book Now Button */}
+                                    <Button
+                                        onClick={() => router.push(`/check-out/${car.id}`)}
+                                        className="w-full h-12 rounded-md text-base font-medium transition-all bg-muted text-primary border-0 hover:bg-primary hover:text-white"
+                                    >
+                                        Book Now
+                                    </Button>
+                                </div>
                             </div>
-
-                            {/* Content Container */}
-                            <div className="px-3 pb-3">
-                                {/* Title & Price Row */}
-                                <div className="flex justify-between items-start mb-1">
-                                    <h3 className="text-[1.15rem] font-bold text-primary font-heading leading-tight truncate mr-2">
-                                        {car.name}
-                                    </h3>
-                                    <span className="text-[1.15rem] font-bold text-primary text-right leading-tight whitespace-nowrap">
-                                        {car.price}
-                                    </span>
-                                </div>
-
-                                {/* Category & Per Day Row */}
-                                <div className="flex justify-between items-center mb-6">
-                                    <p className="text-sm text-muted-foreground font-medium truncate">
-                                        {car.category}
-                                    </p>
-                                    <p className="text-[0.65rem] font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
-                                        Per Day
-                                    </p>
-                                </div>
-
-                                {/* Book Now Button */}
-                                <Button
-                                    className="w-full h-12 rounded-md text-base font-medium transition-all bg-muted text-primary border-0 hover:bg-primary hover:text-white"
-                                >
-                                    Book Now
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
 

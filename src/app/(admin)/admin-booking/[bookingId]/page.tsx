@@ -14,12 +14,16 @@ interface Props {
 const Page = async ({ params }: Props) => {
     const { bookingId } = await params;
 
-    const session = auth.api.getSession({
+    const session = await auth.api.getSession({
         headers: await headers(),
     });
 
     if (!session) {
-        redirect("sign-up");
+        redirect("/sign-up");
+    }
+
+    if (session.user.role !== 'admin') {
+        redirect('/');
     }
 
     const queryClient = getQueryClient();

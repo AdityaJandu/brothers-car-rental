@@ -29,6 +29,10 @@ const Page = async ({ searchParams }: Props) => {
         redirect("/sign-in"); // server-side redirect
     }
 
+    if (session.user.role !== 'admin') {
+        redirect('/');
+    }
+
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(
         trpc.adminDashboard.getAllAdmin.queryOptions({
