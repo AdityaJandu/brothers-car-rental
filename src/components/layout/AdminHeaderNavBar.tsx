@@ -80,7 +80,7 @@ export function AdminNavbar() {
 
                     {/* PROFILE/SETTINGS */}
                     <div className="flex items-center gap-3">
-                        <div className="flex flex-col text-right hidden sm:flex">
+                        <div className="flex-col text-right hidden sm:flex">
                             <span className="text-sm font-bold text-[#0B0F3B] leading-none">Aditya</span>
                             <span className="text-[10px] text-slate-500 font-medium">Super Admin</span>
                         </div>
