@@ -17,10 +17,10 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
 *Accessible only by authorized administrators.*
 
   * `layout.tsx`: Wraps admin pages with the `AdminHeaderNavBar`.
-  * `dashboard/page.tsx`: Main admin dashboard showing vehicle fleet and system metrics.
-  * `add-car/page.tsx`: The form dedicated to parsing and inserting new vehicles into the database.
-  * `admin-booking/page.tsx`: Table view interface listing all global customer bookings.
-  * `admin-booking/[bookingId]/page.tsx`: Dedicated management view for reviewing/updating a specific booking.
+  * `dashboard/page.tsx`: Main admin dashboard showing vehicle fleet and system metrics. **Uses `Promise.all` to parallelize cached auth check + fleet data prefetch.**
+  * `add-car/page.tsx`: The form dedicated to parsing and inserting new vehicles into the database. **Uses cached session for admin auth guard.**
+  * `admin-booking/page.tsx`: Table view interface listing all global customer bookings. **Uses `Promise.all` to parallelize cached auth + bookings prefetch.**
+  * `admin-booking/[bookingId]/page.tsx`: Dedicated management view for reviewing/updating a specific booking. **Uses `Promise.all` to parallelize cached auth + booking detail prefetch.**
 
 <br>
 
@@ -29,20 +29,20 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
 *Publicly accessible or customer-specific endpoints.*
 
   * `layout.tsx`: Wraps user pages with the global header/footer navigation.
-  * `profile/page.tsx`: Isolated user portal displaying `tRPC` active secure user variables, profile states, and interactive security constraints directly using Suspense bridges.
-  * `browse/page.tsx`: The main Fleet Gallery allowing users to filter and view available cars.
-  * `browse/[carId]/page.tsx`: Detailed specification page for a single vehicle.
-  * `check-out/[carId]/page.tsx`: The multi-step booking checkout form.
-  * `bookings/page.tsx`: Display of the authenticated user's internal booking history.
+  * `profile/page.tsx`: Isolated user portal displaying `tRPC` active secure user variables, profile states, and interactive security constraints directly using Suspense bridges. **Uses `Promise.all` for parallel cached auth + profile data prefetch.**
+  * `browse/page.tsx`: The main Fleet Gallery allowing users to filter and view available cars. **Uses `Promise.all` to run cached auth check and data prefetch in parallel.**
+  * `browse/[carId]/page.tsx`: Detailed specification page for a single vehicle. **Uses `Promise.all` to parallelize cached auth + car detail prefetch.**
+  * `check-out/[carId]/page.tsx`: The multi-step booking checkout form. **Uses `Promise.all` to parallelize auth + car data prefetch**, eliminating sequential waterfall delays.
+  * `bookings/page.tsx`: Display of the authenticated user's internal booking history. **Uses `Promise.all` for parallel auth + booking prefetch.**
   * `bookings/[bookingId]/page.tsx`: Detailed breakdown and summary for a specific user booking.
 
 <br>
 
 ### 👋 Onboarding & Auth (`(onboarding)`, `(auth)`)
 
-  * `(onboarding)/page.tsx` & `layout.tsx`: The primary landing page featuring rich SEO marketing, hero sections, and CTA funnels.
-  * `(auth)/sign-in/page.tsx`: Login gateway UI.
-  * `(auth)/sign-up/page.tsx`: Registration gateway UI.
+  * `(onboarding)/page.tsx` & `layout.tsx`: The primary landing page featuring rich SEO marketing, hero sections, and CTA funnels. **Server-side prefetches `FeaturedFleet` data and wraps the view in a `HydrationBoundary`**, eliminating a full client→server roundtrip for the fleet carousel.
+  * `(auth)/sign-in/page.tsx`: Login gateway UI. **Uses cached session to redirect already-authenticated users.**
+  * `(auth)/sign-up/page.tsx`: Registration gateway UI. **Uses cached session to redirect already-authenticated users.**
 
 <br>
 
@@ -82,7 +82,7 @@ Handles appending new car assets to the system.
 Handles fetching and sorting global fleet metrics.
 
   * **`server/procedures.ts`**:
-      * `getAllAdmin` **(Query)**: Pulls paginated, sorted vehicle objects bypassing customer filters mapping raw datastores to the dashboard metrics.
+      * `getAllAdmin` **(Query)**: Pulls paginated, sorted vehicle objects bypassing customer filters mapping raw datastores to the dashboard metrics. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
   * `ui/views/FleetClientView.tsx`: The primary analytical dashboard component rendering fleet states.
   * `ui/components/car-columns.tsx` & `VehicleInventoryHeader.tsx`: UI chunks for presenting grid layout and table data mapping.
   * `schemas.ts`: Core validation mapping rules dictating the shape of DB inputs/outputs.
@@ -95,9 +95,9 @@ Handles fetching and sorting global fleet metrics.
 Admin-tier management of all internal customer rental requests.
 
   * **`server/procedures.ts`**:
-      * `getAllAdmin` **(Query)**: Pulls all globally tracked bookings across all users.
-      * `getOneAdmin` **(Query)**: Leverages a `leftJoin` to fetch a singular booking alongside its heavily associated `car` specifications for deep review.
-      * `updateOneAdmin` **(Mutation)**: Validated state machine transition bridging enum values (e.g. `pending` -\> `confirmed`) to the database layer safely.
+      * `getAllAdmin` **(Query)**: Pulls all globally tracked bookings across all users. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
+      * `getOneAdmin` **(Query)**: Leverages a `leftJoin` to fetch a singular booking alongside its heavily associated `car` specifications for deep review. Uses `protectedProcedure` (auth-only, no rate limit).
+      * `updateOneAdmin` **(Mutation)**: Validated state machine transition bridging enum values (e.g. `pending` -\> `confirmed`) to the database layer safely. Uses `rateLimitedProtectedProcedure` (auth + Redis rate limit).
   * `ui/views/AdminBookingView.tsx`, `AdminBookingIdView.tsx`: Parent container map for resolving booking endpoints.
   * `ui/components/admin-booking-rental-info.tsx`, `admin-booking-pricing-info.tsx`, `admin-booking-customer-info.tsx`: Presentation widgets displaying structured relational db output.
 
@@ -108,8 +108,8 @@ Admin-tier management of all internal customer rental requests.
 Publicly facing gallery modules for vehicle discovery.
 
   * **`user/browse/server/procedures.ts`**:
-      * `getAll` **(Query)**: Pulls active, publicly available vehicles securely paginated and filtered by the user UI (Date, Range, Transmission).
-      * `getOne` **(Query)**: Pulls explicitly defined attributes for a single car entity.
+      * `getAll` **(Query)**: Pulls active, publicly available vehicles securely paginated and filtered by the user UI (Date, Range, Transmission). Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
+      * `getOne` **(Query)**: Pulls explicitly defined attributes for a single car entity. Uses `protectedProcedure` (auth-only, no rate limit).
   * `user/browse/ui/views/BrowseView.tsx`: The core gallery layout wrapper component.
   * `user/browse/ui/components/CarCard.tsx`, `CarGrid.tsx`, `DatePicker.tsx`, `FiltersBar.tsx`: Modular presentation layer components building the responsive filtering logic natively.
   * `user/car-id-view/ui/views/CarIdView.tsx` & components (`ImageSlider.tsx`, `Spec.tsx` etc.): Granular rendering block for a single vehicle page layout.
@@ -135,8 +135,8 @@ Transactional engine powering the reservation logic.
 Customer dashboard tracking standard historical reservations.
 
   * **`server/procedures.ts`**:
-      * `getAllUser` **(Query)**: Fetches and structures booking receipts locally bound specifically to the contextual `userId` authenticated session token.
-      * `getOne` **(Query)**: Fetches detailed information for a specific booking by ID.
+      * `getAllUser` **(Query)**: Fetches and structures booking receipts locally bound specifically to the contextual `userId` authenticated session token. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
+      * `getOne` **(Query)**: Fetches detailed information for a specific booking by ID. Uses `protectedProcedure` (auth-only, no rate limit).
   * `ui/views/AllBookingView.tsx` & `ui/components/booking-columns.tsx`: Frontend mapped React Tables rendering state outputs transparently.
   * `ui/views/BookingIdView.tsx`: Displays a comprehensive breakdown of a single booking.
   * `ui/components/`: Modular child components for the booking details page:
@@ -155,7 +155,7 @@ Customer dashboard tracking standard historical reservations.
 User dashboard tracking their specific session characteristics and secure auth settings.
 
   * **`server/procedures.ts`**:
-      * `getUser` **(Query)**: Pulls authenticated relational metadata securely via standard Drizzle equality maps against contextual session objects natively.
+      * `getUser` **(Query)**: Pulls authenticated relational metadata securely via standard Drizzle equality maps against contextual session objects natively. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
   * `ui/components/`: Modular presentation components safely decoupling logic blocks:
       * `ProfileHeader.tsx`: Avatar bounds, name mapping, and email verification badge layout.
       * `RewardsStatusCard.tsx` / `ActiveBookingCard.tsx`: Central grid mock data presentations resolving static aesthetic metrics natively.
@@ -168,7 +168,7 @@ User dashboard tracking their specific session characteristics and secure auth s
 
 The pure marketing and branding UX architecture.
 
-  * `ui/views/OnboardingView.tsx` & `components/`: Hero sections, Call To Action bars (`CTASection.tsx`), dynamic Fleet showcases (`FeaturedFleet.tsx`), step-by-step maps (`StepComponent.tsx`).
+  * `ui/views/OnboardingView.tsx` & `components/`: Hero sections, Call To Action bars (`CTASection.tsx`), dynamic Fleet showcases (`FeaturedFleet.tsx`), step-by-step maps (`StepComponent.tsx`). **`CTASection.tsx`, `AuthButtons.tsx`, and `FeaturedFleet.tsx` all use the cached session utility** to avoid redundant auth DB hits within the same request.
   * `data/*.ts`: Mock/Static JSON structures fueling the landing page placeholders dynamically.
 
 <br>
@@ -187,7 +187,7 @@ The pure marketing and branding UX architecture.
 
 Drizzle ORM central mapping architecture.
 
-  * `index.ts`: The core database connector binding Drizzle explicitly to the neon/postgres connection string.
+  * `index.ts`: The core database connector binding Drizzle explicitly to the Supabase Postgres connection string. **Configured with connection pooling** (`max: 10`, `idle_timeout: 20`, `connect_timeout: 10`) and `prepare: false` (required for Supabase's transaction-mode pooler on port 6543) to eliminate cold-connection overhead.
   * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints.
 
 <br>
@@ -201,8 +201,8 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 
   * `init.ts`: The baseline core tRPC initialization creating `createTRPCRouter` alongside layered auth/rate-limit middleware:
       * `baseProcedure`: Raw tRPC procedure with no middleware.
-      * `protectedProcedure`: Validates session via Better Auth (auth-only, no rate limit).
-      * `rateLimitedProtectedProcedure`: Extends `protectedProcedure` with a general per-user rate limit (30 req/min via Upstash Redis). **Used by all application procedures.**
+      * `protectedProcedure`: Validates session via Better Auth using a **React `cache()`-wrapped session getter** that deduplicates auth DB calls within a single server request. **Used by all read-only queries** (browse, bookings) for optimal performance.
+      * `rateLimitedProtectedProcedure`: Extends `protectedProcedure` with a general per-user rate limit (30 req/min via Upstash Redis). **Used only by mutations** (booking creation, admin operations) to avoid unnecessary Redis overhead on reads.
   * `routers/_app.ts`: The central router multiplexer tying `adminAddCarRouter`, `carRouter`, `bookingRouter`, `userProfile`, etc. natively back into one overarching namespace root.
   * `client.tsx`: React-Query provider wrapper enabling `trpc.module.endpoint.useQuery` natively on frontend UI code.
   * `server.tsx`: Server-side context hydration pipeline for RSC payload handling.
@@ -214,7 +214,7 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 
 ## 📁 `src/components/` (UI Presentation Layer)
 
-  * **`layout/`**: `AdminHeaderNavBar.tsx`, `Header.tsx`, `Footer.tsx`, `MobileNav.tsx`: Site-wide structural frames dictating routing bars correctly.
+  * **`layout/`**: `AdminHeaderNavBar.tsx`, `Header.tsx`, `Footer.tsx`, `MobileNav.tsx`: Site-wide structural frames dictating routing bars correctly. `Header.tsx` uses the cached session utility (`getSession()`) to avoid redundant auth DB calls.
   * **`self/`**: Pre-built functional units tying multiple standard UI blocks together:
       * `data-table.tsx` & `data-pagination.tsx`: Reusable tanstack/react-table components natively capable.
       * `loading-state.tsx`, `error-state.tsx`, `empty-state.tsx`: Pure fallback UX templates.
@@ -229,10 +229,11 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 
   * `auth.ts`: Better-Auth server-side configuration mapping DB constraints dynamically to logical providers.
   * `auth-client.ts`: Equivalent client SDK for managing triggers.
+  * `cached-session.ts`: **Performance-critical utility** wrapping `auth.api.getSession()` in React's `cache()` function. Ensures the session is fetched **at most once per server request**, no matter how many server components (Header, page, AuthButtons, tRPC middleware) consume it. Eliminates 2-3 redundant DB roundtrips per page load.
   * `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure.
   * `ratelimit.ts`: Upstash rate limiter definitions with three tiers:
       * `authRateLimit` — IP-based, 10 req/60s (used in edge middleware for auth endpoints).
-      * `generalRateLimit` — User-based, 30 req/60s (used in `rateLimitedProtectedProcedure` for all tRPC procedures).
+      * `generalRateLimit` — User-based, 30 req/60s (used in `rateLimitedProtectedProcedure` for **mutation-only** tRPC procedures).
       * `bookingRateLimit` — User-based, 5 req/60s (stricter inline limit for booking mutations).
   * `supabase-client.ts`: CDN bucket connector providing external file payload resolution securely.
   * `utils.ts`: Tailwind utility merge logic (`cn()`).

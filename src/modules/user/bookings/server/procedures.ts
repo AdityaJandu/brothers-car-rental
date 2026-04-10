@@ -1,4 +1,4 @@
-import { createTRPCRouter, rateLimitedProtectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { booking } from "@/db/schema";
 import z from "zod";
@@ -7,7 +7,7 @@ import { getTableColumns, eq, desc, count } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
 export const userBookingsRouter = createTRPCRouter({
-    getAll: rateLimitedProtectedProcedure
+    getAll: protectedProcedure
         .input(z.object({
             page: z.number().default(DEFAULT_PAGE),
             pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
@@ -52,7 +52,7 @@ export const userBookingsRouter = createTRPCRouter({
         }),
 
 
-    getOne: rateLimitedProtectedProcedure
+    getOne: protectedProcedure
         .input(z.object({
             bookingId: z.string(),
         })).query(async ({ input }) => {

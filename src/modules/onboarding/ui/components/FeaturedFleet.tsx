@@ -8,6 +8,7 @@ import { useTRPC } from '@/trpc/client';
 import { useQuery } from '@tanstack/react-query';
 import { LoadingState } from '@/components/self/loading-state';
 import { CarGetOne } from '@/modules/user/browse/types';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export function FeaturedFleet() {
@@ -130,10 +131,12 @@ export function FeaturedFleet() {
 
                                     {/* Book Now Button */}
                                     <Button
-                                        onClick={() => router.push(`/check-out/${car.id}`)}
+                                        asChild
                                         className="w-full h-12 rounded-md text-base font-medium transition-all bg-muted text-primary border-0 hover:bg-primary hover:text-white"
                                     >
-                                        Book Now
+                                        <Link prefetch={true} href={`/check-out/${car.id}`}>
+                                            Book Now
+                                        </Link>
                                     </Button>
                                 </div>
                             </div>

@@ -1,6 +1,5 @@
 import { ProfileView, ProfileViewError, ProfileViewLoading } from "@/modules/user/profile/ui/views/ProfileView";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/cached-session";
 import { redirect } from "next/navigation";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -9,18 +8,18 @@ import { ErrorBoundary } from "react-error-boundary";
 
 
 const Page = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
+    // Run auth check and data prefetch in parallel
+    const queryClient = getQueryClient();
+    const [session] = await Promise.all([
+        getSession(),
+        queryClient.prefetchQuery(
+            trpc.userProfile.getUser.queryOptions()
+        ),
+    ]);
 
     if (!session) {
         redirect("/sign-in");
     }
-
-    const queryClient = getQueryClient();
-    await queryClient.prefetchQuery(
-        trpc.userProfile.getUser.queryOptions()
-    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>

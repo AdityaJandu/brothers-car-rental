@@ -7,11 +7,11 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 ## 🛠 Tech Stack
 
 * **Framework**: Next.js (App Router, Server Components)
-* **Database**: PostgreSQL
-* **ORM**: Drizzle ORM
-* **API/RPC Architecture**: tRPC
-* **Authentication**: Better Auth (Email/Password & Google OAuth)
-* **Rate Limiting**: Upstash Redis (multi-layered: auth, tRPC general, domain-specific)
+* **Database**: PostgreSQL (Supabase, transaction-mode pooler)
+* **ORM**: Drizzle ORM (with optimized connection pooling: `max: 10`, `prepare: false`)
+* **API/RPC Architecture**: tRPC (tiered procedures: `protectedProcedure` for reads, `rateLimitedProtectedProcedure` for mutations)
+* **Authentication**: Better Auth (Email/Password & Google OAuth), with **React `cache()`-based session deduplication** across server components
+* **Rate Limiting**: Upstash Redis (multi-layered: auth, tRPC mutations, domain-specific)
 * **Storage**: Supabase Storage
 * **Document Generation**: `@react-pdf/renderer` (Declarative, client-side PDF generation)
 * **UI Components**: Custom tailored Shadcn UI
@@ -26,8 +26,18 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 * **Client-Side PDF Invoices**: High-quality, dynamically styled booking receipts generated purely on the client-side using React-PDF, completely eliminating server overhead for document creation.
 * **Administrative Management**: High-level dashboards isolating active rentals, confirming requests, and parsing incoming fleet additions directly into the database.
 * **Cloud Image Uploading**: Seamless fleet-asset capturing securely handled client-side and dispatched directly to Supabase data buckets.
-* **Multi-Layered Rate Limiting**: IP-based auth rate limiting at the edge middleware, per-user general tRPC rate limiting (30 req/min) via `rateLimitedProtectedProcedure`, and stricter domain-specific limits (e.g., 5 bookings/min) for critical mutations.
+* **Multi-Layered Rate Limiting**: IP-based auth rate limiting at the edge middleware, per-user tRPC rate limiting (30 req/min) via `rateLimitedProtectedProcedure` on **mutations only**, and stricter domain-specific limits (e.g., 5 bookings/min) for critical mutations. Read queries use `protectedProcedure` (auth-only) to avoid unnecessary Redis overhead.
 * **Optimized Design**: Custom responsive aesthetic adhering tightly to modern curved (`rounded-md` clamped bounds) and drop-shadow architectures.
+
+## ⚡ Performance Architecture
+
+The application employs several performance optimizations to minimize page load times:
+
+* **Cached Session Deduplication**: A centralized `cached-session.ts` utility wraps `auth.api.getSession()` in React's `cache()`, ensuring the auth DB is hit **at most once per server request**. **Every server-side page and component** (all admin pages, user pages, auth pages, Header, AuthButtons, CTASection, and tRPC middleware) uses this utility — zero direct `auth.api.getSession()` calls remain in application code.
+* **Tiered tRPC Procedures**: Read-only queries (`getAll`, `getOne`) use `protectedProcedure` (auth check only), while mutations (`create`, `update`) use `rateLimitedProtectedProcedure` (auth + Redis rate limit). This eliminates ~100-200ms of Redis HTTP overhead per read query.
+* **Parallelized Server Prefetch**: All protected pages with data prefetching run auth checks and queries concurrently via `Promise.all`, eliminating sequential waterfall delays. This pattern is applied across all admin (`dashboard`, `admin-booking`, `admin-booking/[id]`), user (`browse`, `browse/[id]`, `check-out/[id]`, `bookings`, `profile`), and onboarding routes.
+* **Server-Side Hydration**: The onboarding landing page prefetches fleet data server-side and wraps the view in a `HydrationBoundary`, so the `FeaturedFleet` client component receives data instantly without a client→server roundtrip.
+* **Connection Pooling**: The Postgres client is configured with `prepare: false` (required for Supabase's transaction-mode pooler), proper pool sizing, and timeout settings to eliminate cold-connection overhead.
 
 ## 🚀 Getting Started
 
@@ -61,10 +71,11 @@ Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:30
 
 The codebase is built on a highly modular **Domain-Driven Architecture**:
 
-  * `/src/app/` - The Next.js routing structure dynamically wrapping `(auth)`, `(onboarding)`, `(user)`, and `(admin)` zones.
+  * `/src/app/` - The Next.js routing structure dynamically wrapping `(auth)`, `(onboarding)`, `(user)`, and `(admin)` zones. Protected pages use `Promise.all` for parallelized auth + data prefetch.
   * `/src/modules/` - The beating heart of the system storing all explicitly modular UI/Server pairs (`user/profile`, `admin/dashboard`, `user/check-out`, `user/browse`, etc.). Complex views are decomposed into focused sub-components within their module's `ui/components/` directory (e.g., `admin/add-car` splits into `AddCarHeader`, `GeneralInfoCard`, `SpecificationsCard`, `MediaGalleryCard`, and `StatusSidebarCard`).
   * `/src/components/` - Shadcn UI layouts clamped universally safely beneath custom layout wrapping.
-  * `/src/db/` - Drizzle ORM database bindings mapping TypeScript logic strictly globally to postgres structures.
+  * `/src/db/` - Drizzle ORM database bindings with optimized connection pooling mapped to Supabase Postgres.
+  * `/src/lib/` - Core utilities including `cached-session.ts` (React `cache()`-based auth deduplication), rate limiters, and auth configs.
 
 *For an extreme deep-dive directly into the exact query hooks, `procedures.ts` tracking variables, and our native React-PDF implementations tied physically across each folder logic node, please refer to the `projectstructure.md` file\!*
 

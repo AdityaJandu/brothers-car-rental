@@ -1,9 +1,8 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/cached-session";
 import { CarIdViewLoading, CarIdViewError, CarIdView } from "@/modules/user/car-id-view/ui/views/CarIdView";
 
 import { getQueryClient, trpc } from "@/trpc/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -18,18 +17,18 @@ interface Props {
 const Page = async ({ params }: Props) => {
     const { carId } = await params;
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    // Run auth check and data prefetch in parallel
+    const queryClient = getQueryClient();
+    const [session] = await Promise.all([
+        getSession(),
+        queryClient.prefetchQuery(
+            trpc.userBrowse.getOne.queryOptions({ id: carId }),
+        ),
+    ]);
 
     if (!session) {
         redirect("/sign-in");
     }
-
-    const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(
-        trpc.userBrowse.getOne.queryOptions({ id: carId }),
-    );
 
 
     return (

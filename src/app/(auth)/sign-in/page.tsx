@@ -1,13 +1,10 @@
 import { SignInView } from "@/modules/auth/ui/views/SignInView";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/cached-session";
 import { redirect } from "next/navigation";
 
 
 export default async function Page() {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!!session) {
         redirect("/");

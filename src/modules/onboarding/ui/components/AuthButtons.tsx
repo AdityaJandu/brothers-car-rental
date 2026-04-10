@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/cached-session";
 import Link from "next/link";
 
 export async function AuthButtons() {
-    // 1. Fetch the session
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    // 1. Fetch the session (deduplicated via React cache)
+    const session = await getSession();
 
     const isLoggedIn = !!session;
     const userRole = session?.user?.role;

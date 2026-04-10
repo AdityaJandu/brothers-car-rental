@@ -1,10 +1,9 @@
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/cached-session";
 import { AdminBookingView, AdminBookingViewError, AdminBookingViewLoading } from "@/modules/admin/bookings/ui/views/AdminBookingView";
 import { loadSearchParamsBooking } from "@/modules/user/check-out/params";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
@@ -17,9 +16,17 @@ interface Props {
 
 export default async function Page({ searchParams }: Props) {
     const filters = await loadSearchParamsBooking(searchParams);
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+
+    // Run admin auth check and data prefetch in parallel
+    const queryClient = getQueryClient();
+    const [session] = await Promise.all([
+        getSession(),
+        queryClient.prefetchQuery(
+            trpc.adminBookings.getAllAdmin.queryOptions({
+                ...filters
+            }),
+        ),
+    ]);
 
     if (!session) {
         redirect("/sign-in");
@@ -28,13 +35,6 @@ export default async function Page({ searchParams }: Props) {
     if (session.user.role !== 'admin') {
         redirect('/');
     }
-
-    const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(
-        trpc.adminBookings.getAllAdmin.queryOptions({
-            ...filters
-        }),
-    );
 
 
     return (

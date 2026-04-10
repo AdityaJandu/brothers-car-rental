@@ -1,14 +1,11 @@
 
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/cached-session";
 import Link from "next/link";
 
 export async function CTASection() {
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    const session = await getSession();
 
     if (session) {
         return null;

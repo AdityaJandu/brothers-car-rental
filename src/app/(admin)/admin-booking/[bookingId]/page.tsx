@@ -1,8 +1,7 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/cached-session";
 import { AdminBookingIdView, AdminBookingIdViewError, AdminBookingIdViewLoading } from "@/modules/admin/bookings/ui/views/AdminBookingIdView";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -14,9 +13,16 @@ interface Props {
 const Page = async ({ params }: Props) => {
     const { bookingId } = await params;
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    // Run admin auth check and data prefetch in parallel
+    const queryClient = getQueryClient();
+    const [session] = await Promise.all([
+        getSession(),
+        queryClient.prefetchQuery(
+            trpc.adminBookings.getOneAdmin.queryOptions({
+                bookingId,
+            })
+        ),
+    ]);
 
     if (!session) {
         redirect("/sign-up");
@@ -25,13 +31,6 @@ const Page = async ({ params }: Props) => {
     if (session.user.role !== 'admin') {
         redirect('/');
     }
-
-    const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(
-        trpc.adminBookings.getOneAdmin.queryOptions({
-            bookingId,
-        })
-    );
 
 
     return (

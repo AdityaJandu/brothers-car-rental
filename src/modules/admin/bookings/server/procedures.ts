@@ -1,4 +1,4 @@
-import { createTRPCRouter, rateLimitedProtectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, protectedProcedure, rateLimitedProtectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { booking, car } from "@/db/schema";
 import { TRPCError } from "@trpc/server";
@@ -7,7 +7,7 @@ import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@
 import { getTableColumns, eq, desc, count } from "drizzle-orm";
 
 export const adminBookingsRouter = createTRPCRouter({
-    getAllAdmin: rateLimitedProtectedProcedure
+    getAllAdmin: protectedProcedure
         .input(z.object({
             page: z.number().default(DEFAULT_PAGE),
             pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
@@ -44,7 +44,7 @@ export const adminBookingsRouter = createTRPCRouter({
             };
         }),
 
-    getOneAdmin: rateLimitedProtectedProcedure
+    getOneAdmin: protectedProcedure
         .input(z.object({
             bookingId: z.string()
         }))

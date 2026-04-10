@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { headers } from 'next/headers';
+import { cache } from 'react';
 import { generalRateLimit } from '@/lib/ratelimit';
 
 /**
@@ -31,13 +32,22 @@ export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const baseProcedure = t.procedure;
 
+/**
+ * React cache() deduplicates the session fetch within a single server request.
+ * This means the tRPC middleware will reuse the session already fetched
+ * by the page-level getSession() call, avoiding a redundant DB roundtrip.
+ */
+const getCachedSession = cache(async () => {
+    return auth.api.getSession({
+        headers: await headers(),
+    });
+});
+
 // Create a protected procedure that requires authentication
 // using base procedure and middleware -> auth check middleware
 // Now at every point we'll use this protectedProcedure, we can be sure the user is authenticated:
 export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    const session = await getCachedSession();
 
     if (!session) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Unauthorized" });

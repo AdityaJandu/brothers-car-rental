@@ -1,7 +1,6 @@
 
 import { Suspense } from "react";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/cached-session";
 import { redirect } from "next/navigation";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -19,10 +18,16 @@ interface Props {
 const Page = async ({ searchParams }: Props) => {
     const filters = await loadSearchParams(searchParams);
 
-    // Have to check if the user is an admin before prefetching, otherwise we might be prefetching data for users who shouldn't have access to it.
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    // Run admin auth check and data prefetch in parallel
+    const queryClient = getQueryClient();
+    const [session] = await Promise.all([
+        getSession(),
+        queryClient.prefetchQuery(
+            trpc.adminDashboard.getAllAdmin.queryOptions({
+                ...filters
+            })
+        ),
+    ]);
 
     // No session, redirect to home page (or sign-in page)
     if (!session) {
@@ -32,13 +37,6 @@ const Page = async ({ searchParams }: Props) => {
     if (session.user.role !== 'admin') {
         redirect('/');
     }
-
-    const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(
-        trpc.adminDashboard.getAllAdmin.queryOptions({
-            ...filters
-        })
-    );
 
     return (
         <>

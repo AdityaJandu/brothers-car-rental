@@ -3,8 +3,7 @@ import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/cached-session";
 import { redirect } from "next/navigation";
 import { SearchParams } from "nuqs/server";
 import { loadSearchParamsUser } from "@/modules/user/browse/params";
@@ -18,21 +17,20 @@ interface Props {
 export default async function Page({ searchParams }: Props) {
     const filters = await loadSearchParamsUser(searchParams);
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    // Run auth check and data prefetch in parallel
+    const queryClient = getQueryClient();
+    const [session] = await Promise.all([
+        getSession(),
+        queryClient.prefetchQuery(
+            trpc.userBrowse.getAll.queryOptions({
+                ...filters
+            }),
+        ),
+    ]);
 
     if (!session) {
         redirect("/sign-in");
     }
-
-    // Pre-fetch
-    const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(
-        trpc.userBrowse.getAll.queryOptions({
-            ...filters
-        }),
-    );
 
     return (
         <>
