@@ -4,12 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface HeaderClientProps {
@@ -31,7 +25,6 @@ export function HeaderClient({ session }: HeaderClientProps) {
     const isLoggedIn = !!session?.user;
     const user = session?.user;
 
-    // Added requireAuth flag so guests can still click "Browse"
     const navItems = [
         { name: "Home", href: "/", requireAuth: false },
         { name: "Browse", href: "/browse", requireAuth: false },
@@ -44,38 +37,32 @@ export function HeaderClient({ session }: HeaderClientProps) {
             <div className="flex items-center justify-between px-6 py-5 lg:px-12 lg:py-6">
 
                 {/* Logo */}
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link href="/">
-                                <span className="text-2xl font-bold text-primary font-heading">
-                                    Brothers
-                                </span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Home</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <Link href="/" prefetch className="text-2xl font-bold text-primary font-heading">
+                    Brothers
+                </Link>
 
                 {/* Nav */}
                 <nav className="hidden md:flex gap-8 text-sm font-medium text-primary">
                     {navItems.map((item) => {
                         if (item.href === "/") return null;
 
-                        const isActive = pathname === item.href;
+                        // ✅ FIX: works for nested routes
+                        const isActive = pathname.startsWith(item.href);
 
-                        // If the route requires auth and they aren't logged in, redirect to sign-in
-                        const targetHref = item.requireAuth && !isLoggedIn ? "/sign-in" : item.href;
+                        // ✅ FIX: preserve redirect after login
+                        const targetHref =
+                            item.requireAuth && !isLoggedIn
+                                ? `/sign-in?redirect=${item.href}`
+                                : item.href;
 
                         return (
                             <Link
-                                prefetch
                                 key={item.name}
                                 href={targetHref}
+                                prefetch
+                                onMouseEnter={() => router.prefetch(targetHref)} // 🚀 instant nav
                                 className={cn(
-                                    "transition-all duration-300",
+                                    "transition-all duration-200",
                                     isActive
                                         ? "text-secondary border-b-2 border-secondary pb-1"
                                         : "hover:text-ring"
@@ -95,37 +82,40 @@ export function HeaderClient({ session }: HeaderClientProps) {
                                 {user?.name || "User"}
                             </span>
 
-                            {/* Dynamic Avatar (Uses image from DB, or falls back to Initial) */}
-                            {user?.image ? (
-                                <Link href={"/profile"}>
-                                    <Avatar className="size-9" >
+                            {/* Avatar */}
+                            <Link href="/profile" prefetch>
+                                {user?.image ? (
+                                    <Avatar className="size-9">
                                         <AvatarImage src={user.image} />
-                                        <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                                        <AvatarFallback>
+                                            {user.name?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
                                     </Avatar>
-                                </Link>
-                            ) : (
-                                <Link href={"/profile"}>
+                                ) : (
                                     <div className="h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border border-indigo-400">
                                         {user?.name?.charAt(0).toUpperCase() || "A"}
                                     </div>
-                                </Link>
-                            )}
+                                )}
+                            </Link>
                         </div>
                     ) : (
                         <>
                             <Button
                                 variant="outline"
+                                className="active:scale-95 transition"
                                 onClick={() => router.push("/sign-in")}
                             >
                                 Sign In
                             </Button>
-                            <Button onClick={() => router.push("/sign-up")}>
+                            <Button
+                                className="active:scale-95 transition"
+                                onClick={() => router.push("/sign-up")}
+                            >
                                 Get Started
                             </Button>
                         </>
                     )}
                 </div>
-
             </div>
         </header>
     );

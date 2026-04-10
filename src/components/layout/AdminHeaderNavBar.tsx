@@ -58,6 +58,7 @@ export function AdminNavbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
+                                    prefetch={true}
                                     className={cn(
                                         "flex items-center gap-2 px-4 h-full text-sm font-semibold transition-all relative group",
                                         isActive
