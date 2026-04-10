@@ -20,7 +20,7 @@ export function MobileNav() {
                 // FIX: Exact match for home, startsWith for nested routes (like /browse/123)
                 const isActive = item.href === "/"
                     ? pathname === "/"
-                    : pathname.startsWith(item.href);
+                    : pathname === item.href || pathname.startsWith(item.href + "/");
 
                 const Icon = item.icon;
 
