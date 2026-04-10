@@ -77,6 +77,7 @@ export function FeaturedFleet() {
 
                                 {/* Car Image */}
                                 <Image
+                                    priority={true}
                                     src={car.image}
                                     alt={car.name}
                                     fill

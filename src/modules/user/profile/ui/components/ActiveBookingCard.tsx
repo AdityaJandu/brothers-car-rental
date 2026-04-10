@@ -14,7 +14,7 @@ export const ActiveBookingCard = () => {
                     alt="Mercedes EQS"
                     className="w-full h-full object-cover"
                     fill
-                    loading="eager"
+                    priority={true}
                     style={{ objectFit: "cover" }}
                     sizes="(max-width: 768px) 100vw, 33vw"
                 />

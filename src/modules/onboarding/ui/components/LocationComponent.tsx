@@ -38,7 +38,7 @@ export function LocationComponent() {
                         >
                             {/* Image */}
                             <Image
-                                loading="eager"
+                                priority={true}
                                 src={loc.image}
                                 alt={loc.name}
                                 width={500}

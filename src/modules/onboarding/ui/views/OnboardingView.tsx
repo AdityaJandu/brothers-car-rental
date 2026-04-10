@@ -36,7 +36,7 @@ export function OnboardingView() {
                         {/* Image section remains unchanged */}
                         <div className="card-showroom w-full max-w-150 aspect-4/3 bg-white flex items-center justify-center p-8 relative transition-all duration-500 ease-out group-hover:scale-[1.03] group-hover:-translate-y-2 shadow-ambient">
                             <Image
-                                loading="eager"
+                                priority={true}
                                 src={"/images/onboarding.jpg"}
                                 alt="Car-image"
                                 width={600}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authRateLimit } from "@/lib/ratelimit";
 
-export async function middleware(req: NextRequest): Promise<NextResponse> {
+export async function rateLimitMiddleware(req: NextRequest): Promise<NextResponse> {
     // Rate limit auth endpoints only
     if (req.nextUrl.pathname.startsWith("/api/auth")) {
         // Prefer real IP from proxy header (Vercel, Cloudflare, etc.)
