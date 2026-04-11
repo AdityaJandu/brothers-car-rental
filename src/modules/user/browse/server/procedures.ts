@@ -5,6 +5,7 @@ import z from "zod";
 import { and, count, eq, getTableColumns, ilike } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { TRPCError } from "@trpc/server";
+import { getCachedData, setCachedData } from "@/lib/redis-cache";
 
 
 
@@ -16,6 +17,10 @@ export const carRouter = createTRPCRouter({
         }))
         .query(async ({ input }) => {
             const { id } = input;
+
+            const cacheKey = `cars:${id}`;
+            const cached = await getCachedData<typeof car.$inferSelect>(cacheKey);
+            if (cached) return cached;
 
             const [data] = await db
                 .select({
@@ -31,6 +36,7 @@ export const carRouter = createTRPCRouter({
                 });
             }
 
+            await setCachedData(cacheKey, data);
             return data;
         })
     ,
@@ -43,6 +49,10 @@ export const carRouter = createTRPCRouter({
         }))
         .query(async ({ input }) => {
             const { search, page, pageSize } = input;
+
+            const cacheKey = `cars:all:page:${page}:size:${pageSize}:search:${search || "none"}`;
+            const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
+            if (cached) return cached;
 
             // 1. Safely handle the search string. 
             // If there's a search term, wrap it in % wildcards for partial matching. 
@@ -86,11 +96,14 @@ export const carRouter = createTRPCRouter({
                 });
             }
 
-            return {
+            const response = {
                 items: data,
                 total: total.count,
                 totalPages,
             };
+
+            await setCachedData(cacheKey, response);
+            return response;
         }),
 
 });

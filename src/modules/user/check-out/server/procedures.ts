@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { booking } from "@/db/schema";
 import { TRPCError } from "@trpc/server";
 import { bookingRateLimit } from "@/lib/ratelimit";
+import { invalidateCacheGroup } from "@/lib/redis-cache";
 
 
 export const bookingRouter = createTRPCRouter({
@@ -37,6 +38,9 @@ export const bookingRouter = createTRPCRouter({
                     message: "Booking could not be created. Please try again.",
                 });
             }
+
+            await invalidateCacheGroup("bookings:admin:");
+            await invalidateCacheGroup(`bookings:user:${userId}`);
 
             return createdBooking;
         }),
