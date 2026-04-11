@@ -5,6 +5,7 @@ import z from "zod";
 import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
 import { getTableColumns, eq, desc, count } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { getCachedData, setCachedData } from "@/lib/redis-cache";
 
 export const userBookingsRouter = createTRPCRouter({
     getAll: protectedProcedure
@@ -15,6 +16,10 @@ export const userBookingsRouter = createTRPCRouter({
         .query(async ({ input, ctx }) => {
             const { page, pageSize } = input;
             const userId = ctx.auth.user.id;
+
+            const cacheKey = `bookings:user:${userId}:page:${page}:size:${pageSize}`;
+            const cached = await getCachedData<{ items: typeof booking.$inferSelect[], total: number, totalPages: number }>(cacheKey);
+            if (cached) return cached;
 
             const allBookings = await db
                 .select({
@@ -44,11 +49,14 @@ export const userBookingsRouter = createTRPCRouter({
 
             const totalPages = Math.ceil(total.count / pageSize);
 
-            return {
+            const response = {
                 items: allBookings,
                 total: total.count,
                 totalPages,
             };
+
+            await setCachedData(cacheKey, response);
+            return response;
         }),
 
 
@@ -57,6 +65,10 @@ export const userBookingsRouter = createTRPCRouter({
             bookingId: z.string(),
         })).query(async ({ input }) => {
             const { bookingId } = input;
+
+            const cacheKey = `bookings:${bookingId}`;
+            const cached = await getCachedData<typeof booking.$inferSelect>(cacheKey);
+            if (cached) return cached;
 
             const [data] = await db
                 .select({
@@ -71,6 +83,7 @@ export const userBookingsRouter = createTRPCRouter({
                 });
             }
 
+            await setCachedData(cacheKey, data);
             return data;
         })
 });

@@ -230,6 +230,7 @@ Server-Client bridge guaranteeing purely typed data-fetching.
   * `auth.ts`: Better-Auth server-side configuration mapping DB constraints dynamically to logical providers.
   * `auth-client.ts`: Equivalent client SDK for managing triggers.
   * `cached-session.ts`: **Performance-critical utility** wrapping `auth.api.getSession()` in React's `cache()` function. Ensures the session is fetched **at most once per server request**, no matter how many server components (Header, page, AuthButtons, tRPC middleware) consume it. Eliminates 2-3 redundant DB roundtrips per page load.
+  * `redis-cache.ts`: **Read Path Caching wrapper** around local Upstash Redis clients mapping type-secure generic `.set()`, `.get()`, and `.invalidateCacheGroup()` architecture for deterministic database-bypass rules on high-traffic tRPC read loops organically.
   * `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure.
   * `ratelimit.ts`: Upstash rate limiter definitions with three tiers:
       * `authRateLimit` — IP-based, 10 req/60s (used in edge middleware for auth endpoints).

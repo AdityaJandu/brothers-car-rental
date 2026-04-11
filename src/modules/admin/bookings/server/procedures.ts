@@ -3,8 +3,9 @@ import { db } from "@/db";
 import { booking, car } from "@/db/schema";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
+import { MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE, DEFAULT_PAGE } from "@/constants";
 import { getTableColumns, eq, desc, count } from "drizzle-orm";
+import { getCachedData, setCachedData, invalidateCacheGroup } from "@/lib/redis-cache";
 
 export const adminBookingsRouter = createTRPCRouter({
     getAllAdmin: protectedProcedure
@@ -14,6 +15,10 @@ export const adminBookingsRouter = createTRPCRouter({
         }))
         .query(async ({ input }) => {
             const { page, pageSize } = input;
+
+            const cacheKey = `bookings:admin:page:${page}:size:${pageSize}`;
+            const cached = await getCachedData<{ items: typeof booking.$inferSelect[], total: number, totalPages: number }>(cacheKey);
+            if (cached) return cached;
 
             const allBookings = await db
                 .select({
@@ -37,11 +42,14 @@ export const adminBookingsRouter = createTRPCRouter({
 
             const totalPages = Math.ceil(total.count / pageSize);
 
-            return {
+            const response = {
                 items: allBookings,
                 total: total.count,
                 totalPages,
             };
+
+            await setCachedData(cacheKey, response);
+            return response;
         }),
 
     getOneAdmin: protectedProcedure
@@ -50,6 +58,15 @@ export const adminBookingsRouter = createTRPCRouter({
         }))
         .query(async ({ input }) => {
             const { bookingId } = input;
+
+            const cacheKey = `bookings:${bookingId}:admin`;
+            const cached = await getCachedData<typeof booking.$inferSelect & {
+                carName: string | null;
+                carMake: string | null;
+                carModel: string | null;
+                carYear: number | null;
+            }>(cacheKey);
+            if (cached) return cached;
 
             const [bookingData] = await db.select({
                 ...getTableColumns(booking),
@@ -71,6 +88,7 @@ export const adminBookingsRouter = createTRPCRouter({
                 });
             }
 
+            await setCachedData(cacheKey, bookingData);
             return bookingData;
         }),
 
@@ -94,6 +112,8 @@ export const adminBookingsRouter = createTRPCRouter({
                 message: "Booking not found or you don't have access to it.",
             });
         }
+
+        await invalidateCacheGroup("bookings:");
 
         return updatedBooking;
     }),

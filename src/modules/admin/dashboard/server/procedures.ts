@@ -8,6 +8,7 @@ import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@
 import { CarStatus } from "../types";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+import { getCachedData, setCachedData } from "@/lib/redis-cache";
 
 export const adminDashboardRouter = createTRPCRouter({
     getAllAdmin: protectedProcedure
@@ -23,6 +24,10 @@ export const adminDashboardRouter = createTRPCRouter({
         }))
         .query(async ({ input }) => {
             const { page, pageSize, search, status } = input;
+
+            const cacheKey = `cars:admin:page:${page}:size:${pageSize}:search:${search || "none"}:status:${status || "all"}`;
+            const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
+            if (cached) return cached;
 
             const data = await db
                 .select({
@@ -57,11 +62,14 @@ export const adminDashboardRouter = createTRPCRouter({
                 });
             }
 
-            return {
+            const response = {
                 items: data,
                 total: total.count,
                 totalPages,
             };
+
+            await setCachedData(cacheKey, response);
+            return response;
         }),
 });
 

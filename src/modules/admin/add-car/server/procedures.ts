@@ -3,6 +3,7 @@ import { carInsertSchema } from "../../dashboard/schemas";
 import { car } from "@/db/schema";
 import { db } from "@/db";
 import { TRPCError } from "@trpc/server";
+import { invalidateCacheGroup } from "@/lib/redis-cache";
 
 export const adminAddCarRouter = createTRPCRouter({
     create: rateLimitedProtectedProcedure
@@ -26,6 +27,7 @@ export const adminAddCarRouter = createTRPCRouter({
                 });
             }
 
+            await invalidateCacheGroup("cars:");
             return newCar;
 
         }),
