@@ -1,14 +1,21 @@
 import { redis } from "./redis";
 
+function getCacheNamespace(cacheKey: string): string {
+    return cacheKey.split(":")[0] ?? "unknown";
+}
+
 /**
  * Helper to fetch and parse JSON data from Upstash Redis.
  */
 export async function getCachedData<T>(key: string): Promise<T | null> {
     try {
         const data = await redis.get<T>(key);
-        return data || null;
+        return data ?? null;
     } catch (e) {
-        console.error(`Redis Cache GET Error for key ${key}:`, e);
+        console.error("Redis Cache GET Error", {
+            namespace: getCacheNamespace(key),
+            error: e,
+        });
         return null;
     }
 }
@@ -21,7 +28,10 @@ export async function setCachedData<T>(key: string, data: T, ttlSeconds: number 
     try {
         await redis.set(key, data, { ex: ttlSeconds });
     } catch (e) {
-        console.error(`Redis Cache SET Error for key ${key}:`, e);
+        console.error("Redis Cache SET Error", {
+            namespace: getCacheNamespace(key),
+            error: e,
+        });
     }
 }
 
@@ -51,6 +61,9 @@ export async function invalidateCacheGroup(prefix: string): Promise<void> {
             await redis.del(...keysToDelete);
         }
     } catch (e) {
-        console.error(`Redis Cache INVALIDATE Error for prefix ${prefix}:`, e);
+        console.error("Redis Cache INVALIDATE Error", {
+            namespace: getCacheNamespace(prefix),
+            error: e,
+        });
     }
 }

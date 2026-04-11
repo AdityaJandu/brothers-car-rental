@@ -50,9 +50,14 @@ export const carRouter = createTRPCRouter({
         .query(async ({ input }) => {
             const { search, page, pageSize } = input;
 
-            const cacheKey = `cars:all:page:${page}:size:${pageSize}:search:${search || "none"}`;
-            const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
-            if (cached) return cached;
+            const normalizedSearch = (search ?? "").trim().toLowerCase();
+            const shouldCache = normalizedSearch.length <= 64;
+            const cacheKey = `cars:all:page:${page}:size:${pageSize}:search:${normalizedSearch || "none"}`;
+
+            if (shouldCache) {
+                const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
+                if (cached) return cached;
+            }
 
             // 1. Safely handle the search string. 
             // If there's a search term, wrap it in % wildcards for partial matching. 
@@ -102,7 +107,9 @@ export const carRouter = createTRPCRouter({
                 totalPages,
             };
 
-            await setCachedData(cacheKey, response);
+            if (shouldCache) {
+                await setCachedData(cacheKey, response);
+            }
             return response;
         }),
 
