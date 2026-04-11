@@ -12,6 +12,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 * **API/RPC Architecture**: tRPC (tiered procedures: `protectedProcedure` for reads, `rateLimitedProtectedProcedure` for mutations)
 * **Authentication**: Better Auth (Email/Password & Google OAuth), with **React `cache()`-based session deduplication** across server components
 * **Rate Limiting**: Upstash Redis (multi-layered: auth, tRPC mutations, domain-specific)
+* **Caching**: Upstash Redis (read-through edge caching with deterministic tRPC invalidation pipelines)
 * **Storage**: Supabase Storage
 * **Document Generation**: `@react-pdf/renderer` (Declarative, client-side PDF generation)
 * **UI Components**: Custom tailored Shadcn UI
@@ -38,7 +39,7 @@ The application employs several performance optimizations to minimize page load 
 * **Parallelized Server Prefetch**: All protected pages with data prefetching run auth checks and queries concurrently via `Promise.all`, eliminating sequential waterfall delays. This pattern is applied across all admin (`dashboard`, `admin-booking`, `admin-booking/[id]`), user (`browse`, `browse/[id]`, `check-out/[id]`, `bookings`, `profile`), and onboarding routes.
 * **Server-Side Hydration**: The onboarding landing page prefetches fleet data server-side and wraps the view in a `HydrationBoundary`, so the `FeaturedFleet` client component receives data instantly without a client→server roundtrip.
 * **Connection Pooling**: The Postgres client is configured with `prepare: false` (required for Supabase's transaction-mode pooler), proper pool sizing, and timeout settings to eliminate cold-connection overhead.
-* **tRPC Redis Data Caching**: Employs an explicit `@upstash/redis` wrapper (`redis-cache.ts`) injecting generic deterministic read-through caching patterns into highly trafficked `protectedProcedure` handlers (like user `browse` and `bookings`). Bypasses redundant PostgreSQL queries natively mapping exact validation boundaries into edge memory with full automatic prefix invalidation running dynamically during corresponding transactional mutations. Designed symmetrically with strict security perimeters: bound cache key entropy limits prevent memory flooding, trailing colons prevent user-ID cache clearance collisions, and namespace extractors completely obscure session PII inside server logs!
+* **tRPC Redis Data Caching**: Employs an explicit `@upstash/redis` wrapper (`redis-cache.ts`) injecting generic deterministic read-through caching patterns into highly trafficked `protectedProcedure` handlers (like user `browse` and `bookings`). Bypasses redundant PostgreSQL queries natively mapping exact validation boundaries into edge memory with full automatic prefix invalidation running dynamically during corresponding transactional mutations. Designed symmetrically with strict security perimeters: bound cache key entropy limits prevent memory flooding, trailing colons prevent user-ID cache clearance collisions, and namespace extractors help reduce session PII exposure in logs and should be audited for completeness.
 
 ## 🚀 Getting Started
 

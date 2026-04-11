@@ -41,7 +41,7 @@ export const adminDashboardRouter = createTRPCRouter({
                 .from(car)
                 .where(
                     and(
-                        search ? ilike(car.name, `%${search}%`) : undefined,
+                        normalizedSearch ? ilike(car.name, `%${normalizedSearch}%`) : undefined,
                         status ? eq(car.status, status) : undefined
                     )
                 )
@@ -53,7 +53,7 @@ export const adminDashboardRouter = createTRPCRouter({
                 .from(car)
                 .where(
                     and(
-                        search ? ilike(car.name, `%${search}%`) : undefined,
+                        normalizedSearch ? ilike(car.name, `%${normalizedSearch}%`) : undefined,
                         status ? eq(car.status, status) : undefined
                     )
                 );

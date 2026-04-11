@@ -1,6 +1,6 @@
 # Brothers Car Rental - Project Structure & Architecture
 
-This document provides a comprehensive breakdown of the application's entire codebase structure. It details the purpose of each file and folder, with a specific focus on the tRPC backend modules (`procedures.ts`) and their available operations.
+This document provides a comprehensive breakdown of the application's entire codebase structure. It details the purpose of each file and folder, with a specific focus on the tRPC backend modules (`procedures.ts`), the Redis Edge Caching architecture, and their available operations.
 
 -----
 
