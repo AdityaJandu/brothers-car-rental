@@ -25,9 +25,14 @@ export const adminDashboardRouter = createTRPCRouter({
         .query(async ({ input }) => {
             const { page, pageSize, search, status } = input;
 
-            const cacheKey = `cars:admin:page:${page}:size:${pageSize}:search:${search || "none"}:status:${status || "all"}`;
-            const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
-            if (cached) return cached;
+            const normalizedSearch = (search ?? "").trim().toLowerCase();
+            const shouldCache = normalizedSearch.length <= 64;
+            const cacheKey = `cars:admin:page:${page}:size:${pageSize}:search:${normalizedSearch || "none"}:status:${status || "all"}`;
+
+            if (shouldCache) {
+                const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
+                if (cached) return cached;
+            }
 
             const data = await db
                 .select({
@@ -68,7 +73,9 @@ export const adminDashboardRouter = createTRPCRouter({
                 totalPages,
             };
 
-            await setCachedData(cacheKey, response);
+            if (shouldCache) {
+                await setCachedData(cacheKey, response);
+            }
             return response;
         }),
 });

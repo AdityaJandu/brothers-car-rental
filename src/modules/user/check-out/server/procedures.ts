@@ -40,7 +40,7 @@ export const bookingRouter = createTRPCRouter({
             }
 
             await invalidateCacheGroup("bookings:admin:");
-            await invalidateCacheGroup(`bookings:user:${userId}`);
+            await invalidateCacheGroup(`bookings:user:${userId}:`);
 
             return createdBooking;
         }),
