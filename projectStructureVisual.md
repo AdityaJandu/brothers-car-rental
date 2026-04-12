@@ -177,7 +177,7 @@ brothers-car-rental/
 │   │   │   │   │   └── components/
 │   │   │   │   │       ├── CarCard.tsx
 │   │   │   │   │       ├── CarGrid.tsx
-│   │   │   │   │       ├── DatePicker.tsx
+│   │   │   │   │       ├── DatePicker.tsx           #    disabled: Matcher | Matcher[]
 │   │   │   │   │       └── FiltersBar.tsx
 │   │   │   │   ├── params.ts
 │   │   │   │   └── types.ts
@@ -188,19 +188,23 @@ brothers-car-rental/
 │   │   │   │       │   └── CarIdView.tsx
 │   │   │   │       └── components/
 │   │   │   │           ├── ImageSlider.tsx
+│   │   │   │           ├── PricingCard.tsx          #    ✅/🕐 availability indicator
 │   │   │   │           └── Spec.tsx
 │   │   │   │
 │   │   │   ├── check-out/
 │   │   │   │   ├── server/
-│   │   │   │   │   └── procedures.ts           # 🔒 create (Mutation, double rate-limited)
+│   │   │   │   │   ├── availability.ts          # ⛔ checkBookingConflict()
+│   │   │   │   │   │                            #    getUnavailableDateRanges()
+│   │   │   │   │   └── procedures.ts           # 📖 getUnavailableDates (Query)
+│   │   │   │   │                               # 🔒 create (Mutation + conflict check)
 │   │   │   │   ├── schemas.ts                  #    bookingInsertSchema (server)
 │   │   │   │   │                               #    bookingFormSchema (client)
 │   │   │   │   ├── params.ts
 │   │   │   │   └── ui/
 │   │   │   │       ├── views/
-│   │   │   │       │   └── CarBookingView.tsx
+│   │   │   │       │   └── CarBookingView.tsx   #    fetches unavailableDates
 │   │   │   │       └── components/
-│   │   │   │           ├── CheckoutForm.tsx
+│   │   │   │           ├── CheckoutForm.tsx     #    ✅/❌ availability banner
 │   │   │   │           └── SummaryCard.tsx
 │   │   │   │
 │   │   │   ├── bookings/
@@ -266,6 +270,7 @@ brothers-car-rental/
 │   ├── db/                                     # ─── Data Layer ───
 │   │   ├── index.ts                            #    Drizzle + postgres (pooled)
 │   │   └── schema.ts                           #    user, session, car, booking
+│   │                                            #    + booking_car_dates_idx (overlap)
 │   │
 │   ├── components/                             # ─── Shared UI ───
 │   │   ├── layout/
@@ -385,6 +390,7 @@ baseProcedure
          │   ├── userBrowse.getOne
          │   ├── userBookings.getAll
          │   ├── userBookings.getOne
+         │   ├── userCheckout.getUnavailableDates   ⛔ availability engine
          │   ├── userProfile.getUser
          │   ├── adminDashboard.getAllAdmin
          │   ├── adminBookings.getAllAdmin
@@ -396,6 +402,7 @@ baseProcedure
                    ├── adminAddCar.create
                    ├── adminBookings.updateOneAdmin
                    └── userCheckout.create          (+ bookingRateLimit 5/min)
+                       └── ⛔ checkBookingConflict  (overlap guard)
 ```
 
 ---
@@ -406,18 +413,18 @@ baseProcedure
 Single Server Request (e.g. GET /)
 │
 ├── page.tsx ─────────────────── getSession() ──┐
-├── Header.tsx ──────────────── getSession() ──┤
-├── AuthButtons.tsx ─────────── getSession() ──┤  ALL resolve to
-├── CTASection.tsx ──────────── getSession() ──┤  the SAME cached
-├── tRPC protectedProcedure ── getCachedSess()─┤  DB call (1 hit)
+├── Header.tsx ──────────────── getSession()  ──┤
+├── AuthButtons.tsx ─────────── getSession()  ──┤  ALL resolve to
+├── CTASection.tsx ──────────── getSession()  ──┤  the SAME cached
+├── tRPC protectedProcedure ── getCachedSess() ─┤  DB call (1 hit)
 │                                               │
 │                    ┌──────────────────────────┘
 │                    ▼
 │          ┌───────────────────┐
-│          │  React cache()   │
-│          │  ─────────────   │
-│          │  1st call: fetch │──► auth.api.getSession() ──► Supabase DB
-│          │  2-5th: cached  │──► return memoized result
+│          │  React cache()    │
+│          │  ─────────────    │
+│          │  1st call: fetch  │──► auth.api.getSession() ──► Supabase DB
+│          │  2-5th: cached    │──► return memoized result
 │          └───────────────────┘
 │
 │  Before: 5 DB roundtrips × ~400ms = ~2000ms
@@ -488,7 +495,7 @@ Single Server Request (e.g. GET /)
 │  │  (auth.ts)     │      │   (db/index.ts)│             │
 │  └───────┬────────┘      └───────┬────────┘             │
 │          │                       │                      │
-│  ┌───────┴───────┐      ┌───────┴────────┐              │
+│  ┌───────┴───────┐      ┌────────┴───────┐              │
 │  │ Upstash Redis │      │ Supabase       │              │
 │  │ (ratelimit.ts)│      │ Storage        │              │
 │  └───────┬───────┘      │ (images)       │              │
@@ -511,13 +518,79 @@ Single Server Request (e.g. GET /)
 
 ---
 
+## ⛔ Booking Conflict Engine Flow
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    CHECKOUT PAGE (/check-out/[carId])            │
+│                                                                  │
+│  ┌──────────────────────────────────┐                            │
+│  │  useQuery(getUnavailableDates)   │                            │
+│  │  → returns blocked date ranges   │                            │
+│  └──────────────┬───────────────────┘                            │
+│                 │                                                │
+│                 ▼                                                │
+│  ┌──────────────────────────────────┐                            │
+│  │  DatePicker                      │                            │
+│  │  disabled = [                    │                            │
+│  │    { before: today },            │                            │
+│  │    ...eachDayOfInterval(ranges)  │  ← blocked dates grayed    │
+│  │  ]                               │                            │
+│  └──────────────┬───────────────────┘                            │
+│                 │                                                │
+│                 ▼                                                │
+│  ┌──────────────────────────────────┐                            │
+│  │  Availability Banner             │                            │
+│  │  [✓] "Available for selected"    │  ← green, no overlap       │
+│  │  [x] "Unavailable for selected"  │  ← red, overlap found      │
+│  │  [i] "Next available: Apr 16"    │  ← hint                    │
+│  └──────────────┬───────────────────┘                            │
+│                 │                                                │
+│                 ▼  onSubmit                                      │
+└─────────────────┬────────────────────────────────────────────────┘
+                  │
+                  ▼
+┌──────────────────────────────────────────────────────────────────┐
+│              tRPC: userCheckout.create (Mutation)                │
+│                                                                  │
+│  Step 1: rateLimitedProtectedProcedure  (30 req/min)             │
+│  Step 2: bookingRateLimit               (5 bookings/min)         │
+│  Step 3: [!] checkBookingConflict(carId, startDate, endDate)     │
+│          │                                                       │
+│          ├── SELECT id FROM booking                              │
+│          │   WHERE car_id = $carId                               │
+│          │   AND status IN ('confirmed', 'pending')              │
+│          │   AND start_date < $endDate                           │
+│          │   AND end_date > $startDate                           │
+│          │   LIMIT 1                                             │
+│          │        ↑                                              │
+│          │   Uses: booking_car_dates_idx composite index         │
+│          │                                                       │
+│          ├── conflict? ──YES──► throw TRPCError(CONFLICT)        │
+│          │                                                       │
+│          └── NO conflict                                         │
+│                │                                                 │
+│  Step 4:       ▼                                                 │
+│          db.insert(booking).values({...}).returning()            │
+│                                                                  │
+│  Step 5: invalidateCacheGroup("bookings:...")                    │
+└──────────────────────────────────────────────────────────────────┘
+
+Overlap Formula:  newStart < existingEnd AND newEnd > existingStart
+Boundary Rule:    inclusive start, exclusive end
+Blocking Statuses: confirmed, pending
+```
+
+---
+
 ## 🧩 Module Anatomy (Standard Pattern)
 
 ```
 module-name/
 │
 ├── server/
-│   └── procedures.ts        # tRPC router with queries/mutations
+│   ├── procedures.ts        # tRPC router with queries/mutations
+│   └── availability.ts      # Domain logic utilities (optional)
 │
 ├── ui/
 │   ├── views/
@@ -538,4 +611,5 @@ module-name/
 Legend:
   📖 Query    → protectedProcedure (auth-only, no Redis)
   🔒 Mutation → rateLimitedProtectedProcedure (auth + Redis)
+  ⛔ Conflict → checkBookingConflict (overlap guard)
 ```

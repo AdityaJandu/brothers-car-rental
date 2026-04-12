@@ -1,12 +1,12 @@
 "use client";
 
-import { CreditCard, Wallet, Banknote, CheckCircle2, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { CreditCard, Wallet, Banknote, CheckCircle2, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 // Dates
-import { format, differenceInDays } from "date-fns";
+import { format, differenceInDays, eachDayOfInterval, addDays } from "date-fns";
 import { type DateRange } from "react-day-picker";
 
 // Form & Validation
@@ -22,12 +22,68 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { DatePicker } from "@/modules/user/browse/ui/components/DatePicker";
+import { useMemo } from "react";
+
+interface UnavailableDateRange {
+    startDate: string | Date;
+    endDate: string | Date;
+}
 
 interface CheckoutFormProps {
     isPending: boolean;
+    unavailableDates: UnavailableDateRange[];
 }
 
-export function CheckoutForm({ isPending }: CheckoutFormProps) {
+/**
+ * Check if a selected date range overlaps with any unavailable range.
+ * Uses the same overlap formula as the backend: newStart < existingEnd AND newEnd > existingStart
+ */
+function hasOverlap(
+    start: Date,
+    end: Date,
+    unavailableDates: UnavailableDateRange[]
+): boolean {
+    return unavailableDates.some((range) => {
+        const rangeStart = new Date(range.startDate);
+        const rangeEnd = new Date(range.endDate);
+        return start < rangeEnd && end > rangeStart;
+    });
+}
+
+/**
+ * Find the next available date after a given date, considering all unavailable ranges.
+ */
+function getNextAvailableDate(
+    afterDate: Date,
+    unavailableDates: UnavailableDateRange[]
+): Date | null {
+    if (unavailableDates.length === 0) return afterDate;
+
+    // Sort ranges by start date
+    const sorted = [...unavailableDates]
+        .map((r) => ({
+            start: new Date(r.startDate),
+            end: new Date(r.endDate),
+        }))
+        .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+    let candidate = new Date(afterDate);
+
+    for (const range of sorted) {
+        // If candidate is before this range starts, it's available
+        if (candidate < range.start) {
+            return candidate;
+        }
+        // If candidate falls within this range, push it past the end
+        if (candidate >= range.start && candidate < range.end) {
+            candidate = new Date(range.end);
+        }
+    }
+
+    return candidate;
+}
+
+export function CheckoutForm({ isPending, unavailableDates }: CheckoutFormProps) {
     // Tap into the parent's form state
     const form = useFormContext<z.infer<typeof bookingInsertSchema>>();
 
@@ -35,6 +91,42 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
     const paymentMethod = form.watch("paymentMethod");
     const startDate = form.watch("startDate");
     const endDate = form.watch("endDate");
+
+    // Build the disabled dates matcher for react-day-picker
+    const disabledDates = useMemo(() => {
+        const matchers: Array<{ before: Date } | Date> = [
+            { before: new Date() }, // Can't book in the past
+        ];
+
+        // Add each day within unavailable ranges as individually disabled
+        for (const range of unavailableDates) {
+            const rangeStart = new Date(range.startDate);
+            const rangeEnd = new Date(range.endDate);
+
+            // Generate all days in the range (exclusive end — don't block the return day)
+            if (rangeStart < rangeEnd) {
+                const days = eachDayOfInterval({
+                    start: rangeStart,
+                    end: addDays(rangeEnd, -1), // exclusive end
+                });
+                matchers.push(...days);
+            }
+        }
+
+        return matchers;
+    }, [unavailableDates]);
+
+    // Check if current selection has a conflict
+    const selectionHasConflict = useMemo(() => {
+        if (!startDate || !endDate) return false;
+        return hasOverlap(new Date(startDate), new Date(endDate), unavailableDates);
+    }, [startDate, endDate, unavailableDates]);
+
+    // Next available date hint
+    const nextAvailable = useMemo(() => {
+        if (!selectionHasConflict || !endDate) return null;
+        return getNextAvailableDate(new Date(endDate), unavailableDates);
+    }, [selectionHasConflict, endDate, unavailableDates]);
 
     // Handle Date Changes and recalculate prices automatically
     const handleDateChange = (range: DateRange | undefined) => {
@@ -71,7 +163,7 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
                 <DatePicker
                     date={{ from: startDate, to: endDate }}
                     setDate={handleDateChange}
-                    disabled={{ before: new Date() }}
+                    disabled={disabledDates}
                 >
                     <button
                         type="button"
@@ -95,6 +187,35 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
 
                 {form.formState.errors.endDate && (
                     <p className="text-xs text-red-500 mt-2">{form.formState.errors.endDate.message}</p>
+                )}
+
+                {/* Availability Banner */}
+                {startDate && endDate && (
+                    <div className={cn(
+                        "mt-3 flex items-start gap-2.5 rounded-md px-4 py-3 text-sm transition-all animate-in fade-in slide-in-from-top-1 duration-200",
+                        selectionHasConflict
+                            ? "bg-red-50 border border-red-200 text-red-700"
+                            : "bg-emerald-50 border border-emerald-200 text-emerald-700"
+                    )}>
+                        {selectionHasConflict ? (
+                            <>
+                                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                                <div>
+                                    <p className="font-semibold">This car is unavailable for the selected dates</p>
+                                    {nextAvailable && (
+                                        <p className="text-xs mt-1 opacity-80">
+                                            Next available from: {format(nextAvailable, "MMM dd, yyyy")}
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+                                <p className="font-semibold">Available for selected dates</p>
+                            </>
+                        )}
+                    </div>
                 )}
             </section>
 
@@ -203,11 +324,13 @@ export function CheckoutForm({ isPending }: CheckoutFormProps) {
 
                 <Button
                     type="submit"
-                    disabled={isPending}
+                    disabled={isPending || selectionHasConflict}
                     className="w-full sm:col-span-5 h-14 bg-[#172033] hover:bg-[#0F172A] text-white flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-70"
                 >
                     {isPending ? (
                         <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+                    ) : selectionHasConflict ? (
+                        <>Dates Unavailable</>
                     ) : (
                         <>Complete Booking <ArrowRight className="w-5 h-5" /></>
                     )}

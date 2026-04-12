@@ -21,7 +21,8 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 
 ## ✨ Core Features
 
-* **Public Fleet Discovery**: Beautifully mapped grid designs, dynamic filtering, and rich specification pages.
+* **Public Fleet Discovery**: Beautifully mapped grid designs, dynamic filtering, rich specification pages, and **real-time availability indicators** (✅ Available Now / 🕐 Next available from [date]) on each car's detail page.
+* **Booking Conflict Engine**: Production-grade overlap detection preventing double bookings. Uses the standard overlap formula (`newStart < existingEnd AND newEnd > existingStart`) enforced at both the tRPC mutation level (atomic conflict check before insert) and the UI level (DatePicker disables blocked dates, availability banners show ✅/❌ status with next-available-date hints). Blocks both `confirmed` and `pending` bookings to eliminate race conditions. Backed by a composite `(carId, startDate, endDate)` database index.
 * **Secure Booking Engine**: A seamless transactional checkout flow with a dual-schema architecture — `bookingInsertSchema` (server, `z.coerce.date` + `.refine()`) and `bookingFormSchema` (client, `z.date()`) — ensuring full Zod 4 + react-hook-form type safety without `as any` casts.
 * **Customer Booking Dashboard**: Comprehensive tracking of historical and active reservations, featuring polished breakdown views for individual bookings, interactive action controls, and **instant, browser-generated PDF invoice downloads**.
 * **Client-Side PDF Invoices**: High-quality, dynamically styled booking receipts generated purely on the client-side using React-PDF, completely eliminating server overhead for document creation.

@@ -238,7 +238,10 @@ export const booking = pgTable("booking", {
     // --- AUDIT TIMESTAMPS ---
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
-});
+}, (table) => [
+    // Composite index for fast booking conflict/overlap detection
+    index("booking_car_dates_idx").on(table.carId, table.startDate, table.endDate),
+]);
 
 // --- RELATIONS ---
 export const bookingRelations = relations(booking, ({ one }) => ({
