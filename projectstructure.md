@@ -111,8 +111,8 @@ Publicly facing gallery modules for vehicle discovery.
       * `getAll` **(Query)**: Pulls active, publicly available vehicles securely paginated and filtered by the user UI (Date, Range, Transmission). Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
       * `getOne` **(Query)**: Pulls explicitly defined attributes for a single car entity. Uses `protectedProcedure` (auth-only, no rate limit).
   * `user/browse/ui/views/BrowseView.tsx`: The core gallery layout wrapper component.
-  * `user/browse/ui/components/CarCard.tsx`, `CarGrid.tsx`, `DatePicker.tsx`, `FiltersBar.tsx`: Modular presentation layer components building the responsive filtering logic natively.
-  * `user/car-id-view/ui/views/CarIdView.tsx` & components (`ImageSlider.tsx`, `Spec.tsx` etc.): Granular rendering block for a single vehicle page layout.
+  * `user/browse/ui/components/CarCard.tsx`, `CarGrid.tsx`, `DatePicker.tsx`, `FiltersBar.tsx`: Modular presentation layer components building the responsive filtering logic natively. **`DatePicker.tsx` accepts `Matcher | Matcher[]` for its `disabled` prop**, enabling unavailable date range blocking from the checkout page.
+  * `user/car-id-view/ui/views/CarIdView.tsx` & components (`ImageSlider.tsx`, `Spec.tsx`, `PricingCard.tsx` etc.): Granular rendering block for a single vehicle page layout. **`PricingCard.tsx` fetches unavailable dates and shows a real-time availability indicator** (✅ Available Now / 🕐 Next available from [date]).
 
 <br>
 
@@ -120,13 +120,18 @@ Publicly facing gallery modules for vehicle discovery.
 
 Transactional engine powering the reservation logic.
 
+  * **`server/availability.ts`**: **Booking Conflict Engine** utility module containing:
+      * `checkBookingConflict(carId, startDate, endDate)` — Queries for overlapping `confirmed`/`pending` bookings using the standard overlap formula (`newStart < existingEnd AND newEnd > existingStart`). Uses the composite `booking_car_dates_idx` index for performance.
+      * `getUnavailableDateRanges(carId)` — Returns all blocked date ranges (future `confirmed`/`pending` bookings) for frontend DatePicker disabling.
   * **`server/procedures.ts`**:
-      * `create` **(Mutation)**: Heavily validated ingest taking secure frontend parameters formatting and committing them transactionally to the tracking system. Protected by two rate-limiting layers: the general `rateLimitedProtectedProcedure` (30 req/min) and a stricter inline `bookingRateLimit` (5 bookings/min).
+      * `getUnavailableDates` **(Query)**: Returns blocked date ranges for a car. Uses `protectedProcedure` (auth-only, no rate limit).
+      * `create` **(Mutation)**: Heavily validated ingest with **atomic conflict detection** — checks for overlapping bookings before insert and throws `CONFLICT` if the car is unavailable. Protected by three layers: `rateLimitedProtectedProcedure` (30 req/min), inline `bookingRateLimit` (5 bookings/min), and the overlap conflict check.
   * `schemas.ts`: Dual-schema architecture for **Zod 4 + react-hook-form compatibility**:
       * `bookingInsertSchema` — **Server-side** (used by tRPC procedures). Uses `z.coerce.date()` to handle JSON string → Date coercion from the network, and a top-level `.refine()` for cross-field validation (`endDate > startDate`).
       * `bookingFormSchema` — **Client-side** (used by react-hook-form + `zodResolver`). Uses `z.date()` instead of `z.coerce.date()` (since `z.coerce` infers its input as `unknown` in Zod 4, breaking type inference), and omits top-level `.refine()` (which wraps `ZodObject` into `ZodEffects`, also breaking react-hook-form types). Field-level `.refine()` is still used.
-  * `ui/views/CarBookingView.tsx`: Page wrapping logic managing form state via `useForm<z.infer<typeof bookingFormSchema>>` with properly typed `zodResolver(bookingFormSchema)`.
-  * `ui/components/CheckoutForm.tsx`, `SummaryCard.tsx`: Client-side data intake fields linked automatically dynamically resolving prices synchronously.
+  * `ui/views/CarBookingView.tsx`: Page wrapping logic managing form state via `useForm<z.infer<typeof bookingFormSchema>>` with properly typed `zodResolver(bookingFormSchema)`. **Fetches unavailable dates and passes them to CheckoutForm for date picker integration.**
+  * `ui/components/CheckoutForm.tsx`: Client-side form with **availability-aware DatePicker** — disables all days within blocked date ranges, shows a live ✅/❌ availability banner with next-available-date hint, and disables the submit button when dates conflict.
+  * `ui/components/SummaryCard.tsx`: Dynamic pricing summary with live form state watching.
 
 <br>
 
@@ -188,7 +193,7 @@ The pure marketing and branding UX architecture.
 Drizzle ORM central mapping architecture.
 
   * `index.ts`: The core database connector binding Drizzle explicitly to the Supabase Postgres connection string. **Configured with connection pooling** (`max: 10`, `idle_timeout: 20`, `connect_timeout: 10`) and `prepare: false` (required for Supabase's transaction-mode pooler on port 6543) to eliminate cold-connection overhead.
-  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints.
+  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection.
 
 <br>
 <br>

@@ -4,7 +4,7 @@ import { ErrorState } from "@/components/self/error-state";
 import { LoadingState } from "@/components/self/loading-state";
 import { CheckoutForm } from "../components/CheckoutForm";
 import { SummaryCard } from "../components/SummaryCard";
-import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
+import { useSuspenseQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -30,6 +30,11 @@ export function CarBookingView({ carId }: CarBookingProps) {
         })
     );
 
+    // Fetch unavailable date ranges for this car
+    const { data: unavailableDates } = useQuery(
+        trpc.userCheckout.getUnavailableDates.queryOptions({ carId })
+    );
+
     const createBooking = useMutation(
         trpc.userCheckout.create.mutationOptions({
             onSuccess: async () => {
@@ -37,8 +42,12 @@ export function CarBookingView({ carId }: CarBookingProps) {
                 router.push("/");
             },
             onError: (error) => {
-                console.error("🚨 FULL TRPC ERROR:", error);
-                toast.error("Failed to process booking. Check console.");
+                // Show specific message for booking conflicts
+                if (error.message.includes("not available for the selected dates")) {
+                    toast.error("This car is not available for the selected dates. Please choose different dates.");
+                } else {
+                    toast.error(error.message || "Failed to process booking.");
+                }
             },
         }),
     );
@@ -82,7 +91,10 @@ export function CarBookingView({ carId }: CarBookingProps) {
 
                             {/* Left Column: Form (Second on mobile, First on desktop) */}
                             <div className="order-2 lg:order-1 lg:col-span-9 flex flex-col gap-12">
-                                <CheckoutForm isPending={createBooking.isPending} />
+                                <CheckoutForm
+                                    isPending={createBooking.isPending}
+                                    unavailableDates={unavailableDates ?? []}
+                                />
                             </div>
 
                             {/* Right Column: Order Summary (First on mobile, Second on desktop) */}

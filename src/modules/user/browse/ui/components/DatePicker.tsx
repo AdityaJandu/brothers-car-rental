@@ -1,6 +1,5 @@
 "use client"
 
-import { type DateRange } from "react-day-picker"
 import { Calendar } from "@/components/ui/calendar"
 import {
     Popover,
@@ -8,12 +7,13 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { useIsMobile } from "@/hooks/use-mobile"
+import type { Matcher, DateRange } from "react-day-picker"
 
 interface DatePickerProps {
     date: DateRange | undefined;
     setDate: (date: DateRange | undefined) => void;
     children: React.ReactNode; // Accept any custom UI to act as the trigger
-    disabled?: boolean | { before: Date };
+    disabled?: Matcher | Matcher[];
 }
 
 export function DatePicker({ date, setDate, children, disabled }: DatePickerProps) {
