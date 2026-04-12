@@ -15,11 +15,9 @@ export default async function Page() {
     const queryClient = getQueryClient();
 
     // Only prefetch if the user is authenticated (the tRPC procedure requires auth)
-    if (session) {
-        await queryClient.prefetchQuery(
-            trpc.userBrowse.getAll.queryOptions({})
-        );
-    }
+    await queryClient.prefetchQuery(
+        trpc.userBrowse.getAll.queryOptions({})
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>

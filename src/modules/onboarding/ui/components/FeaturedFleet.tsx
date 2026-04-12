@@ -9,10 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import { LoadingState } from '@/components/self/loading-state';
 import { CarGetOne } from '@/modules/user/browse/types';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 export function FeaturedFleet() {
-    const router = useRouter();
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
