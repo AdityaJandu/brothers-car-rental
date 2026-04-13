@@ -41,10 +41,12 @@ export async function sendStatusChangeEmail(
 
         if (error) {
             console.error(`[Resend] API Error sending status change email:`, { error, bookingId: b.id, newStatus });
+            throw new Error(`Resend API Error: ${error?.message || 'Unknown Error'}`);
         } else {
             console.log(`[Resend] Status change email (${newStatus}) sent for booking ${b.id}`);
         }
     } catch (error) {
         console.error(`[Resend] Exception sending status change email:`, { error, bookingId: b.id, newStatus });
+        throw error;
     }
 }

@@ -16,6 +16,7 @@ export async function sendBookingConfirmationEmail(
     const customerHtml = emailLayout("Booking Confirmation", `
       <p style="margin:0 0 16px;font-size:16px;color:#334155;">Hi ${userData.name},</p>
       <p style="margin:0 0 16px;font-size:14px;color:#64748b;">Your booking has been received and is being processed. Here are your details:</p>
+      <p style="margin:0 0 16px;font-size:14px;">Status: ${statusBadge(b.status)}</p>
       ${bookingTable(b, carData)}
       <p style="margin:16px 0 0;font-size:13px;color:#94a3b8;text-align:center;">You'll receive another email once your booking is confirmed by our team.</p>
     `);

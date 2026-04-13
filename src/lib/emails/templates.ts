@@ -18,7 +18,17 @@ export function formatDate(date: Date | string): string {
   });
 }
 
+export function escapeHtml(str: string): string {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export function statusBadge(status: string): string {
+  const safeStatus = escapeHtml(status);
   const config: Record<string, { color: string; bg: string }> = {
     pending: { color: "#92400E", bg: "#FEF3C7" },
     confirmed: { color: "#065F46", bg: "#D1FAE5" },
@@ -26,8 +36,8 @@ export function statusBadge(status: string): string {
     completed: { color: "#1E40AF", bg: "#DBEAFE" },
     expired: { color: "#78350F", bg: "#FEF3C7" },
   };
-  const c = config[status] || { color: "#334155", bg: "#F1F5F9" };
-  return `<span style="background:${c.bg};color:${c.color};padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;text-transform:uppercase;">${status}</span>`;
+  const c = config[safeStatus] || { color: "#334155", bg: "#F1F5F9" };
+  return `<span style="background:${c.bg};color:${c.color};padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;text-transform:uppercase;">${safeStatus}</span>`;
 }
 
 // --- Shared Email Layout ---
@@ -53,11 +63,16 @@ export function emailLayout(title: string, body: string): string {
 
 // --- Shared Booking Details Table ---
 export function bookingTable(b: Booking, carData: Car): string {
+  const safeId = escapeHtml(b.id.slice(0, 8).toUpperCase());
+  const safeMake = escapeHtml(carData.make);
+  const safeModel = escapeHtml(carData.model);
+  const safeYear = escapeHtml(String(carData.year));
+
   return `
     <div style="background:#f1f5f9;border-radius:8px;padding:20px;margin:20px 0;">
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
-        <tr><td style="padding:8px 0;color:#64748b;">Booking ID</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#1e293b;">#${b.id.slice(0, 8).toUpperCase()}</td></tr>
-        <tr><td style="padding:8px 0;color:#64748b;">Vehicle</td><td style="padding:8px 0;text-align:right;font-weight:500;color:#1e293b;">${carData.make} ${carData.model} (${carData.year})</td></tr>
+        <tr><td style="padding:8px 0;color:#64748b;">Booking ID</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#1e293b;">#${safeId}</td></tr>
+        <tr><td style="padding:8px 0;color:#64748b;">Vehicle</td><td style="padding:8px 0;text-align:right;font-weight:500;color:#1e293b;">${safeMake} ${safeModel} (${safeYear})</td></tr>
         <tr><td style="padding:8px 0;color:#64748b;">Pick-up</td><td style="padding:8px 0;text-align:right;font-weight:500;color:#1e293b;">${formatDate(b.startDate)}</td></tr>
         <tr><td style="padding:8px 0;color:#64748b;">Drop-off</td><td style="padding:8px 0;text-align:right;font-weight:500;color:#1e293b;">${formatDate(b.endDate)}</td></tr>
         <tr><td style="padding:8px 0;color:#64748b;">Duration</td><td style="padding:8px 0;text-align:right;font-weight:500;color:#1e293b;">${b.days} day${b.days > 1 ? "s" : ""}</td></tr>

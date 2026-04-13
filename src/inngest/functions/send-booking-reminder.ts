@@ -38,7 +38,12 @@ export const sendBookingReminder = inngest.createFunction(
 
         // Step 2: Guard — skip if pickup is less than 24h away
         const reminderTime = subHours(new Date(bookingData.startDate), 24);
-        if (reminderTime <= new Date()) {
+        
+        const shouldSkip = await step.run("guard.pickup-time", async () => {
+            return reminderTime <= new Date();
+        });
+
+        if (shouldSkip) {
             return { skipped: true, reason: "pickup-less-than-24h-away" };
         }
 

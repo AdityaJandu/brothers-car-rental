@@ -16,10 +16,6 @@ if (!fromEmail) {
 }
 
 const adminEmail = process.env.ADMIN_EMAIL;
-if (!adminEmail) {
-    console.error("[Resend] ADMIN_EMAIL is not set. Email sending will fail.");
-    throw new Error("[Resend] ADMIN_EMAIL is not set. Email sending will fail.");
-}
 
 // --- Constants ---
 export const FROM_EMAIL = `Brothers Car Rental <${fromEmail}>`;
