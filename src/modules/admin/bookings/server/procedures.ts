@@ -6,6 +6,7 @@ import z from "zod";
 import { MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE, DEFAULT_PAGE } from "@/constants";
 import { getTableColumns, eq, desc, count } from "drizzle-orm";
 import { getCachedData, setCachedData, invalidateCacheGroup } from "@/lib/redis-cache";
+import { inngest } from "@/inngest/client";
 
 export const adminBookingsRouter = createTRPCRouter({
     getAllAdmin: protectedProcedure
@@ -114,6 +115,16 @@ export const adminBookingsRouter = createTRPCRouter({
         }
 
         await invalidateCacheGroup("bookings:");
+
+        // Fire-and-forget: trigger status change email workflow
+        inngest.send({
+            name: "booking/status.updated",
+            data: {
+                bookingId: updatedBooking.id,
+                newStatus: status,
+                userId: updatedBooking.userId,
+            },
+        }).catch((err) => console.error("[Inngest] Failed to send booking/status.updated:", err));
 
         return updatedBooking;
     }),
