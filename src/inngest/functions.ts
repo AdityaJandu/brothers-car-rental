@@ -41,7 +41,7 @@ export const expirePendingBooking = inngest.createFunction(
     async ({ event, step }) => {
         await step.sleep("wait-15-minutes", "15m");
 
-        await step.run("expire-if-still-pending", async () => {
+        const expireResult = await step.run("expire-if-still-pending", async () => {
             // Idempotent: only expires bookings still in "pending" state
             const result = await db
                 .update(booking)
@@ -56,30 +56,34 @@ export const expirePendingBooking = inngest.createFunction(
 
             if (result.length === 0) {
                 console.log("[Inngest] Booking no longer pending, skipping expiry:", event.data.bookingId);
-                return { skipped: true, reason: "no-longer-pending" };
+                return { expired: false };
             }
 
             // Invalidate cache so dashboards reflect the change
             await invalidateCacheGroup("bookings:");
-
             console.log("[Inngest] Booking expired:", event.data.bookingId);
-
-            // Send expiry notification email
-            const joined = await db
-                .select({ booking: booking, user: user, car: car })
-                .from(booking)
-                .innerJoin(user, eq(booking.userId, user.id))
-                .innerJoin(car, eq(booking.carId, car.id))
-                .where(eq(booking.id, event.data.bookingId))
-                .limit(1);
-
-            if (joined[0]) {
-                const { booking: b, user: u, car: c } = joined[0];
-                await sendStatusChangeEmail(b, c, u, "expired");
-            }
 
             return { expired: true };
         });
+
+        // Only send the expiry email if the booking was actually expired
+        if (expireResult.expired) {
+            await step.run("send-expiry-email", async () => {
+                const [joined] = await db
+                    .select({ booking: booking, user: user, car: car })
+                    .from(booking)
+                    .innerJoin(user, eq(booking.userId, user.id))
+                    .innerJoin(car, eq(booking.carId, car.id))
+                    .where(eq(booking.id, event.data.bookingId))
+                    .limit(1);
+
+                if (!joined) return { skipped: true, reason: "data-not-found" };
+
+                const { booking: b, user: u, car: c } = joined;
+                await sendStatusChangeEmail(b, c, u, "expired");
+                return { sent: true };
+            });
+        }
     },
 );
 

@@ -205,11 +205,12 @@ Drizzle ORM central mapping architecture.
 Durable workflow engine powered by Inngest for automated booking lifecycle management.
 
   * `client.ts`: Inngest client instance (`id: "brothers-car-rental"`) used to create functions and send events.
-  * `functions.ts`: All 4 Inngest workflow functions:
-      * `send-confirmation-email` — Triggered by `booking/created`. Immediately JOINs booking + user + car and sends a confirmation email to customer + admin via Resend.
-      * `expire-pending-booking` — Triggered by `booking/created`. Sleeps 15 minutes, then idempotently expires the booking if still `"pending"` (UPDATE WHERE status = 'pending'). Sends expiry notification email. Invalidates cache.
-      * `send-booking-reminder` — Triggered by `booking/created`. Calculates 24h before pickup, guards against past dates (skip if < 24h away), uses `step.sleepUntil()` to wait, then checks if still `"confirmed"` before sending reminder. Inngest's durable steps guarantee exactly-once delivery.
-      * `send-status-change-email` — Triggered by `booking/status.updated`. JOINs booking + user + car and sends a status change email to customer + admin.
+  * `index.ts`: Central export file combining all Inngest functions for route registration.
+  * `functions/`: Modularized workflow functions:
+      * `send-confirmation-email.ts` — Triggered by `booking/created`. Immediately JOINs booking + user + car and sends a confirmation email to customer + admin via Resend.
+      * `expire-pending-booking.ts` — Triggered by `booking/created`. Sleeps 15 minutes, then idempotently expires the booking if still `"pending"`. Sends expiry notification email independently and invalidates cache.
+      * `send-booking-reminder.ts` — Triggered by `booking/created`. Calculates 24h before pickup, uses `step.sleepUntil()` to wait, checks if still `"confirmed"`. Guarantees exactly-once delivery via durable steps.
+      * `send-status-change-email.ts` — Triggered by `booking/status.updated`. JOINs booking + user + car and sends a status change email sequentially to customer.
 
 <br>
 <br>
@@ -252,10 +253,12 @@ Server-Client bridge guaranteeing purely typed data-fetching.
   * `auth-client.ts`: Equivalent client SDK for managing triggers.
   * `cached-session.ts`: **Performance-critical utility** wrapping `auth.api.getSession()` in React's `cache()` function. Ensures the session is fetched **at most once per server request**, no matter how many server components (Header, page, AuthButtons, tRPC middleware) consume it. Eliminates 2-3 redundant DB roundtrips per page load.
   * `redis-cache.ts`: **Read Path Caching wrapper** around local Upstash Redis clients mapping type-secure generic `.set()`, `.get()`, and `.invalidateCacheGroup()` architecture for deterministic database-bypass rules on high-traffic tRPC read loops organically. Includes `getCacheNamespace` for explicit PII masking inside production logs.
-  * `resend.ts`: **Transactional email layer** powered by Resend. Contains 3 email functions, all try/catch wrapped (never throw):
-      * `sendBookingConfirmationEmail(booking, car, user)` — Sends to customer + admin with booking details, vehicle info, and pricing summary.
-      * `sendStatusChangeEmail(booking, car, user, newStatus)` — Sends to customer + admin with status-specific messaging (confirmed/cancelled/completed/expired) and color-coded status badges.
-      * `sendBookingReminderEmail(booking, car, user)` — Sends to customer only, 24h before pickup with highlighted pickup date and checklist.
+  * `emails/`: **Modular Transactional Email Layer** powered by Resend. Try/catch wrapped to prevent API failures blocking execution.
+      * `client.ts` — Initializes Resend singleton, validates essential environment variables (`RESEND_API_KEY`, `ADMIN_EMAIL`).
+      * `templates.ts` — Contains reusable HTML template layouts, status badges, and booking table formatters.
+      * `booking-confirmation.ts` — Sends `sendBookingConfirmationEmail` to both the customer and admin (new booking alert).
+      * `status-change.ts` — Sends `sendStatusChangeEmail` directly to the customer based on booking transition states.
+      * `booking-reminder.ts` — Sends `sendBookingReminderEmail` exclusively to the customer as a 24-hour pickup heads-up.
   * `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure.
   * `ratelimit.ts`: Upstash rate limiter definitions with three tiers:
       * `authRateLimit` — IP-based, 10 req/60s (used in edge middleware for auth endpoints).
