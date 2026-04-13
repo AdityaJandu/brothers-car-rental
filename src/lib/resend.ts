@@ -2,10 +2,13 @@ import { Resend } from "resend";
 import type { booking, user, car } from "@/db/schema";
 
 // --- Resend Client ---
+if (!process.env.RESEND_API_KEY) {
+    console.error("[Resend] RESEND_API_KEY is not set. Email sending will fail.");
+}
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = "Brothers Car Rental <onboarding@resend.dev>";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'janduaditay@gmail.com';
+const FROM_EMAIL = process.env.BROTHERS_FROM_EMAIL!;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL!;
 
 // --- Types (derived from Drizzle schema) ---
 type Booking = typeof booking.$inferSelect;
@@ -107,6 +110,10 @@ export async function sendBookingConfirmationEmail(
     }
 
     // Send admin alert — actionable notification to review the booking
+    if (!ADMIN_EMAIL) {
+        console.warn("[Resend] ADMIN_EMAIL not configured, skipping admin booking alert");
+        return;
+    }
     const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     try {
         const { error } = await resend.emails.send({

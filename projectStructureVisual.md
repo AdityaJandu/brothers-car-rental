@@ -277,11 +277,12 @@ brothers-car-rental/
 │   │
 │   ├── inngest/                                 # ─── Background Jobs (Inngest) ───
 │   │   ├── client.ts                            #    Inngest client (id: brothers-car-rental)
-│   │   └── functions.ts                         #    4 workflow functions:
-│   │                                            #    → send-confirmation-email (immediate)
-│   │                                            #    → expire-pending-booking (sleep 15m)
-│   │                                            #    → send-booking-reminder (sleepUntil -24h)
-│   │                                            #    → send-status-change-email (immediate)
+│   │   ├── index.ts                             #    Exports array of all functions
+│   │   └── functions/                           #    Modular workflows:
+│   │       ├── send-confirmation-email.ts       #    → Immediate conf email trigger
+│   │       ├── expire-pending-booking.ts        #    → Sleep 15m & status idempotent update
+│   │       ├── send-booking-reminder.ts         #    → sleepUntil -24h from pickup
+│   │       └── send-status-change-email.ts      #    → Immediate status change trigger
 │   │
 │   ├── components/                             # ─── Shared UI ───
 │   │   ├── layout/
@@ -308,10 +309,12 @@ brothers-car-rental/
 │       ├── cached-session.ts                   # ⚡ React cache() session dedup
 │       ├── redis.ts                            #    Upstash Redis client
 │       ├── redis-cache.ts                      #    Read-path caching wrapper
-│       ├── resend.ts                           #    📧 Transactional email layer (Resend)
-│       │                                        #    → sendBookingConfirmationEmail
-│       │                                        #    → sendStatusChangeEmail
-│       │                                        #    → sendBookingReminderEmail
+│       ├── emails/                             #    📧 Modular Email Layer (Resend)
+│       │   ├── client.ts                       #    → Resend API initialization & env
+│       │   ├── templates.ts                    #    → HTML layouts & helpers
+│       │   ├── booking-confirmation.ts         #    → sendBookingConfirmationEmail
+│       │   ├── status-change.ts                #    → sendStatusChangeEmail
+│       │   └── booking-reminder.ts             #    → sendBookingReminderEmail
 │       ├── ratelimit.ts                        #    3-tier rate limiters
 │       ├── supabase-client.ts                  #    Storage bucket connector
 │       └── utils.ts                            #    cn() utility
