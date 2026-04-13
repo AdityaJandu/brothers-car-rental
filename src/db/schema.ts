@@ -166,7 +166,7 @@ export const fuelTypeEnum = pgEnum("fuel_type", ["petrol", "ev", "hybrid"]);
 
 // UPDATE: Added "cash" to the payment methods
 export const paymentMethodEnum = pgEnum("payment_method", ["card", "wallet", "cash"]);
-export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled", "completed"]);
+export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled", "completed", "expired"]);
 
 // --- TABLES ---
 export const car = pgTable("car", {

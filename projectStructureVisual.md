@@ -117,6 +117,8 @@ brothers-car-rental/
 │   │   ├── api/                                # 🌐 API Endpoints
 │   │   │   ├── auth/[...all]/
 │   │   │   │   └── route.ts                    #    → Better-Auth catch-all
+│   │   │   ├── inngest/
+│   │   │   │   └── route.ts                    #    → Inngest serve handler (4 functions)
 │   │   │   └── trpc/[trpc]/
 │   │   │       └── route.ts                    #    → tRPC catch-all
 │   │   │
@@ -271,6 +273,15 @@ brothers-car-rental/
 │   │   ├── index.ts                            #    Drizzle + postgres (pooled)
 │   │   └── schema.ts                           #    user, session, car, booking
 │   │                                            #    + booking_car_dates_idx (overlap)
+│   │                                            #    + bookingStatusEnum: expired
+│   │
+│   ├── inngest/                                 # ─── Background Jobs (Inngest) ───
+│   │   ├── client.ts                            #    Inngest client (id: brothers-car-rental)
+│   │   └── functions.ts                         #    4 workflow functions:
+│   │                                            #    → send-confirmation-email (immediate)
+│   │                                            #    → expire-pending-booking (sleep 15m)
+│   │                                            #    → send-booking-reminder (sleepUntil -24h)
+│   │                                            #    → send-status-change-email (immediate)
 │   │
 │   ├── components/                             # ─── Shared UI ───
 │   │   ├── layout/
@@ -297,6 +308,10 @@ brothers-car-rental/
 │       ├── cached-session.ts                   # ⚡ React cache() session dedup
 │       ├── redis.ts                            #    Upstash Redis client
 │       ├── redis-cache.ts                      #    Read-path caching wrapper
+│       ├── resend.ts                           #    📧 Transactional email layer (Resend)
+│       │                                        #    → sendBookingConfirmationEmail
+│       │                                        #    → sendStatusChangeEmail
+│       │                                        #    → sendBookingReminderEmail
 │       ├── ratelimit.ts                        #    3-tier rate limiters
 │       ├── supabase-client.ts                  #    Storage bucket connector
 │       └── utils.ts                            #    cn() utility

@@ -50,6 +50,7 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
 
   * `api/auth/[...all]/route.ts`: Better-Auth catch-all handler for authentication orchestration.
   * `api/trpc/[trpc]/route.ts`: tRPC catch-all endpoint that routes all client mutations/queries into the backend logic.
+  * `api/inngest/route.ts`: **Inngest serve handler** — registers all 4 workflow functions (`send-confirmation-email`, `expire-pending-booking`, `send-booking-reminder`, `send-status-change-email`) and exposes `GET`/`POST`/`PUT` for the Inngest Dev Server and cloud to discover and invoke functions.
 
 -----
 
@@ -97,7 +98,7 @@ Admin-tier management of all internal customer rental requests.
   * **`server/procedures.ts`**:
       * `getAllAdmin` **(Query)**: Pulls all globally tracked bookings across all users. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
       * `getOneAdmin` **(Query)**: Leverages a `leftJoin` to fetch a singular booking alongside its heavily associated `car` specifications for deep review. Uses `protectedProcedure` (auth-only, no rate limit).
-      * `updateOneAdmin` **(Mutation)**: Validated state machine transition bridging enum values (e.g. `pending` -\> `confirmed`) to the database layer safely. Uses `rateLimitedProtectedProcedure` (auth + Redis rate limit).
+      * `updateOneAdmin` **(Mutation)**: Validated state machine transition bridging enum values (e.g. `pending` -> `confirmed`) to the database layer safely. Uses `rateLimitedProtectedProcedure` (auth + Redis rate limit). **After update, fires `booking/status.updated` Inngest event** (fire-and-forget) to trigger status change email notifications to customer + admin.
   * `ui/views/AdminBookingView.tsx`, `AdminBookingIdView.tsx`: Parent container map for resolving booking endpoints.
   * `ui/components/admin-booking-rental-info.tsx`, `admin-booking-pricing-info.tsx`, `admin-booking-customer-info.tsx`: Presentation widgets displaying structured relational db output.
 
@@ -125,7 +126,7 @@ Transactional engine powering the reservation logic.
       * `getUnavailableDateRanges(carId)` — Returns all blocked date ranges (future `confirmed`/`pending` bookings) for frontend DatePicker disabling.
   * **`server/procedures.ts`**:
       * `getUnavailableDates` **(Query)**: Returns blocked date ranges for a car. Uses `protectedProcedure` (auth-only, no rate limit).
-      * `create` **(Mutation)**: Heavily validated ingest with **atomic conflict detection** — checks for overlapping bookings before insert and throws `CONFLICT` if the car is unavailable. Protected by three layers: `rateLimitedProtectedProcedure` (30 req/min), inline `bookingRateLimit` (5 bookings/min), and the overlap conflict check.
+      * `create` **(Mutation)**: Calls `createBookingWithConflictCheck()` for **atomic conflict detection** inside a database transaction with row locking. Throws `CONFLICT` if the car is unavailable. Protected by three layers: `rateLimitedProtectedProcedure` (30 req/min), inline `bookingRateLimit` (5 bookings/min), and the transactional overlap guard. **After insert, fires `booking/created` Inngest event** (fire-and-forget) triggering 3 workflows: confirmation email, pending expiry timer, and 24h pickup reminder.
   * `schemas.ts`: Dual-schema architecture for **Zod 4 + react-hook-form compatibility**:
       * `bookingInsertSchema` — **Server-side** (used by tRPC procedures). Uses `z.coerce.date()` to handle JSON string → Date coercion from the network, and a top-level `.refine()` for cross-field validation (`endDate > startDate`).
       * `bookingFormSchema` — **Client-side** (used by react-hook-form + `zodResolver`). Uses `z.date()` instead of `z.coerce.date()` (since `z.coerce` infers its input as `unknown` in Zod 4, breaking type inference), and omits top-level `.refine()` (which wraps `ZodObject` into `ZodEffects`, also breaking react-hook-form types). Field-level `.refine()` is still used.
@@ -193,7 +194,22 @@ The pure marketing and branding UX architecture.
 Drizzle ORM central mapping architecture.
 
   * `index.ts`: The core database connector binding Drizzle explicitly to the Supabase Postgres connection string. **Configured with connection pooling** (`max: 10`, `idle_timeout: 20`, `connect_timeout: 10`) and `prepare: false` (required for Supabase's transaction-mode pooler on port 6543) to eliminate cold-connection overhead.
-  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection.
+  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection. The `bookingStatusEnum` includes `"expired"` for auto-expired pending bookings.
+
+<br>
+
+-----
+
+## 📁 `src/inngest/` (Background Job Orchestration)
+
+Durable workflow engine powered by Inngest for automated booking lifecycle management.
+
+  * `client.ts`: Inngest client instance (`id: "brothers-car-rental"`) used to create functions and send events.
+  * `functions.ts`: All 4 Inngest workflow functions:
+      * `send-confirmation-email` — Triggered by `booking/created`. Immediately JOINs booking + user + car and sends a confirmation email to customer + admin via Resend.
+      * `expire-pending-booking` — Triggered by `booking/created`. Sleeps 15 minutes, then idempotently expires the booking if still `"pending"` (UPDATE WHERE status = 'pending'). Sends expiry notification email. Invalidates cache.
+      * `send-booking-reminder` — Triggered by `booking/created`. Calculates 24h before pickup, guards against past dates (skip if < 24h away), uses `step.sleepUntil()` to wait, then checks if still `"confirmed"` before sending reminder. Inngest's durable steps guarantee exactly-once delivery.
+      * `send-status-change-email` — Triggered by `booking/status.updated`. JOINs booking + user + car and sends a status change email to customer + admin.
 
 <br>
 <br>
@@ -236,6 +252,10 @@ Server-Client bridge guaranteeing purely typed data-fetching.
   * `auth-client.ts`: Equivalent client SDK for managing triggers.
   * `cached-session.ts`: **Performance-critical utility** wrapping `auth.api.getSession()` in React's `cache()` function. Ensures the session is fetched **at most once per server request**, no matter how many server components (Header, page, AuthButtons, tRPC middleware) consume it. Eliminates 2-3 redundant DB roundtrips per page load.
   * `redis-cache.ts`: **Read Path Caching wrapper** around local Upstash Redis clients mapping type-secure generic `.set()`, `.get()`, and `.invalidateCacheGroup()` architecture for deterministic database-bypass rules on high-traffic tRPC read loops organically. Includes `getCacheNamespace` for explicit PII masking inside production logs.
+  * `resend.ts`: **Transactional email layer** powered by Resend. Contains 3 email functions, all try/catch wrapped (never throw):
+      * `sendBookingConfirmationEmail(booking, car, user)` — Sends to customer + admin with booking details, vehicle info, and pricing summary.
+      * `sendStatusChangeEmail(booking, car, user, newStatus)` — Sends to customer + admin with status-specific messaging (confirmed/cancelled/completed/expired) and color-coded status badges.
+      * `sendBookingReminderEmail(booking, car, user)` — Sends to customer only, 24h before pickup with highlighted pickup date and checklist.
   * `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure.
   * `ratelimit.ts`: Upstash rate limiter definitions with three tiers:
       * `authRateLimit` — IP-based, 10 req/60s (used in edge middleware for auth endpoints).

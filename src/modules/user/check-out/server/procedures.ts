@@ -6,6 +6,7 @@ import { TRPCError } from "@trpc/server";
 import { bookingRateLimit } from "@/lib/ratelimit";
 import { invalidateCacheGroup } from "@/lib/redis-cache";
 import { checkBookingConflict, getUnavailableDateRanges } from "./availability";
+import { inngest } from "@/inngest/client";
 import z from "zod";
 
 
@@ -71,6 +72,13 @@ export const bookingRouter = createTRPCRouter({
 
             await invalidateCacheGroup("bookings:admin:");
             await invalidateCacheGroup(`bookings:user:${userId}:`);
+
+            // Fire-and-forget: trigger Inngest workflows (confirmation email, expiry, reminder)
+            // Not awaited — never blocks the mutation response
+            inngest.send({
+                name: "booking/created",
+                data: { bookingId: createdBooking.id, userId },
+            }).catch((err) => console.error("[Inngest] Failed to send booking/created:", err));
 
             return createdBooking;
         }),
