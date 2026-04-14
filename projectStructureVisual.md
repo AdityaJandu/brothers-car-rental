@@ -662,3 +662,6 @@ Legend:
   🔒 Mutation → rateLimitedProtectedProcedure (auth + Redis)
   ⛔ Conflict → checkBookingConflict (overlap guard)
 ```
+
+Additional files:
+scripts/redis-cache-flush.ts - Flushes the redis cache
