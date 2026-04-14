@@ -2,7 +2,7 @@ import { car } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import z from "zod";
-import { and, count, eq, getTableColumns, ilike } from "drizzle-orm";
+import { and, count, eq, getTableColumns, ilike, isNull } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { TRPCError } from "@trpc/server";
 import { getCachedData, setCachedData } from "@/lib/redis-cache";
@@ -27,7 +27,13 @@ export const carRouter = createTRPCRouter({
                     ...getTableColumns(car),
                 })
                 .from(car)
-                .where(eq(car.id, id));
+                .where(
+                    and(
+                        eq(car.id, id),
+                        isNull(car.deletedAt),
+                        eq(car.isActive, true)
+                    )
+                );
 
             if (!data) {
                 throw new TRPCError({
@@ -46,13 +52,14 @@ export const carRouter = createTRPCRouter({
             page: z.number().default(DEFAULT_PAGE),
             pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
             search: z.string().nullish(),
+            locationId: z.string().nullish(),
         }))
         .query(async ({ input }) => {
-            const { search, page, pageSize } = input;
+            const { search, page, pageSize, locationId } = input;
 
             const normalizedSearch = (search ?? "").trim().toLowerCase();
             const shouldCache = normalizedSearch.length <= 64;
-            const cacheKey = `cars:all:page:${page}:size:${pageSize}:search:${normalizedSearch || "none"}`;
+            const cacheKey = `cars:all:page:${page}:size:${pageSize}:search:${normalizedSearch || "none"}:loc:${locationId || "all"}`;
 
             if (shouldCache) {
                 const cached = await getCachedData<{ items: typeof car.$inferSelect[], total: number, totalPages: number }>(cacheKey);
@@ -72,8 +79,11 @@ export const carRouter = createTRPCRouter({
                 .from(car)
                 .where(
                     and(
+                        isNull(car.deletedAt),
+                        eq(car.isActive, true),
                         eq(car.status, "available"),
                         searchCondition,
+                        locationId ? eq(car.locationId, locationId) : undefined
                     )
                 )
                 .limit(pageSize)
@@ -87,8 +97,11 @@ export const carRouter = createTRPCRouter({
                 .from(car)
                 .where(
                     and(
+                        isNull(car.deletedAt),
+                        eq(car.isActive, true),
                         eq(car.status, "available"),
-                        searchCondition
+                        searchCondition,
+                        locationId ? eq(car.locationId, locationId) : undefined
                     )
                 );
 

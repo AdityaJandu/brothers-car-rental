@@ -17,6 +17,10 @@ export const bookingInsertSchema = z.object({
 
     endDate: z.coerce.date(),
 
+    // --- LOCATION ---
+    pickUpLocation: z.string().min(1, "Pick-up location is required"),
+    dropOffLocation: z.string().min(1, "Drop-off location is required"),
+
     // --- FORM: PERSONAL DETAILS ---
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
     email: z.email("Please enter a valid email address"),
@@ -57,6 +61,8 @@ export const bookingFormSchema = z.object({
         message: "Pick-up date cannot be in the past"
     }),
     endDate: z.date(),
+    pickUpLocation: z.string().min(1, "Pick-up location is required"),
+    dropOffLocation: z.string().min(1, "Drop-off location is required"),
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
     email: z.email("Please enter a valid email address"),
     phoneNumber: z.string().min(10, "Please enter a valid phone number"),

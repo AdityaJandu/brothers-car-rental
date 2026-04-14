@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Car, LayoutDashboard, CalendarDays, PlusCircle, ShieldAlert } from "lucide-react";
+import { Car, LayoutDashboard, CalendarDays, PlusCircle, ShieldAlert, MapPin } from "lucide-react";
 
 export function AdminNavbar() {
     const pathname = usePathname();
@@ -23,6 +23,11 @@ export function AdminNavbar() {
             name: "Add Vehicle",
             href: "/add-car",
             icon: PlusCircle
+        },
+        {
+            name: "Hubs",
+            href: "/admin-locations",
+            icon: MapPin
         }
     ];
 

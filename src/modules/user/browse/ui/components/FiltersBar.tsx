@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, Search, Car } from "lucide-react";
+import { Calendar, Search, Car, MapPin } from "lucide-react";
 import { DatePicker } from "./DatePicker";
 import { format } from "date-fns";
 import { useCarFiltersUser } from "../../hooks/use-car-filters-user";
+import { useTRPC } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function FiltersBar() {
     const [pickupDate, setPickupDate] = useState<Date | undefined>(undefined);
@@ -16,7 +19,8 @@ export function FiltersBar() {
 
     const [filters, setFilters] = useCarFiltersUser();
 
-
+    const trpc = useTRPC();
+    const { data: locations } = useQuery(trpc.userLocations.getActiveLocations.queryOptions());
 
     return (
         <div className="flex flex-col px-6 lg:px-12 gap-8">
@@ -39,6 +43,34 @@ export function FiltersBar() {
                             className="bg-transparent border-none outline-none text-sm font-semibold text-slate-800 placeholder:text-slate-500 w-full"
                         />
                     </div>
+                </div>
+
+                {/* Separator (Desktop only) */}
+                <div className="hidden lg:block h-10 bg-slate-200 mx-2"></div>
+
+                {/* Location Picker */}
+                <div className="flex-1 w-full relative">
+                    <Select value={filters.locationId} onValueChange={(val) => setFilters({ locationId: val === "all" ? "" : val })}>
+                        <SelectTrigger className="flex flex-row items-center bg-[#F4F5F7] hover:bg-[#E2E4E9] border-transparent shadow-none rounded-md px-4 py-3 min-h-14 h-full w-full text-left transition-colors focus:outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-slate-400">
+                            <MapPin className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
+                            <div className="flex flex-col flex-1 text-left">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+                                    Pick-Up Hub
+                                </span>
+                                <span className="text-sm font-semibold text-slate-800 line-clamp-1 h-[20px]">
+                                    {filters.locationId ? locations?.find(l => l.id === filters.locationId)?.name || "" : "Anywhere"}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent position="popper" sideOffset={8}>
+                            <SelectItem value="all">Anywhere</SelectItem>
+                            {locations?.map((loc) => (
+                                <SelectItem key={loc.id} value={loc.id}>
+                                    {loc.name} ({loc.city})
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 {/* Separator (Desktop only) */}

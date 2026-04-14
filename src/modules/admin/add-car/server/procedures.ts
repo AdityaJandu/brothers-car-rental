@@ -1,6 +1,7 @@
 import { createTRPCRouter, rateLimitedProtectedProcedure } from "@/trpc/init";
 import { carInsertSchema } from "../../dashboard/schemas";
-import { car } from "@/db/schema";
+import { car, auditLog } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { TRPCError } from "@trpc/server";
 import { invalidateCacheGroup } from "@/lib/redis-cache";
@@ -10,7 +11,20 @@ export const adminAddCarRouter = createTRPCRouter({
         .input(
             carInsertSchema
         )
-        .mutation(async ({ input }) => {
+        .mutation(async ({ ctx, input }) => {
+
+            const existing = await db
+                .select({ id: car.id })
+                .from(car)
+                .where(eq(car.plateNumber, input.plateNumber))
+                .limit(1);
+
+            if (existing.length > 0) {
+                throw new TRPCError({
+                    code: "CONFLICT",
+                    message: "A car with this plate number already exists.",
+                });
+            }
 
             const [newCar] = await db
                 .insert(car)
@@ -26,6 +40,14 @@ export const adminAddCarRouter = createTRPCRouter({
                     message: "No car found",
                 });
             }
+
+            await db.insert(auditLog).values({
+                adminId: ctx.auth.user.id,
+                action: "car.created",
+                targetType: "car",
+                targetId: newCar.id,
+                newValue: JSON.stringify(newCar),
+            });
 
             await invalidateCacheGroup("cars:");
             return newCar;

@@ -138,6 +138,8 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
     sessions: many(session),
     accounts: many(account),
+    bookings: many(booking),
+    auditLogs: many(auditLog),
 }));
 
 // A session belongs to one user
@@ -166,9 +168,31 @@ export const fuelTypeEnum = pgEnum("fuel_type", ["petrol", "ev", "hybrid"]);
 
 // UPDATE: Added "cash" to the payment methods
 export const paymentMethodEnum = pgEnum("payment_method", ["card", "wallet", "cash"]);
+export const paymentStatusEnum = pgEnum("payment_status", ["unpaid", "paid", "refunded", "failed"]);
 export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled", "completed", "expired"]);
+export const auditActionEnum = pgEnum("audit_action", [
+    "booking.confirmed",
+    "booking.cancelled",
+    "booking.completed",
+    "booking.expired",
+    "car.created",
+    "car.updated",
+    "car.deleted",
+    "user.banned",
+]);
 
 // --- TABLES ---
+
+export const location = pgTable("location", {
+    id: text("id").primaryKey().$defaultFn(() => nanoid()),
+    name: text("name").notNull(),
+    city: text("city").notNull(),
+    fullAddress: text("full_address").notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+});
+
 export const car = pgTable("car", {
     // --- IDENTIFICATION ---
     id: text("id").primaryKey().$defaultFn(() => nanoid()),
@@ -197,13 +221,23 @@ export const car = pgTable("car", {
 
     // --- OPERATIONS & INVENTORY ---
     plateNumber: text("plate_number").unique().notNull(),
+    locationId: text("location_id").notNull().references(() => location.id, { onDelete: "restrict" }),
     status: carStatusEnum("status").default("available").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
+
+    // --- RECORD TRACKING ---
+    deletedAt: timestamp("deleted_at"),
 
     // --- AUDIT TIMESTAMPS ---
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
-});
+}, (table) => [
+    index("car_status_category_idx").on(table.status, table.category),
+    index("car_is_active_status_idx").on(table.isActive, table.status),
+    index("car_price_per_day_idx").on(table.pricePerDay),
+    index("car_plate_number_idx").on(table.plateNumber),
+    index("car_location_id_idx").on(table.locationId),
+]);
 
 
 export const booking = pgTable("booking", {
@@ -215,6 +249,10 @@ export const booking = pgTable("booking", {
     startDate: timestamp("start_date").notNull(),
     endDate: timestamp("end_date").notNull(),
 
+    // --- LOCATION ---
+    pickUpLocation: text("pick_up_location").notNull().references(() => location.id, { onDelete: "restrict" }),
+    dropOffLocation: text("drop_off_location").notNull().references(() => location.id, { onDelete: "restrict" }),
+
     // --- FORM: PERSONAL DETAILS ---
     fullName: text("full_name").notNull(),
     email: text("email").notNull(),
@@ -224,6 +262,8 @@ export const booking = pgTable("booking", {
     // --- FORM: PAYMENT ---
     // UPDATE: Set default to "cash"
     paymentMethod: paymentMethodEnum("payment_method").default("cash").notNull(),
+    paymentIntentId: text("payment_intent_id"),
+    paymentStatus: paymentStatusEnum("payment_status").default("unpaid").notNull(),
 
     // --- FINANCIAL BREAKDOWN ---
     dailyRate: integer("daily_rate").notNull(),
@@ -235,15 +275,26 @@ export const booking = pgTable("booking", {
     // --- STATUS ---
     status: bookingStatusEnum("status").default("pending").notNull(),
 
+    cancelledAt: timestamp("cancelled_at"),
+    cancelledBy: text("cancelled_by"),
+    cancellationReason: text("cancellation_reason"),
+
     // --- AUDIT TIMESTAMPS ---
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
 }, (table) => [
     // Composite index for fast booking conflict/overlap detection
     index("booking_car_dates_idx").on(table.carId, table.startDate, table.endDate),
+    index("booking_user_id_created_at_idx").on(table.userId, table.createdAt),
+    index("booking_status_created_at_idx").on(table.status, table.createdAt),
+    index("booking_car_id_status_idx").on(table.carId, table.status),
 ]);
 
 // --- RELATIONS ---
+export const locationRelations = relations(location, ({ many }) => ({
+    cars: many(car),
+}));
+
 export const bookingRelations = relations(booking, ({ one }) => ({
     user: one(user, {
         fields: [booking.userId],
@@ -253,4 +304,39 @@ export const bookingRelations = relations(booking, ({ one }) => ({
         fields: [booking.carId],
         references: [car.id],
     }),
+    pickUp: one(location, {
+        fields: [booking.pickUpLocation],
+        references: [location.id],
+    }),
+    dropOff: one(location, {
+        fields: [booking.dropOffLocation],
+        references: [location.id],
+    }),
+}));
+
+export const carRelations = relations(car, ({ one, many }) => ({
+    bookings: many(booking),
+    location: one(location, {
+        fields: [car.locationId],
+        references: [location.id],
+    }),
+}));
+
+export const auditLog = pgTable("audit_log", {
+    id: text("id").primaryKey().$defaultFn(() => nanoid()),
+    adminId: text("admin_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+    action: auditActionEnum("action").notNull(),
+    targetType: text("target_type").notNull(),
+    targetId: text("target_id").notNull(),
+    previousValue: text("previous_value"),
+    newValue: text("new_value"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+    index("audit_log_admin_id_idx").on(table.adminId),
+    index("audit_log_target_idx").on(table.targetType, table.targetId),
+    index("audit_log_created_at_idx").on(table.createdAt),
+]);
+
+export const auditLogRelations = relations(auditLog, ({ one }) => ({
+    admin: one(user, { fields: [auditLog.adminId], references: [user.id] }),
 }));

@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { car } from "@/db/schema";
 import { db } from "@/db";
 
-import { count, eq, ilike, and, getTableColumns } from "drizzle-orm";
+import { count, eq, ilike, and, getTableColumns, isNull } from "drizzle-orm";
 import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
 import { CarStatus } from "../types";
 import { TRPCError } from "@trpc/server";
@@ -41,6 +41,7 @@ export const adminDashboardRouter = createTRPCRouter({
                 .from(car)
                 .where(
                     and(
+                        isNull(car.deletedAt),
                         normalizedSearch ? ilike(car.name, `%${normalizedSearch}%`) : undefined,
                         status ? eq(car.status, status) : undefined
                     )
@@ -53,6 +54,7 @@ export const adminDashboardRouter = createTRPCRouter({
                 .from(car)
                 .where(
                     and(
+                        isNull(car.deletedAt),
                         normalizedSearch ? ilike(car.name, `%${normalizedSearch}%`) : undefined,
                         status ? eq(car.status, status) : undefined
                     )

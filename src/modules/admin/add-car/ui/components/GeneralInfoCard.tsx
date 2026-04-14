@@ -14,12 +14,20 @@ import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
 import { Badge } from "@/components/ui/badge";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface GeneralInfoCardProps {
     form: UseFormReturn<z.infer<typeof carInsertSchema>>;
+    locations: { id: string; name: string; city: string; fullAddress: string }[];
 }
 
-export function GeneralInfoCard({ form }: GeneralInfoCardProps) {
+export function GeneralInfoCard({ form, locations }: GeneralInfoCardProps) {
     return (
         <Card className="rounded-xl bg-white border-border/40 shadow-sm hover:shadow-md transition-shadow duration-300">
             <CardContent className="p-6 space-y-5">
@@ -187,6 +195,32 @@ export function GeneralInfoCard({ form }: GeneralInfoCardProps) {
                                         {...field}
                                     />
                                 </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="locationId"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    Physical Hub
+                                </FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="bg-[#ebe9ff] border-transparent focus:bg-white transition-all duration-200 h-11">
+                                            <SelectValue placeholder="Select assigned location" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {locations.map((loc) => (
+                                            <SelectItem key={loc.id} value={loc.id}>
+                                                {loc.name} ({loc.city})
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

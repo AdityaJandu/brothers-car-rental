@@ -60,6 +60,10 @@ export const bookingRouter = createTRPCRouter({
                 .values({
                     ...input,
                     userId,
+                    pickUpLocation: input.pickUpLocation,
+                    dropOffLocation: input.dropOffLocation,
+                    paymentStatus: "unpaid",
+                    paymentIntentId: null,
                 })
                 .returning();
 

@@ -62,6 +62,21 @@ The application is logically decoupled into independent, self-contained business
 
 <br>
 
+### 📍 `admin/locations`
+
+Admin-tier management of all physical rental hub deployment locations.
+
+  * **`server/procedures.ts`**:
+      * `getAll` **(Query)**: Pulls all internal locations. Resolves native cache hits globally. Uses `protectedProcedure` (auth-only) for read speed.
+      * `create` **(Mutation)**: Strict schema mapping for deploying physical location hubs. Uses `protectedProcedure` with immediate wildcard cache bursting (`invalidateCacheGroup("locations")`).
+      * `update` **(Mutation)**: Updates existing hub data and active states natively, triggering edge invalidation organically.
+  * `ui/views/AdminLocationsView.tsx`: Core map handling DataTables rendering structural states.
+  * `ui/components/`:
+      * `location-columns.tsx`: Data definition logic.
+      * `LocationFormDialog.tsx`: Inline Radix-UI popup for modifying nodes seamlessly.
+
+<br>
+
 ### 🚗 `admin/add-car`
 
 Handles appending new car assets to the system.
@@ -156,6 +171,15 @@ Customer dashboard tracking standard historical reservations.
 
 <br>
 
+### 📍 `user/locations`
+
+Public facing static data delivery layer for the Physical Hub mappings.
+
+  * **`server/procedures.ts`**:
+      * `getActiveLocations` **(Query)**: Ultra-fast Read-Through Cache architecture exclusively serving active-only (`isActive: true`) physical hubs for general Checkout and Browse Selectors. Safely bypasses postgres transactions via Upstash `locations:all:active`. Uses `baseProcedure`.
+
+<br>
+
 ### 👤 `user/profile`
 
 User dashboard tracking their specific session characteristics and secure auth settings.
@@ -194,7 +218,7 @@ The pure marketing and branding UX architecture.
 Drizzle ORM central mapping architecture.
 
   * `index.ts`: The core database connector binding Drizzle explicitly to the Supabase Postgres connection string. **Configured with connection pooling** (`max: 10`, `idle_timeout: 20`, `connect_timeout: 10`) and `prepare: false` (required for Supabase's transaction-mode pooler on port 6543) to eliminate cold-connection overhead.
-  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection. The `bookingStatusEnum` includes `"expired"` for auto-expired pending bookings.
+  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `location`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection. The `bookingStatusEnum` includes `"expired"` for auto-expired pending bookings.
 
 <br>
 

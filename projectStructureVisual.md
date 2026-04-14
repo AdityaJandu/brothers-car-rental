@@ -14,8 +14,8 @@
 │  │(onboard) │  │  (auth)  │  │  (user)  │  │ (admin)  │  │   api/   │   │
 │  │    /     │  │ sign-in  │  │  browse  │  │dashboard │  │auth/[..] │   │
 │  │          │  │ sign-up  │  │  profile │  │ add-car  │  │trpc/[..] │   │
-│  │          │  │          │  │check-out │  │ booking  │  │          │   │
-│  │          │  │          │  │ bookings │  │          │  │          │   │
+│  │          │  │          │  │check-out │  │ bookings │  │          │   │
+│  │          │  │          │  │ bookings │  │ locations│  │          │   │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
 │       │              │             │              │              │      │
 └───────┼──────────────┼─────────────┼──────────────┼──────────────┼──────┘
@@ -26,10 +26,11 @@
 │                                                                         │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
 │  │  onboarding │  │    auth     │  │  user/*     │  │  admin/*    │     │
-│  │  ──────────  │  │  ───────── │  │  ───────────│  │  │  ────────│     │   
+│  │  ────────── │  │  ─────────  │  │  ───────────│  │  │  ────────│     │   
 │  │  views/     │  │  views/     │  │  browse/    │  │  add-car/   │     │
 │  │  components/│  │  layout/    │  │  bookings/  │  │  dashboard/ │     │
 │  │  data/      │  │             │  │  check-out/ │  │  bookings/  │     │
+│  │             │  │             │  │  locations/ │  │  locations/ │     │
 │  │             │  │             │  │  profile/   │  │             │     │
 │  │             │  │             │  │  car-id-view│  │             │     │
 │  └─────────────┘  └─────────────┘  └──────┬──────┘  └──────┬──────┘     │
@@ -109,6 +110,8 @@ brothers-car-rental/
 │   │   │   │   └── page.tsx                    #    → Promise.all(getSession, prefetch)
 │   │   │   ├── add-car/
 │   │   │   │   └── page.tsx                    #    → getSession() → admin guard
+│   │   │   ├── admin-locations/
+│   │   │   │   └── page.tsx                    #    → Promise.all(getSession, prefetch)
 │   │   │   └── admin-booking/
 │   │   │       ├── page.tsx                    #    → Promise.all(getSession, prefetch)
 │   │   │       └── [bookingId]/
@@ -156,18 +159,27 @@ brothers-car-rental/
 │   │   │   │   ├── params.ts
 │   │   │   │   └── types.ts
 │   │   │   │
-│   │   │   └── bookings/
+│   │   │   ├── bookings/
+│   │   │   │   ├── server/
+│   │   │   │   │   └── procedures.ts           # 📖 getAllAdmin, getOneAdmin (Query)
+│   │   │   │   │                               # 🔒 updateOneAdmin (Mutation, rate-limited)
+│   │   │   │   └── ui/
+│   │   │   │       ├── views/
+│   │   │   │       │   ├── AdminBookingView.tsx
+│   │   │   │       │   └── AdminBookingIdView.tsx
+│   │   │   │       └── components/
+│   │   │   │           ├── admin-booking-rental-info.tsx
+│   │   │   │           ├── admin-booking-pricing-info.tsx
+│   │   │   │           └── admin-booking-customer-info.tsx
+│   │   │   └── locations/
 │   │   │       ├── server/
-│   │   │       │   └── procedures.ts           # 📖 getAllAdmin, getOneAdmin (Query)
-│   │   │       │                               # 🔒 updateOneAdmin (Mutation, rate-limited)
+│   │   │       │   └── procedures.ts           # 📖 getAll (Query), 🔒 create/update (Mutation)
 │   │   │       └── ui/
 │   │   │           ├── views/
-│   │   │           │   ├── AdminBookingView.tsx
-│   │   │           │   └── AdminBookingIdView.tsx
+│   │   │           │   └── AdminLocationsView.tsx
 │   │   │           └── components/
-│   │   │               ├── admin-booking-rental-info.tsx
-│   │   │               ├── admin-booking-pricing-info.tsx
-│   │   │               └── admin-booking-customer-info.tsx
+│   │   │               ├── location-columns.tsx
+│   │   │               └── LocationFormDialog.tsx
 │   │   │
 │   │   ├── user/
 │   │   │   ├── browse/
@@ -239,6 +251,9 @@ brothers-car-rental/
 │   │   │               ├── PersonalInfoCard.tsx
 │   │   │               ├── PaymentMethodsCard.tsx
 │   │   │               └── SecuritySettingsCard.tsx
+│   │   │   └── locations/
+│   │   │       └── server/
+│   │   │           └── procedures.ts           # 📖 getActiveLocations (Query, read-through cached)
 │   │   │
 │   │   ├── onboarding/
 │   │   │   ├── ui/
@@ -271,7 +286,7 @@ brothers-car-rental/
 │   │
 │   ├── db/                                     # ─── Data Layer ───
 │   │   ├── index.ts                            #    Drizzle + postgres (pooled)
-│   │   └── schema.ts                           #    user, session, car, booking
+│   │   └── schema.ts                           #    user, session, location, car, booking
 │   │                                            #    + booking_car_dates_idx (overlap)
 │   │                                            #    + bookingStatusEnum: expired
 │   │
@@ -410,15 +425,19 @@ baseProcedure
          │   ├── userBookings.getOne
          │   ├── userCheckout.getUnavailableDates   ⛔ availability engine
          │   ├── userProfile.getUser
+         │   ├── userLocations.getActiveLocations
          │   ├── adminDashboard.getAllAdmin
          │   ├── adminBookings.getAllAdmin
-         │   └── adminBookings.getOneAdmin
+         │   ├── adminBookings.getOneAdmin
+         │   └── adminLocations.getAll
          │
          └──► rateLimitedProtectedProcedure  (+ Redis 30 req/min)
                │
                └── 🔒 MUTATIONS (rate-limited)
                    ├── adminAddCar.create
                    ├── adminBookings.updateOneAdmin
+                   ├── adminLocations.create
+                   ├── adminLocations.update
                    └── userCheckout.create          (+ bookingRateLimit 5/min)
                        └── ⛔ checkBookingConflict  (overlap guard)
 ```
@@ -475,29 +494,41 @@ Single Server Request (e.g. GET /)
 │       booking       │    │   │         car          │
 ├─────────────────────┤    │   ├──────────────────────┤
 │ id          (PK)    │    │   │ id           (PK)    │
-│ userId      (FK)────┤►───┘   │ name                 │
-│ carId       (FK)────┤►───────┤► make                │
-│ startDate           │        │ model                │
-│ endDate             │        │ year                 │
-│ pickUpLocation      │        │ pricePerDay          │
-│ dropOffLocation     │        │ licensePlate         │
-│ totalPrice          │        │ seats                │
-│ status (enum)───────┤►       │ transmission         │
-│   pending           │   ┌────│ fuelType             │
-│   confirmed         │   │    │ category             │
-│   cancelled         │   │    │ headerImage          │
-│   completed         │   │    │ images[]             │
-│ createdAt           │   │    │ status (enum)────────┤►
-│ updatedAt           │   │    │   available          │
-└─────────────────────┘   │    │   rented             │
-                          │    │   maintenance        │
-                     N:1  │    │ rating               │
-                          │    │ description          │
-                          │    │ createdAt            │
-                          │    │ updatedAt            │
-                          │    └──────────────────────┘
-                          │
-                          └── booking.carId ──► car.id
+│ userId      (FK)────┤►───┘   │ locationId   (FK)────┤►────────┐
+│ carId       (FK)────┤►───────┤► make                │         │
+│ startDate           │        │ model                │         │
+│ endDate             │        │ year                 │         │
+│ pickUpLocation      │        │ pricePerDay          │         │
+│ dropOffLocation     │        │ licensePlate         │         │
+│ totalPrice          │        │ seats                │         │
+│ status (enum)───────┤►       │ transmission         │         │
+│   pending           │   ┌────│ fuelType             │         │
+│   confirmed         │   │    │ category             │         │
+│   cancelled         │   │    │ headerImage          │         │
+│   completed         │   │    │ images[]             │         │
+│ createdAt           │   │    │ status (enum)────────┤►        │
+│ updatedAt           │   │    │   available          │         │
+└─────────────────────┘   │    │   rented             │         │
+                          │    │   maintenance        │         │
+                     N:1  │    │ rating               │         │
+                          │    │ description          │         │
+                          │    │ createdAt            │         │
+                          │    │ updatedAt            │         │
+                          │    └──────────────────────┘         │
+                          │                                     │
+                          └── booking.carId ──► car.id          │
+                                                                ▼
+                                                       ┌──────────────────────┐
+                                                       │       location       │
+                                                       ├──────────────────────┤
+                                                       │ id           (PK)    │
+                                                       │ name                 │
+                                                       │ city                 │
+                                                       │ fullAddress          │
+                                                       │ isActive             │
+                                                       │ createdAt            │
+                                                       │ updatedAt            │
+                                                       └──────────────────────┘
 ```
 
 ---

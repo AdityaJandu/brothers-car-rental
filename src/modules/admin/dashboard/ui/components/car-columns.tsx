@@ -11,9 +11,10 @@ import { car } from "@/db/schema" // <-- Adjust this path if your schema is some
 import { InferSelectModel } from "drizzle-orm"
 
 // 2. THE FIX: Define the exact shape of the row, swapping Dates for strings
-export type CarRow = Omit<InferSelectModel<typeof car>, "createdAt" | "updatedAt"> & {
+export type CarRow = Omit<InferSelectModel<typeof car>, "createdAt" | "updatedAt" | "deletedAt"> & {
     createdAt: string;
     updatedAt: string;
+    deletedAt: string | null;
 };
 
 // 3. Apply the fixed type to your ColumnDef
