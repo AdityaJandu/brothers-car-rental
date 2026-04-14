@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { LocationRow } from "./location-columns";
 
 const formSchema = z.object({
   id: z.string().optional(),
@@ -41,7 +42,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface LocationFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  locationToEdit?: any | null; // Passed from the Data Table
+  locationToEdit?: LocationRow | null;
 }
 
 export function LocationFormDialog({ open, onOpenChange, locationToEdit }: LocationFormDialogProps) {

@@ -45,6 +45,17 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 });
 
 /**
+ * Admin-only protected procedure.
+ * Enforces that the user has the 'admin' role.
+ */
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+    if (ctx.auth.user.role !== "admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+    }
+    return next({ ctx });
+});
+
+/**
  * Rate-limited protected procedure.
  * Applies the general rate limiter (30 req/min) keyed on userId + path.
  * Use this instead of protectedProcedure wherever you want per-user limits.

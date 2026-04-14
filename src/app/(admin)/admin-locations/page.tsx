@@ -7,14 +7,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { AdminLocationsView, AdminLocationsViewError, AdminLocationsViewLoading } from "@/modules/admin/locations/ui/views/AdminLocationsView";
 
 export default async function Page() {
-    // Run admin auth check and data prefetch in parallel
-    const queryClient = getQueryClient();
-    const [session] = await Promise.all([
-        getSession(),
-        queryClient.prefetchQuery(
-            trpc.adminLocations.getAll.queryOptions()
-        ),
-    ]);
+    const session = await getSession();
 
     if (!session) {
         redirect("/sign-in");
@@ -23,6 +16,11 @@ export default async function Page() {
     if (session.user.role !== 'admin') {
         redirect('/');
     }
+
+    const queryClient = getQueryClient();
+    await queryClient.prefetchQuery(
+        trpc.adminLocations.getAll.queryOptions()
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)} >

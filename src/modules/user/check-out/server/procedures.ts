@@ -1,14 +1,14 @@
 import { rateLimitedProtectedProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { bookingInsertSchema } from "../schemas";
 import { db } from "@/db";
-import { booking } from "@/db/schema";
+import { booking, location } from "@/db/schema";
+import { inArray, eq, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { bookingRateLimit } from "@/lib/ratelimit";
 import { invalidateCacheGroup } from "@/lib/redis-cache";
 import { checkBookingConflict, getUnavailableDateRanges } from "./availability";
 import { inngest } from "@/inngest/client";
 import z from "zod";
-
 
 export const bookingRouter = createTRPCRouter({
 
@@ -38,6 +38,24 @@ export const bookingRouter = createTRPCRouter({
                 throw new TRPCError({
                     code: "TOO_MANY_REQUESTS",
                     message: "You are creating bookings too quickly. Please wait a moment before trying again.",
+                });
+            }
+
+            const uniqueHubIds = Array.from(new Set([input.pickUpLocation, input.dropOffLocation]));
+            const validHubs = await db
+                .select({ id: location.id })
+                .from(location)
+                .where(
+                    and(
+                        inArray(location.id, uniqueHubIds),
+                        eq(location.isActive, true)
+                    )
+                );
+
+            if (validHubs.length !== uniqueHubIds.length) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "One or more selected physical hubs are currently unavailable or invalid.",
                 });
             }
 

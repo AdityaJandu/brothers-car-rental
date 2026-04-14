@@ -69,7 +69,7 @@ export const carRouter = createTRPCRouter({
             // 1. Safely handle the search string. 
             // If there's a search term, wrap it in % wildcards for partial matching. 
             // If it's empty, set it to undefined so Drizzle ignores it.
-            const searchCondition = search ? ilike(car.model, `%${search}%`) : undefined;
+            const searchCondition = normalizedSearch ? ilike(car.name, `%${normalizedSearch}%`) : undefined;
 
             // 2. ADD AWAIT HERE! This is what was breaking your types.
             const data = await db

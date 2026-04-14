@@ -26,27 +26,33 @@ export const adminAddCarRouter = createTRPCRouter({
                 });
             }
 
-            const [newCar] = await db
-                .insert(car)
-                .values({
-                    ...input,
-                    headerImage: input.headerImage,
-                })
-                .returning();
+            const newCar = await db.transaction(async (tx) => {
+                const [insertedCar] = await tx
+                    .insert(car)
+                    .values({
+                        ...input,
+                        headerImage: input.headerImage,
+                    })
+                    .returning();
 
-            if (!newCar) {
-                throw new TRPCError({
-                    code: "NOT_FOUND",
-                    message: "No car found",
+                if (!insertedCar) {
+                    throw new TRPCError({
+                        code: "NOT_FOUND",
+                        message: "No car found",
+                    });
+                }
+
+                await tx.insert(auditLog).values({
+                    adminId: ctx.auth.user.id,
+                    adminName: ctx.auth.user.name,
+                    adminEmail: ctx.auth.user.email,
+                    action: "car.created",
+                    targetType: "car",
+                    targetId: insertedCar.id,
+                    newValue: JSON.stringify(insertedCar),
                 });
-            }
 
-            await db.insert(auditLog).values({
-                adminId: ctx.auth.user.id,
-                action: "car.created",
-                targetType: "car",
-                targetId: newCar.id,
-                newValue: JSON.stringify(newCar),
+                return insertedCar;
             });
 
             await invalidateCacheGroup("cars:");

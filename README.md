@@ -30,7 +30,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 * **Administrative Management**: High-level dashboards isolating active rentals, confirming requests, and parsing incoming fleet additions directly into the database.
 * **Cloud Image Uploading**: Seamless fleet-asset capturing securely handled client-side and dispatched directly to Supabase data buckets.
 * **Multi-Layered Rate Limiting**: IP-based auth rate limiting at the edge middleware, per-user tRPC rate limiting (30 req/min) via `rateLimitedProtectedProcedure` on **mutations only**, and stricter domain-specific limits (e.g., 5 bookings/min) for critical mutations. Read queries use `protectedProcedure` (auth-only) to avoid unnecessary Redis overhead.
-* **Admin-Managed Physical Hubs**: Secure physical fleet distribution tracking natively. Administrators actively manage dynamic dispatch centers internally locking car deployment arrays to fixed pickup hubs natively mapped into checkout loops and location-based frontend search filters implicitly.
+* **Admin-Managed Physical Hubs**: Administrators manage secure, fixed pickup hubs for fleet distribution, enabling controlled car deployment and location-based search.
 * **Optimized Design**: Custom responsive aesthetic adhering tightly to modern curved (`rounded-md` clamped bounds) and drop-shadow architectures.
 
 ## ⚡ Performance Architecture

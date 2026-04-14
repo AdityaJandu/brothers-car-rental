@@ -214,11 +214,17 @@ export function GeneralInfoCard({ form, locations }: GeneralInfoCardProps) {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {locations.map((loc) => (
-                                            <SelectItem key={loc.id} value={loc.id}>
-                                                {loc.name} ({loc.city})
+                                        {locations.length === 0 ? (
+                                            <SelectItem value="empty" disabled>
+                                                No locations available
                                             </SelectItem>
-                                        ))}
+                                        ) : (
+                                            locations.map((loc) => (
+                                                <SelectItem key={loc.id} value={loc.id}>
+                                                    {loc.name} ({loc.city})
+                                                </SelectItem>
+                                            ))
+                                        )}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
