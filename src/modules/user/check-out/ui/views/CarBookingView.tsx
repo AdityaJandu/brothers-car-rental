@@ -31,12 +31,12 @@ export function CarBookingView({ carId }: CarBookingProps) {
     );
 
     // Fetch unavailable date ranges for this car
-    const { data: unavailableDates } = useQuery(
+    const { data: unavailableDates, isLoading: isLoadingDates, isError: isErrorDates } = useQuery(
         trpc.userCheckout.getUnavailableDates.queryOptions({ carId })
     );
 
     // Fetch active hubs
-    const { data: activeLocations } = useQuery(
+    const { data: activeLocations, isLoading: isLoadingLocs, isError: isErrorLocs } = useQuery(
         trpc.userLocations.getActiveLocations.queryOptions()
     );
 
@@ -87,6 +87,14 @@ export function CarBookingView({ carId }: CarBookingProps) {
         createBooking.mutate(values);
     };
 
+    if (isLoadingDates || isLoadingLocs) {
+        return <LoadingState title="Loading checkout" descr="Preparing availability and location data..." />;
+    }
+
+    if (isErrorDates || isErrorLocs) {
+        return <ErrorState title="Failed to load checkout" descr="Unable to synchronize live availability data. Please refresh." />;
+    }
+
     return (
         <div className="min-h-screen bg-white font-display text-slate-900 pb-20">
             <main className="mx-auto px-6 lg:px-12 pt-8">
@@ -102,7 +110,6 @@ export function CarBookingView({ carId }: CarBookingProps) {
                                     isPending={createBooking.isPending}
                                     unavailableDates={unavailableDates ?? []}
                                     activeLocations={activeLocations ?? []}
-                                    carLocationId={car.locationId}
                                 />
                             </div>
 

@@ -173,7 +173,7 @@ Customer dashboard tracking standard historical reservations.
 
 ### 📍 `user/locations`
 
-Public facing static data delivery layer for the Physical Hub mappings.
+Public-facing static data delivery layer for the Physical Hub mappings.
 
   * **`server/procedures.ts`**:
       * `getActiveLocations` **(Query)**: Ultra-fast Read-Through Cache architecture exclusively serving active-only (`isActive: true`) physical hubs for general Checkout and Browse Selectors. Safely bypasses postgres transactions via Upstash `locations:all:active`. Uses `baseProcedure`.

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 
 // Schema
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
@@ -29,7 +30,7 @@ export default function AddCarView() {
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
-    const { data: locations } = useQuery(
+    const { data: locations, isLoading: isLoadingLocations, isError: isErrorLocations, error: locationsError } = useQuery(
         trpc.adminLocations.getAll.queryOptions()
     );
 
@@ -143,6 +144,20 @@ export default function AddCarView() {
 
     const currentHeaderImage = form.watch("headerImage");
     const currentImageUrls = form.watch("imageUrls") || [];
+
+    if (isLoadingLocations) {
+        return <LoadingState title="Loading Hubs" descr="Synchronizing locations configuration..." />;
+    }
+
+    if (isErrorLocations) {
+        return <div className="p-8">
+            <div className="bg-destructive/10 border border-destructive text-destructive p-4 rounded-md">
+                <h3 className="font-bold">Failed to connect to active deployment hubs</h3>
+                <p className="text-sm mt-1">{locationsError?.message || "Unknown fetching error"}</p>
+                <Button className="mt-4" onClick={() => window.location.reload()} variant="outline">Retry connection</Button>
+            </div>
+        </div>;
+    }
 
     if (isCreatePending) {
         return (

@@ -40,7 +40,6 @@ interface CheckoutFormProps {
     isPending: boolean;
     unavailableDates: UnavailableDateRange[];
     activeLocations: { id: string; name: string; city: string; fullAddress: string }[];
-    carLocationId: string;
 }
 
 /**
@@ -92,7 +91,7 @@ function getNextAvailableDate(
     return candidate;
 }
 
-export function CheckoutForm({ isPending, unavailableDates, activeLocations, carLocationId }: CheckoutFormProps) {
+export function CheckoutForm({ isPending, unavailableDates, activeLocations }: CheckoutFormProps) {
     // Tap into the parent's form state
     const form = useFormContext<z.infer<typeof bookingInsertSchema>>();
 

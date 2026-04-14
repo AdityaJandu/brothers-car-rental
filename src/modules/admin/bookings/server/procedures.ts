@@ -127,9 +127,18 @@ export const adminBookingsRouter = createTRPCRouter({
         }
 
         if (status !== "pending") {
+            const auditActionMap: Record<string, "booking.confirmed" | "booking.cancelled" | "booking.completed" | "booking.expired"> = {
+                confirmed: "booking.confirmed",
+                cancelled: "booking.cancelled",
+                completed: "booking.completed",
+                expired: "booking.expired",
+            };
+
             await db.insert(auditLog).values({
                 adminId: ctx.auth.user.id,
-                action: `booking.${status}` as any, // Cast as any to bypass TS complaining about enum exact match
+                adminName: ctx.auth.user.name,
+                adminEmail: ctx.auth.user.email,
+                action: auditActionMap[status],
                 targetType: "booking",
                 targetId: bookingId,
                 previousValue: JSON.stringify({ status: before?.status }),

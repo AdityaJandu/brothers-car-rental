@@ -63,7 +63,11 @@ export function AdminLocationsView() {
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         <DataTable
                             columns={columns}
-                            data={locations as LocationRow[]}
+                            data={locations.map(loc => ({
+                                ...loc,
+                                createdAt: new Date(loc.createdAt).toISOString(),
+                                updatedAt: new Date(loc.updatedAt).toISOString()
+                            }))}
                             onRowClick={() => { }}
                         />
                     </div>
@@ -89,6 +93,6 @@ export const AdminLocationsViewLoading = () => (
 export const AdminLocationsViewError = () => (
     <ErrorState
         title="Failed to load hubs"
-        descr="Something went wrong while executing the sync. Try pulling again."
+        descr="Something went wrong while loading the hub list. Please refresh the page or try again."
     />
 );

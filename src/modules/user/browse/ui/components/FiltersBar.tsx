@@ -8,7 +8,7 @@ import { format } from "date-fns";
 import { useCarFiltersUser } from "../../hooks/use-car-filters-user";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 
 export function FiltersBar() {
     const [pickupDate, setPickupDate] = useState<Date | undefined>(undefined);
@@ -58,7 +58,7 @@ export function FiltersBar() {
                                     Pick-Up Hub
                                 </span>
                                 <span className="text-sm font-semibold text-slate-800 line-clamp-1 h-[20px]">
-                                    {filters.locationId ? locations?.find(l => l.id === filters.locationId)?.name || "" : "Anywhere"}
+                                    {filters.locationId ? locations?.find(l => l.id === filters.locationId)?.name || "Unknown location" : "Anywhere"}
                                 </span>
                             </div>
                         </SelectTrigger>

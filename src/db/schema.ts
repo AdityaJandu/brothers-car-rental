@@ -324,7 +324,9 @@ export const carRelations = relations(car, ({ one, many }) => ({
 
 export const auditLog = pgTable("audit_log", {
     id: text("id").primaryKey().$defaultFn(() => nanoid()),
-    adminId: text("admin_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+    adminId: text("admin_id").references(() => user.id, { onDelete: "set null" }),
+    adminName: text("admin_name"),
+    adminEmail: text("admin_email"),
     action: auditActionEnum("action").notNull(),
     targetType: text("target_type").notNull(),
     targetId: text("target_id").notNull(),
