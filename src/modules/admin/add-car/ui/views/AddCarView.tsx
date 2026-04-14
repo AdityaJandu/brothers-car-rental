@@ -9,7 +9,7 @@ import { Form } from "@/components/ui/form";
 // Schema
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { supabaseClient } from "@/lib/supabase-client";
 import { toast } from "sonner";
@@ -29,6 +29,10 @@ export default function AddCarView() {
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
+    const { data: locations } = useQuery(
+        trpc.adminLocations.getAll.queryOptions()
+    );
+
     const form = useForm<z.infer<typeof carInsertSchema>>({
         resolver: zodResolver(carInsertSchema),
         defaultValues: {
@@ -37,6 +41,7 @@ export default function AddCarView() {
             make: "",
             model: "",
             year: new Date().getFullYear(),
+            locationId: "",
             tier: "",
             description: "",
             category: "",
@@ -162,7 +167,7 @@ export default function AddCarView() {
                 >
                     {/* Left Column */}
                     <div className="lg:col-span-2 space-y-6">
-                        <GeneralInfoCard form={form} />
+                        <GeneralInfoCard form={form} locations={locations ?? []} />
                         <SpecificationsCard form={form} />
                         <MediaGalleryCard
                             isUploading={isUploading}

@@ -35,6 +35,11 @@ export function CarBookingView({ carId }: CarBookingProps) {
         trpc.userCheckout.getUnavailableDates.queryOptions({ carId })
     );
 
+    // Fetch active hubs
+    const { data: activeLocations } = useQuery(
+        trpc.userLocations.getActiveLocations.queryOptions()
+    );
+
     const createBooking = useMutation(
         trpc.userCheckout.create.mutationOptions({
             onSuccess: async () => {
@@ -59,6 +64,8 @@ export function CarBookingView({ carId }: CarBookingProps) {
             userId: undefined,
             id: undefined,
             carId: car.id,
+            pickUpLocation: car.locationId || "",
+            dropOffLocation: "",
             fullName: "",
             email: "",
             phoneNumber: "",
@@ -94,6 +101,8 @@ export function CarBookingView({ carId }: CarBookingProps) {
                                 <CheckoutForm
                                     isPending={createBooking.isPending}
                                     unavailableDates={unavailableDates ?? []}
+                                    activeLocations={activeLocations ?? []}
+                                    carLocationId={car.locationId}
                                 />
                             </div>
 

@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure, rateLimitedProtectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
-import { booking, car } from "@/db/schema";
+import { booking, car, auditLog } from "@/db/schema";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE, DEFAULT_PAGE } from "@/constants";
@@ -96,13 +96,25 @@ export const adminBookingsRouter = createTRPCRouter({
     updateOneAdmin: rateLimitedProtectedProcedure.input(z.object({
         bookingId: z.string(),
         status: z.enum(["pending", "confirmed", "cancelled", "completed"]),
-    })).mutation(async ({ input }) => {
-        const { bookingId, status } = input;
+        reason: z.string().optional(),
+    })).mutation(async ({ ctx, input }) => {
+        const { bookingId, status, reason } = input;
+
+        const [before] = await db
+            .select()
+            .from(booking)
+            .where(eq(booking.id, bookingId))
+            .limit(1);
 
         const [updatedBooking] = await db
             .update(booking)
             .set({
                 status,
+                ...(status === "cancelled" ? {
+                    cancelledAt: new Date(),
+                    cancelledBy: "admin",
+                    cancellationReason: reason ?? null
+                } : {})
             })
             .where(eq(booking.id, bookingId))
             .returning();
@@ -111,6 +123,17 @@ export const adminBookingsRouter = createTRPCRouter({
             throw new TRPCError({
                 code: "NOT_FOUND",
                 message: "Booking not found or you don't have access to it.",
+            });
+        }
+
+        if (status !== "pending") {
+            await db.insert(auditLog).values({
+                adminId: ctx.auth.user.id,
+                action: `booking.${status}` as any, // Cast as any to bypass TS complaining about enum exact match
+                targetType: "booking",
+                targetId: bookingId,
+                previousValue: JSON.stringify({ status: before?.status }),
+                newValue: JSON.stringify({ status }),
             });
         }
 

@@ -44,6 +44,7 @@ export const carInsertSchema = z.object({
 
     // --- OPERATIONS ---
     plateNumber: z.string().min(1, "License plate number is required"),
+    locationId: z.string().min(1, "Location is required"),
     status: z.enum(["available", "rented", "maintenance"],
         "Please choose a status for car"
     ),

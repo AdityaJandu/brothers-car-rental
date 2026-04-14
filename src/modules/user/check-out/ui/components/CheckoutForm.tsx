@@ -21,6 +21,13 @@ import {
     FormItem,
     FormMessage,
 } from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { DatePicker } from "@/modules/user/browse/ui/components/DatePicker";
 import { useMemo } from "react";
 
@@ -32,6 +39,8 @@ interface UnavailableDateRange {
 interface CheckoutFormProps {
     isPending: boolean;
     unavailableDates: UnavailableDateRange[];
+    activeLocations: { id: string; name: string; city: string; fullAddress: string }[];
+    carLocationId: string;
 }
 
 /**
@@ -83,7 +92,7 @@ function getNextAvailableDate(
     return candidate;
 }
 
-export function CheckoutForm({ isPending, unavailableDates }: CheckoutFormProps) {
+export function CheckoutForm({ isPending, unavailableDates, activeLocations, carLocationId }: CheckoutFormProps) {
     // Tap into the parent's form state
     const form = useFormContext<z.infer<typeof bookingInsertSchema>>();
 
@@ -217,6 +226,49 @@ export function CheckoutForm({ isPending, unavailableDates }: CheckoutFormProps)
                         )}
                     </div>
                 )}
+            </section>
+
+            {/* LOCATION DETAILS */}
+            <section>
+                <div className="mb-8">
+                    <h2 className="text-3xl font-bold mb-2">Location</h2>
+                    <p className="text-sm text-slate-500">Where would you like to pick up and drop off the car?</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                        { name: "pickUpLocation", label: "Pick-up Location" },
+                        { name: "dropOffLocation", label: "Drop-off Location" },
+                    ].map((field) => (
+                        <FormField
+                            key={field.name}
+                            control={form.control}
+                            name={field.name as "pickUpLocation" | "dropOffLocation"}
+                            render={({ field: formField }) => (
+                                <FormItem className="flex flex-col gap-2 space-y-0">
+                                    <label className="text-[11px] px-2 font-semibold uppercase tracking-wider text-slate-500">
+                                        {field.label}
+                                    </label>
+                                    <Select onValueChange={formField.onChange} defaultValue={formField.value}>
+                                        <FormControl>
+                                            <SelectTrigger className="bg-[#F8F9FA] rounded-md px-4 py-5.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0F172A]/10 w-full h-auto">
+                                                <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {activeLocations.map((loc) => (
+                                                <SelectItem key={loc.id} value={loc.id}>
+                                                    {loc.name} ({loc.city})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage className="text-xs text-red-500" />
+                                </FormItem>
+                            )}
+                        />
+                    ))}
+                </div>
             </section>
 
             {/* PERSONAL DETAILS */}
