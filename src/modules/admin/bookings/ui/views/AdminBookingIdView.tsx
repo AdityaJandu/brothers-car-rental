@@ -49,6 +49,8 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
         })
     );
 
+    const isPending = updateStatus.isPending;
+
     const handleStatusChange = (newStatus: string) => {
         setStatus(newStatus.toLowerCase());
     };
@@ -88,7 +90,7 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
                         </Select>
                         {hasChanged && (
                             <Button onClick={handleSave} className="h-10 px-6 font-medium">
-                                Save
+                                {isPending ? "Saving..." : "Save"}
                             </Button>
                         )}
                     </div>
