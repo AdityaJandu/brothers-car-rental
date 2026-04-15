@@ -179,6 +179,7 @@ export const auditActionEnum = pgEnum("audit_action", [
     "car.updated",
     "car.deleted",
     "user.banned",
+    "location.updated",
 ]);
 
 // --- TABLES ---
