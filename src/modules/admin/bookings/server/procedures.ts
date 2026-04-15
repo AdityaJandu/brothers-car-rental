@@ -100,33 +100,36 @@ export const adminBookingsRouter = createTRPCRouter({
     })).mutation(async ({ ctx, input }) => {
         const { bookingId, status, reason } = input;
 
-        const [before] = await db
-            .select()
-            .from(booking)
-            .where(eq(booking.id, bookingId))
-            .limit(1);
+        // <-- 'tx' is created here
+        // Using transaction because of having multiple writes:
+        const updateBooking = await db.transaction(async (tx) => {
+            const [before] = await tx
+                .select()
+                .from(booking)
+                .where(eq(booking.id, bookingId))
+                .limit(1);
 
-        const [updatedBooking] = await db
-            .update(booking)
-            .set({
-                status,
-                ...(status === "cancelled" ? {
-                    cancelledAt: new Date(),
-                    cancelledBy: "admin",
-                    cancellationReason: reason ?? null
-                } : {})
-            })
-            .where(eq(booking.id, bookingId))
-            .returning();
+            const [updatedBooking] = await tx
+                .update(booking)
+                .set({
+                    status,
+                    ...(status === "cancelled" ? {
+                        cancelledAt: new Date(),
+                        cancelledBy: "admin",
+                        cancellationReason: reason ?? null
+                    } : {})
+                })
+                .where(eq(booking.id, bookingId))
+                .returning();
 
-        if (!updatedBooking) {
-            throw new TRPCError({
-                code: "NOT_FOUND",
-                message: "Booking not found or you don't have access to it.",
-            });
-        }
 
-        if (status !== "pending") {
+            if (!updatedBooking) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Booking not found or you don't have access to it.",
+                });
+            }
+
             const auditActionMap: Record<string, "booking.confirmed" | "booking.cancelled" | "booking.completed" | "booking.expired"> = {
                 confirmed: "booking.confirmed",
                 cancelled: "booking.cancelled",
@@ -134,17 +137,21 @@ export const adminBookingsRouter = createTRPCRouter({
                 expired: "booking.expired",
             };
 
-            await db.insert(auditLog).values({
-                adminId: ctx.auth.user.id,
-                adminName: ctx.auth.user.name,
-                adminEmail: ctx.auth.user.email,
-                action: auditActionMap[status],
-                targetType: "booking",
-                targetId: bookingId,
-                previousValue: JSON.stringify({ status: before?.status }),
-                newValue: JSON.stringify({ status }),
-            });
-        }
+            if (status !== "pending") {
+                await tx.insert(auditLog).values({
+                    adminId: ctx.auth.user.id,
+                    adminName: ctx.auth.user.name,
+                    adminEmail: ctx.auth.user.email,
+                    action: auditActionMap[status],
+                    targetType: "booking",
+                    targetId: bookingId,
+                    previousValue: JSON.stringify({ status: before?.status }),
+                    newValue: JSON.stringify({ status }),
+                });
+            }
+
+            return updatedBooking;
+        }); // <-- Transaction successfully commits here
 
         await invalidateCacheGroup("bookings:");
 
@@ -152,12 +159,12 @@ export const adminBookingsRouter = createTRPCRouter({
         inngest.send({
             name: "booking/status.updated",
             data: {
-                bookingId: updatedBooking.id,
+                bookingId: updateBooking.id,
                 newStatus: status,
-                userId: updatedBooking.userId,
+                userId: updateBooking.userId,
             },
         }).catch((err) => console.error("[Inngest] Failed to send booking/status.updated:", err));
 
-        return updatedBooking;
+        return updateBooking;
     }),
 });

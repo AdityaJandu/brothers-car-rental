@@ -162,7 +162,7 @@ brothers-car-rental/
 │   │   │   ├── bookings/
 │   │   │   │   ├── server/
 │   │   │   │   │   └── procedures.ts           # 📖 getAllAdmin, getOneAdmin (Query)
-│   │   │   │   │                               # 🔒 updateOneAdmin (Mutation, rate-limited)
+│   │   │   │   │                               # 🔒 updateOneAdmin (Mutation, Acid Transaction + Audit Log, rate-limited)
 │   │   │   │   └── ui/
 │   │   │   │       ├── views/
 │   │   │   │       │   ├── AdminBookingView.tsx
@@ -173,7 +173,7 @@ brothers-car-rental/
 │   │   │   │           └── admin-booking-customer-info.tsx
 │   │   │   └── locations/
 │   │   │       ├── server/
-│   │   │       │   └── procedures.ts           # 📖 getAll (Query), 🔒 create/update (Mutation)
+│   │   │       │   └── procedures.ts           # 📖 getAll (Query), 🔒 create/update (Mutation, Acid Transaction + Audit Log)
 │   │   │       └── ui/
 │   │   │           ├── views/
 │   │   │           │   └── AdminLocationsView.tsx
@@ -435,9 +435,9 @@ baseProcedure
                │
                └── 🔒 MUTATIONS (rate-limited)
                    ├── adminAddCar.create
-                   ├── adminBookings.updateOneAdmin
+                   ├── adminBookings.updateOneAdmin  # Acid Transaction + Audit Log
                    ├── adminLocations.create
-                   ├── adminLocations.update
+                   ├── adminLocations.update         # Acid Transaction + Audit Log
                    └── userCheckout.create          (+ bookingRateLimit 5/min)
                        └── ⛔ checkBookingConflict  (overlap guard)
 ```

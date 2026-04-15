@@ -69,7 +69,7 @@ Admin-tier management of all physical rental hub deployment locations.
   * **`server/procedures.ts`**:
       * `getAll` **(Query)**: Pulls all internal locations. Resolves native cache hits globally. Uses `protectedProcedure` (auth-only) for read speed.
       * `create` **(Mutation)**: Strict schema mapping for deploying physical location hubs. Uses `protectedProcedure` with immediate wildcard cache bursting (`invalidateCacheGroup("locations")`).
-      * `update` **(Mutation)**: Updates existing hub data and active states natively, triggering edge invalidation organically.
+      * `update` **(Mutation)**: Updates existing hub data and active states securely. **Wrapped in a strict ACID transaction**, generating an explicit JSON delta (`previousValue` vs `newValue`) stored directly in the `audit_log` table before triggering edge invalidation organically.
   * `ui/views/AdminLocationsView.tsx`: Core map handling DataTables rendering structural states.
   * `ui/components/`:
       * `location-columns.tsx`: Data definition logic.
@@ -113,7 +113,7 @@ Admin-tier management of all internal customer rental requests.
   * **`server/procedures.ts`**:
       * `getAllAdmin` **(Query)**: Pulls all globally tracked bookings across all users. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
       * `getOneAdmin` **(Query)**: Leverages a `leftJoin` to fetch a singular booking alongside its heavily associated `car` specifications for deep review. Uses `protectedProcedure` (auth-only, no rate limit).
-      * `updateOneAdmin` **(Mutation)**: Validated state machine transition bridging enum values (e.g. `pending` -> `confirmed`) to the database layer safely. Uses `rateLimitedProtectedProcedure` (auth + Redis rate limit). **After update, fires `booking/status.updated` Inngest event** (fire-and-forget) to trigger status change email notifications to customer + admin.
+      * `updateOneAdmin` **(Mutation)**: Validated state machine transition bridging enum values (e.g. `pending` -> `confirmed`). **Wrapped in an ACID transaction to guarantee atomic execution** alongside an immutable `audit_log` insertion capturing the status delta. Uses `rateLimitedProtectedProcedure` (auth + Redis rate limit). **After successful commit, fires `booking/status.updated` Inngest event** (fire-and-forget) to trigger status change email notifications to customer + admin.
   * `ui/views/AdminBookingView.tsx`, `AdminBookingIdView.tsx`: Parent container map for resolving booking endpoints.
   * `ui/components/admin-booking-rental-info.tsx`, `admin-booking-pricing-info.tsx`, `admin-booking-customer-info.tsx`: Presentation widgets displaying structured relational db output.
 
@@ -218,7 +218,10 @@ The pure marketing and branding UX architecture.
 Drizzle ORM central mapping architecture.
 
   * `index.ts`: The core database connector binding Drizzle explicitly to the Supabase Postgres connection string. **Configured with connection pooling** (`max: 10`, `idle_timeout: 20`, `connect_timeout: 10`) and `prepare: false` (required for Supabase's transaction-mode pooler on port 6543) to eliminate cold-connection overhead.
-  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `location`, `car`, `booking`) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection. The `bookingStatusEnum` includes `"expired"` for auto-expired pending bookings.
+  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `location`, `car`, `booking`, **`audit_log`**) mapped bi-directionally alongside enum limitations natively generating SQL constraints. 
+      * Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection. 
+      * The `bookingStatusEnum` includes `"expired"` for auto-expired pending bookings.
+      * Includes `auditActionEnum` for strict type-safety on system logging (e.g., `booking.confirmed`, `location.updated`) providing immutable history for high-stakes admin modifications.
 
 <br>
 

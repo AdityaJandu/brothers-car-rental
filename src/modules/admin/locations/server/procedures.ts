@@ -1,6 +1,6 @@
 import { createTRPCRouter, adminProcedure } from "@/trpc/init";
 import { db } from "@/db";
-import { location } from "@/db/schema";
+import { auditLog, location } from "@/db/schema";
 import { z } from "zod";
 import { eq, getTableColumns, InferSelectModel } from "drizzle-orm";
 import { getCachedData, setCachedData, invalidateCacheGroup } from "@/lib/redis-cache";
@@ -50,15 +50,51 @@ export const adminLocationsRouter = createTRPCRouter({
                 });
             }
         }))
-        .mutation(async ({ input }) => {
+        .mutation(async ({ ctx, input }) => {
             const { id, ...data } = input;
-            const [updated] = await db.update(location).set(data).where(eq(location.id, id)).returning();
 
-            if (!updated) {
+            // Make a transaction:
+            const updatedLocation = await db.transaction(async (tx) => {
+                const [before] = await tx
+                    .select()
+                    .from(location)
+                    .where(eq(location.id, id))
+                    .limit(1);
+
+                if (!before) {
+                    throw new TRPCError({ code: "NOT_FOUND", message: "Location not found" });
+                }
+                // 2. Perform the update
+                const [updated] = await tx
+                    .update(location)
+                    .set(data)
+                    .where(eq(location.id, id))
+                    .returning();
+
+                // 3. Log the change
+                // We only log the fields that were actually provided in the input
+                const changedFieldsBefore = Object.fromEntries(
+                    Object.keys(data).map(key => [key, before[key as keyof typeof before]])
+                );
+
+                await tx.insert(auditLog).values({
+                    adminId: ctx.auth.user.id,
+                    // Ensure "location.updated" is added to your schema enum!
+                    action: "location.updated" as any,
+                    targetType: "location",
+                    targetId: id,
+                    previousValue: JSON.stringify(changedFieldsBefore),
+                    newValue: JSON.stringify(data),
+                });
+
+                return updated;
+            })
+
+            if (!updatedLocation) {
                 throw new TRPCError({ code: "NOT_FOUND", message: "Location not found" });
             }
 
             await invalidateCacheGroup("locations");
-            return updated;
+            return updatedLocation;
         }),
 });

@@ -8,7 +8,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 
 * **Framework**: Next.js (App Router, Server Components)
 * **Database**: PostgreSQL (Supabase, transaction-mode pooler)
-* **ORM**: Drizzle ORM (with optimized connection pooling: `max: 10`, `prepare: false`)
+* **ORM**: Drizzle ORM (with optimized connection pooling: `max: 10`, `prepare: false`, and strict ACID transaction blocks)
 * **API/RPC Architecture**: tRPC (tiered procedures: `protectedProcedure` for reads, `rateLimitedProtectedProcedure` for mutations)
 * **Authentication**: Better Auth (Email/Password & Google OAuth), with **React `cache()`-based session deduplication** across server components
 * **Rate Limiting**: Upstash Redis (multi-layered: auth, tRPC mutations, domain-specific)
@@ -24,6 +24,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 * **Public Fleet Discovery**: Beautifully mapped grid designs, dynamic filtering, rich specification pages, and **real-time availability indicators** (Available Now / Next available from [date]) on each car's detail page.
 * **Booking Conflict Engine**: Production-grade overlap detection preventing double bookings. Uses the standard overlap formula (`newStart < existingEnd AND newEnd > existingStart`) enforced at both the tRPC mutation level (atomic conflict check before insert) and the UI level (DatePicker disables blocked dates, availability banners show status with next-available-date hints). Blocks both `confirmed` and `pending` bookings to eliminate race conditions. Backed by a composite `(carId, startDate, endDate)` database index.
 * **Secure Booking Engine**: A seamless transactional checkout flow with a dual-schema architecture — `bookingInsertSchema` (server, `z.coerce.date` + `.refine()`) and `bookingFormSchema` (client, `z.date()`) — ensuring full Zod 4 + react-hook-form type safety without `as any` casts.
+* **Enterprise Audit Logging & ACID Transactions**: Critical system updates (like booking state machine transitions and physical hub alterations) are strictly wrapped in Drizzle database transactions to guarantee atomic execution and prevent data corruption. An immutable `audit_log` system acts as a system black-box, automatically capturing the exact delta (`previousValue` and `newValue`) of high-stakes admin actions to ensure full accountability and rapid dispute resolution.
 * **Customer Booking Dashboard**: Comprehensive tracking of historical and active reservations, featuring polished breakdown views for individual bookings, interactive action controls, and **instant, browser-generated PDF invoice downloads**.
 * **Client-Side PDF Invoices**: High-quality, dynamically styled booking receipts generated purely on the client-side using React-PDF, completely eliminating server overhead for document creation.
 * **Modular Communication Layer (Inngest + Resend)**: Automated booking lifecycle emails powered by scaled, decoupled Inngest durable workflows alongside a segmented Resend transactional email service. A single `booking/created` event triggers 3 parallel workflows (Confirmation, 15-minute Expiry Timer, 24h Reminder). Admin status changes dynamically fire `booking/status.updated` events for targeted notifications. All events operate asynchronously as fire-and-forget logic, preventing database transaction timeouts.
@@ -86,4 +87,4 @@ The codebase is built on a highly modular **Domain-Driven Architecture**:
 
 ## 👮‍♂️ Admin Operations
 
-To interact dynamically with the admin endpoints (`/dashboard`, `/add-car`, `/admin-booking`), you must alter your authenticated user session role manually to `admin` directly within the Postgres database via the active neon dashboard.
+To interact dynamically with the admin endpoints (`/dashboard`, `/add-car`, `/admin-booking`), you must alter your authenticated user session role manually to `admin` directly within the Postgres database via your active Supabase/Neon dashboard. All high-stakes admin modifications are safely recorded in the `audit_log` system.
