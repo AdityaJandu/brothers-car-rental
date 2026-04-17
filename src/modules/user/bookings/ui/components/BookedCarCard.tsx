@@ -38,7 +38,7 @@ export const BookedCarCard = ({ car }: BookedCarCardProps) => {
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#0B0F3B] via-[#0B0F3B]/50 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-[#0B0F3B] via-[#0B0F3B]/50 to-transparent" />
 
                 <div className="absolute bottom-5 left-6 right-6">
                     <h2 className="text-white text-3xl font-extrabold tracking-tight mb-1">
