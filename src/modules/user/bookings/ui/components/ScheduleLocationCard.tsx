@@ -6,7 +6,6 @@ interface ScheduleLocationCardProps {
     endDate: string | Date;
     pickUpLocation: string;
     dropOffLocation: string;
-    hubLocation?: any; // Kept in case you want to use the hub specific data later
 }
 
 export const ScheduleLocationCard = ({
