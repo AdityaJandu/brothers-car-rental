@@ -7,7 +7,6 @@ interface BookingHeaderProps {
 }
 
 export const BookingHeader = ({ id, status }: BookingHeaderProps) => {
-
     const displayId = id.slice(0, 8).toUpperCase();
 
     const getStatusConfig = () => {

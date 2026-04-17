@@ -4,15 +4,23 @@ import { format } from "date-fns";
 interface ScheduleLocationCardProps {
     startDate: string | Date;
     endDate: string | Date;
+    pickUpLocation: string;
+    dropOffLocation: string;
+    hubLocation?: any; // Kept in case you want to use the hub specific data later
 }
 
-export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCardProps) => {
+export const ScheduleLocationCard = ({
+    startDate,
+    endDate,
+    pickUpLocation,
+    dropOffLocation
+}: ScheduleLocationCardProps) => {
 
     const sDate = new Date(startDate);
     const eDate = new Date(endDate);
 
     return (
-        <div className="bg-white rounded-[24px] p-6 sm:p-8 shadow-sm flex flex-col md:flex-row justify-between items-stretch w-full gap-8">
+        <div className="bg-white rounded-[24px] p-6 sm:p-8 shadow-sm flex flex-col md:flex-row justify-between items-stretch w-full gap-8 border border-slate-100">
             {/* Left Timeline Side */}
             <div className="flex-1 w-full pl-2 md:pl-4 py-2">
                 <div className="relative h-full flex flex-col justify-between min-h-[140px]">
@@ -26,7 +34,7 @@ export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCar
                         </div>
                         <div className="pt-0.5">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1.5 block">Pick-up</span>
-                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">London Heathrow Airport (LHR)</h3>
+                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">{pickUpLocation}</h3>
                             <p className="text-slate-500 font-medium text-[13px]">
                                 {format(sDate, "MMM dd, yyyy")} • {format(sDate, "hh:mm a")}
                             </p>
@@ -43,7 +51,7 @@ export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCar
                         </div>
                         <div className="pt-0.5">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1.5 block">Drop-off</span>
-                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">London City Centre Terminal</h3>
+                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">{dropOffLocation}</h3>
                             <p className="text-slate-500 font-medium text-[13px]">
                                 {format(eDate, "MMM dd, yyyy")} • {format(eDate, "hh:mm a")}
                             </p>
@@ -60,7 +68,7 @@ export const ScheduleLocationCard = ({ startDate, endDate }: ScheduleLocationCar
                 </div>
 
                 {/* Pin Icon and gradients */}
-                <div className="absolute inset-x-0 bottom-0 h-[80%] bg-linear-to-t from-black/50 via-black/10 to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
                 <div className="absolute border-2 border-white/20 w-32 h-32 rounded-full inset-0 m-auto mt-16 blur-sm"></div>
                 <MapPin className="w-24 h-24 text-[#353C47] fill-[#232830] absolute" />
 

@@ -1,72 +1,66 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Download, CalendarClock, Headphones, XCircle } from "lucide-react";
-import { GetOneBooking } from "../../types";
-import { useTRPC } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-
-// Make sure to import the React component we created in the previous step
 import { BookingPDFDocument, BookingPdfDataInterface } from "../../utils/BookingPdf";
 
 interface BookingActionsProps {
-    bookingData: GetOneBooking;
+    bookingData: {
+        booking: any;
+        car: any;
+        location?: any;
+    };
 }
 
 export const BookingActions = ({ bookingData }: BookingActionsProps) => {
-    const trpc = useTRPC();
+    // 1. Add a mount state
+    const [isMounted, setIsMounted] = useState(false);
 
-    const { data: userdata, isLoading: isUserLoading } = useQuery(trpc.userProfile.getUser.queryOptions());
+    // 2. Set to true only after the component mounts in the browser
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
-    const { data: carData, isLoading: isCarLoading } = useQuery(
-        trpc.userBrowse.getOne.queryOptions({
-            id: bookingData.carId
-        })
-    );
+    const { booking, car } = bookingData;
 
-    // Prepare the data payload for the PDF. 
-    // We do this inline now so React-PDF can react to the query data arriving.
     const pdfData: BookingPdfDataInterface = {
-        bookingId: bookingData.id,
-        status: bookingData.status,
-        createdAt: bookingData.createdAt,
+        bookingId: booking.id,
+        status: booking.status,
+        createdAt: booking.createdAt,
 
-        fullName: userdata?.name || "",
-        email: userdata?.email || "",
-        phoneNumber: userdata?.phone || "",
-        licenseNumber: bookingData.licenseNumber || "",
+        fullName: booking.fullName || "",
+        email: booking.email || "",
+        phoneNumber: booking.phoneNumber || "",
+        licenseNumber: booking.licenseNumber || "",
 
-        carMake: carData?.make || "",
-        carModel: carData?.model || "",
-        carYear: carData?.year || 0,
-        carCategory: carData?.category || "",
-        carTier: carData?.tier || "",
-        carTransmission: carData?.transmission || "",
-        carFuelType: carData?.fuelType || "",
-        carSeats: carData?.seats || 0,
+        carMake: car?.make || "",
+        carModel: car?.model || "",
+        carYear: car?.year || 0,
+        carCategory: car?.category || "",
+        carTier: car?.tier || "",
+        carTransmission: car?.transmission || "",
+        carFuelType: car?.fuelType || "",
+        carSeats: car?.seats || 0,
 
-        startDate: bookingData.startDate,
-        endDate: bookingData.endDate,
+        startDate: booking.startDate,
+        endDate: booking.endDate,
 
-        dailyRate: bookingData.dailyRate,
-        days: bookingData.days,
-        protectionFee: bookingData.protectionFee,
-        surchargeFee: bookingData.surchargeFee,
-        totalPrice: bookingData.totalPrice,
-        paymentMethod: bookingData.paymentMethod,
+        dailyRate: booking.dailyRate,
+        days: booking.days,
+        protectionFee: booking.protectionFee,
+        surchargeFee: booking.surchargeFee,
+        totalPrice: booking.totalPrice,
+        paymentMethod: booking.paymentMethod,
     };
 
-    // Prevent rendering the download link with empty data while queries are fetching
-    const isDataReady = !isUserLoading && !isCarLoading && userdata && carData;
-    const fileName = `Brothers-Booking-BR-${bookingData.id.slice(0, 8).toUpperCase()}.pdf`;
+    const fileName = `Brothers-Booking-BR-${booking.id.slice(0, 8).toUpperCase()}.pdf`;
 
     return (
         <div data-html2canvas-ignore="true" className="flex flex-col md:flex-row flex-wrap items-center justify-between gap-4 w-full pb-8">
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
 
-                {/* Replace standard button with PDFDownloadLink. 
-                  It provides a render prop to access the internal 'loading' state.
-                */}
-                {isDataReady ? (
+                {/* 3. Only render the PDF library if we are in the browser */}
+                {isMounted ? (
                     <PDFDownloadLink
                         document={<BookingPDFDocument data={pdfData} />}
                         fileName={fileName}
@@ -78,18 +72,18 @@ export const BookingActions = ({ bookingData }: BookingActionsProps) => {
                                 className="flex items-center justify-center gap-2 bg-[#1C2333] hover:bg-[#151b27] text-white font-bold text-[14px] px-6 py-3.5 rounded-[12px] transition-colors w-full sm:w-auto shadow-sm disabled:opacity-50"
                             >
                                 <Download className="w-4 h-4" />
-                                {loading ? "Generating..." : "Download Invoice"}
+                                {loading ? "Generating PDF..." : "Download Invoice"}
                             </button>
                         )}
                     </PDFDownloadLink>
                 ) : (
-                    // Fallback button while TRPC queries are resolving
+                    // Fallback button while SSR is happening
                     <button
                         disabled
                         className="flex items-center justify-center gap-2 bg-[#1C2333] opacity-50 text-white font-bold text-[14px] px-6 py-3.5 rounded-[12px] w-full sm:w-auto shadow-sm"
                     >
                         <Download className="w-4 h-4" />
-                        Loading Data...
+                        Preparing Invoice...
                     </button>
                 )}
 

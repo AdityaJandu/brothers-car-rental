@@ -14,7 +14,7 @@ const Page = async ({ params }: Props) => {
 
     const queryClient = getQueryClient();
     await queryClient.prefetchQuery(
-        trpc.userBookings.getOne.queryOptions({
+        trpc.userBookings.getBookingWithDetails.queryOptions({
             bookingId: bookingId
         })
     );

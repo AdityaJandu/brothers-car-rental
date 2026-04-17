@@ -8,13 +8,13 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 
 * **Framework**: Next.js (App Router, Server Components)
 * **Database**: PostgreSQL (Supabase, transaction-mode pooler)
-* **ORM**: Drizzle ORM (with optimized connection pooling: `max: 10`, `prepare: false`, and strict ACID transaction blocks)
+* **ORM**: Drizzle ORM (with optimized connection pooling: `max: 10`, `prepare: false`, strict ACID transaction blocks, and advanced aliased relational SQL joins)
 * **API/RPC Architecture**: tRPC (tiered procedures: `protectedProcedure` for reads, `rateLimitedProtectedProcedure` for mutations)
 * **Authentication**: Better Auth (Email/Password & Google OAuth), with **React `cache()`-based session deduplication** across server components
 * **Rate Limiting**: Upstash Redis (multi-layered: auth, tRPC mutations, domain-specific)
 * **Caching**: Upstash Redis (read-through edge caching with deterministic tRPC invalidation pipelines)
 * **Storage**: Supabase Storage
-* **Document Generation**: `@react-pdf/renderer` (Declarative, client-side PDF generation)
+* **Document Generation**: `@react-pdf/renderer` (Declarative, client-side PDF generation shielded via SSR hydration boundaries)
 * **UI Components**: Custom tailored Shadcn UI
 * **Styling**: Tailwind CSS
 * **Validation**: Zod 4 & React Hook Form (dual-schema pattern for type-safe client/server validation)
@@ -26,7 +26,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 * **Secure Booking Engine**: A seamless transactional checkout flow with a dual-schema architecture — `bookingInsertSchema` (server, `z.coerce.date` + `.refine()`) and `bookingFormSchema` (client, `z.date()`) — ensuring full Zod 4 + react-hook-form type safety without `as any` casts.
 * **Enterprise Audit Logging & ACID Transactions**: Critical system updates (like booking state machine transitions and physical hub alterations) are strictly wrapped in Drizzle database transactions to guarantee atomic execution and prevent data corruption. An immutable `audit_log` system acts as a system black-box, automatically capturing the exact delta (`previousValue` and `newValue`) of high-stakes admin actions to ensure full accountability and rapid dispute resolution.
 * **Customer Booking Dashboard**: Comprehensive tracking of historical and active reservations, featuring polished breakdown views for individual bookings, interactive action controls, and **instant, browser-generated PDF invoice downloads**.
-* **Client-Side PDF Invoices**: High-quality, dynamically styled booking receipts generated purely on the client-side using React-PDF, completely eliminating server overhead for document creation.
+* **Client-Side PDF Invoices**: High-quality, dynamically styled booking receipts generated purely on the client-side using React-PDF, safely wrapped in Next.js `useEffect` hydration boundaries to completely eliminate server-side rendering build errors.
 * **Modular Communication Layer (Inngest + Resend)**: Automated booking lifecycle emails powered by scaled, decoupled Inngest durable workflows alongside a segmented Resend transactional email service. A single `booking/created` event triggers 3 parallel workflows (Confirmation, 15-minute Expiry Timer, 24h Reminder). Admin status changes dynamically fire `booking/status.updated` events for targeted notifications. All events operate asynchronously as fire-and-forget logic, preventing database transaction timeouts.
 * **Administrative Management**: High-level dashboards isolating active rentals, confirming requests, and parsing incoming fleet additions directly into the database.
 * **Cloud Image Uploading**: Seamless fleet-asset capturing securely handled client-side and dispatched directly to Supabase data buckets.
@@ -42,6 +42,7 @@ The application employs several performance optimizations to minimize page load 
 * **Tiered tRPC Procedures**: Read-only queries (`getAll`, `getOne`) use `protectedProcedure` (auth check only), while mutations (`create`, `update`) use `rateLimitedProtectedProcedure` (auth + Redis rate limit). This eliminates ~100-200ms of Redis HTTP overhead per read query.
 * **Parallelized Server Prefetch**: All protected pages with data prefetching run auth checks and queries concurrently via `Promise.all`, eliminating sequential waterfall delays. This pattern is applied across all admin (`dashboard`, `admin-booking`, `admin-booking/[id]`), user (`browse`, `browse/[id]`, `check-out/[id]`, `bookings`, `profile`), and onboarding routes.
 * **Server-Side Hydration**: The onboarding landing page prefetches fleet data server-side and wraps the view in a `HydrationBoundary`, so the `FeaturedFleet` client component receives data instantly without a client→server roundtrip.
+* **Relational Prop Drilling**: Heavy detail pages (like `BookingIdView`) use a single optimized Drizzle endpoint to pull deep relational mappings (e.g., Bookings + Nested Cars + Aliased Hub Locations) and distribute them down to presentational child components natively via React Props, effectively eradicating cascading loading spinners and redundant API requests.
 * **Connection Pooling**: The Postgres client is configured with `prepare: false` (required for Supabase's transaction-mode pooler), proper pool sizing, and timeout settings to eliminate cold-connection overhead.
 * **tRPC Redis Data Caching**: Employs an explicit `@upstash/redis` wrapper (`redis-cache.ts`) injecting generic deterministic read-through caching patterns into highly trafficked `protectedProcedure` handlers (like user `browse` and `bookings`). Bypasses redundant PostgreSQL queries natively mapping exact validation boundaries into edge memory with full automatic prefix invalidation running dynamically during corresponding transactional mutations. Designed symmetrically with strict security perimeters: bound cache key entropy limits prevent memory flooding, trailing colons prevent user-ID cache clearance collisions, and namespace extractors help reduce session PII exposure in logs and should be audited for completeness.
 
