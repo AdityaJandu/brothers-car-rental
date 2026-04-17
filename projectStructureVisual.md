@@ -223,7 +223,7 @@ brothers-car-rental/
 │   │   │   │
 │   │   │   ├── bookings/
 │   │   │   │   ├── server/
-│   │   │   │   │   └── procedures.ts           # 📖 getAll, getOne (Query, no rate limit)
+│   │   │   │   │   └── procedures.ts           # 📖 getAll, getBookingWithDetails, getLatestBooking (Query, no rate limit)
 │   │   │   │   ├── utils/
 │   │   │   │   │   └── BookingPdf.tsx          #    React-PDF invoice template
 │   │   │   │   └── ui/

@@ -27,7 +27,6 @@ export const PaymentSummaryCard = ({
             </div>
 
             <div className="space-y-6">
-
                 <div className="flex justify-between items-center">
                     <span className="text-slate-500 font-medium text-[15px]">Daily Rate ({days} days)</span>
                     <span className="font-bold text-[#0B0F3B] text-[15px]">₹ {(dailyRate * days).toLocaleString("en-IN")}</span>
