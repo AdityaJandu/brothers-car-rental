@@ -28,6 +28,11 @@ export function AdminNavbar() {
             name: "Hubs",
             href: "/admin-locations",
             icon: MapPin
+        },
+        {
+            name: "Audit Logs",
+            href: "/audit-log",
+            icon: ShieldAlert
         }
     ];
 

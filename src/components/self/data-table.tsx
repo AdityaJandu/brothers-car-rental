@@ -4,6 +4,8 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
+    getFilteredRowModel,
+    ColumnFiltersState,
     useReactTable,
 } from "@tanstack/react-table"
 
@@ -11,8 +13,11 @@ import {
     Table,
     TableBody,
     TableCell,
+    TableHead,
+    TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useState } from "react"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -25,21 +30,47 @@ export function DataTable<TData, TValue>({
     data,
     onRowClick,
 }: DataTableProps<TData, TValue>) {
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        state: {
+            columnFilters,
+        },
     })
 
     return (
         <div className="overflow-hidden rounded-md border bg-background">
             <Table>
+                <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={headerGroup.id} className="bg-slate-50/80 hover:bg-slate-50/80">
+                            {headerGroup.headers.map((header) => (
+                                <TableHead
+                                    key={header.id}
+                                    className="text-xs uppercase tracking-wider text-slate-500 font-semibold px-4 py-3"
+                                >
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                </TableHead>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableHeader>
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
                                 onClick={() => onRowClick?.(row.original)}
-                                className="cursor-pointer"
+                                className={onRowClick ? "cursor-pointer" : ""}
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
                             >

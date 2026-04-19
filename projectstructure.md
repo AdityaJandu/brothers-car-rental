@@ -21,6 +21,7 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
   * `add-car/page.tsx`: The form dedicated to parsing and inserting new vehicles into the database. **Uses cached session for admin auth guard.**
   * `admin-booking/page.tsx`: Table view interface listing all global customer bookings. **Uses `Promise.all` to parallelize cached auth + bookings prefetch.**
   * `admin-booking/[bookingId]/page.tsx`: Dedicated management view for reviewing/updating a specific booking. **Uses `Promise.all` to parallelize cached auth + booking detail prefetch.**
+  * `audit-log/page.tsx`: Read-only administrative audit trail viewer displaying all system-wide admin actions with search and filtering. **Uses `Promise.all` to parallelize cached auth + audit log prefetch.** Exports SEO metadata.
 
 <br>
 
@@ -119,6 +120,20 @@ Admin-tier management of all internal customer rental requests.
 
 <br>
 
+### 📋 `admin/audit-log`
+
+Read-only administrative interface for viewing the complete audit trail of all high-stakes system changes.
+
+  * **`server/procedures.ts`**:
+      * `getAllAuditLogs` **(Query)**: Fetches up to 500 audit log entries ordered by recency. Uses `adminProcedure` (admin-only auth via middleware). Performs a `leftJoin` on the `user` table to resolve admin identity (`name`, `email`) from the foreign key. Safely parses `previousValue`/`newValue` JSON text columns into proper objects server-side to prevent double-serialization on the client.
+  * `ui/views/AuditLogView.tsx`: Page composition root integrating the header, client-side filters, and DataTable. Uses `useMemo`-based filtering across action type, target type, and free-text search.
+  * `ui/components/`:
+      * `audit-columns.tsx`: TanStack Table column definitions with action-specific icon badges (via `getActionMeta()`), admin avatar initials, and an enhanced "View Delta" dialog with metadata banner and syntax-colored JSON display.
+      * `AuditHeader.tsx`: Page header with `ShieldAlert` icon badge, title/subtitle, and summary stat chips (total entries, latest entry timestamp).
+      * `AuditFilters.tsx`: Inline filter bar with text search input and dropdown selectors for action type and target type. All filtering is client-side.
+
+<br>
+
 ### 🛍️ `user/browse` & `user/car-id-view`
 
 Publicly facing gallery modules for vehicle discovery.
@@ -166,7 +181,7 @@ Customer dashboard tracking standard historical reservations.
       * `CustomerInfoCard.tsx`: Outlines the reserving user's credentials.
       * `PaymentSummaryCard.tsx`: Provides financial breakdown (fare, tax, total).
       * `ScheduleLocationCard.tsx`: Details pickup/drop-off dates and locations.
-      * `BookingActions.tsx`: Provides action buttons for the booking (e.g., cancel, contact support). **Integrates `@react-pdf/renderer` via `<PDFDownloadLink>` for streaming client-side invoices.**
+      * `BookingActions.tsx`: Provides action buttons for the booking. **Integrates `@react-pdf/renderer` via Next.js `next/dynamic` (`ssr: false`) to flawlessly bypass server-side hydration crashes and render heavy browser APIs safely at the edge.**
   * **`utils/BookingPdf.tsx`**: A declarative React component template built with `@react-pdf/renderer` allowing users to securely generate and download high-quality, fully styled booking invoices directly from the browser.
 
 <br>

@@ -16,6 +16,7 @@
 │  │          │  │ sign-up  │  │  profile │  │ add-car  │  │trpc/[..] │   │
 │  │          │  │          │  │check-out │  │ bookings │  │          │   │
 │  │          │  │          │  │ bookings │  │ locations│  │          │   │
+│  │          │  │          │  │          │  │audit-log │  │          │   │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
 │       │              │             │              │              │      │
 └───────┼──────────────┼─────────────┼──────────────┼──────────────┼──────┘
@@ -112,10 +113,12 @@ brothers-car-rental/
 │   │   │   │   └── page.tsx                    #    → getSession() → admin guard
 │   │   │   ├── admin-locations/
 │   │   │   │   └── page.tsx                    #    → Promise.all(getSession, prefetch)
-│   │   │   └── admin-booking/
-│   │   │       ├── page.tsx                    #    → Promise.all(getSession, prefetch)
-│   │   │       └── [bookingId]/
-│   │   │           └── page.tsx                #    → Promise.all(getSession, prefetch)
+│   │   │   ├── admin-booking/
+│   │   │   │   ├── page.tsx                    #    → Promise.all(getSession, prefetch)
+│   │   │   │   └── [bookingId]/
+│   │   │   │       └── page.tsx                #    → Promise.all(getSession, prefetch)
+│   │   │   └── audit-log/
+│   │   │       └── page.tsx                    #    → Promise.all(getSession, prefetch) + metadata
 │   │   │
 │   │   ├── api/                                # 🌐 API Endpoints
 │   │   │   ├── auth/[...all]/
@@ -171,15 +174,26 @@ brothers-car-rental/
 │   │   │   │           ├── admin-booking-rental-info.tsx
 │   │   │   │           ├── admin-booking-pricing-info.tsx
 │   │   │   │           └── admin-booking-customer-info.tsx
-│   │   │   └── locations/
+│   │   │   ├── locations/
+│   │   │   │   ├── server/
+│   │   │   │   │   └── procedures.ts           # 📖 getAll (Query), 🔒 create/update (Mutation, Acid Transaction + Audit Log)
+│   │   │   │   └── ui/
+│   │   │   │       ├── views/
+│   │   │   │       │   └── AdminLocationsView.tsx
+│   │   │   │       └── components/
+│   │   │   │           ├── location-columns.tsx
+│   │   │   │           └── LocationFormDialog.tsx
+│   │   │   │
+│   │   │   └── audit-log/
 │   │   │       ├── server/
-│   │   │       │   └── procedures.ts           # 📖 getAll (Query), 🔒 create/update (Mutation, Acid Transaction + Audit Log)
+│   │   │       │   └── procedures.ts           # 📖 getAllAuditLogs (Query, adminProcedure, limit 500)
 │   │   │       └── ui/
 │   │   │           ├── views/
-│   │   │           │   └── AdminLocationsView.tsx
+│   │   │           │   └── AuditLogView.tsx    #    Header + Filters + DataTable
 │   │   │           └── components/
-│   │   │               ├── location-columns.tsx
-│   │   │               └── LocationFormDialog.tsx
+│   │   │               ├── audit-columns.tsx    #    Action badges + View Delta dialog
+│   │   │               ├── AuditHeader.tsx      #    Icon badge + stat chips
+│   │   │               └── AuditFilters.tsx     #    Search + dropdown filters
 │   │   │
 │   │   ├── user/
 │   │   │   ├── browse/
@@ -418,6 +432,12 @@ baseProcedure
   │
   └──► protectedProcedure                    (auth check via cached session)
          │
+         ├──► adminProcedure                 (+ admin role enforcement)
+         │     │
+         │     └── 📖 ADMIN READ QUERIES
+         │         ├── adminLocations.getAll
+         │         └── adminAudit.getAllAuditLogs   # limit(500), JSON parse
+         │
          ├── 📖 READ QUERIES (no Redis)
          │   ├── userBrowse.getAll
          │   ├── userBrowse.getOne
@@ -428,8 +448,7 @@ baseProcedure
          │   ├── userLocations.getActiveLocations
          │   ├── adminDashboard.getAllAdmin
          │   ├── adminBookings.getAllAdmin
-         │   ├── adminBookings.getOneAdmin
-         │   └── adminLocations.getAll
+         │   └── adminBookings.getOneAdmin
          │
          └──► rateLimitedProtectedProcedure  (+ Redis 30 req/min)
                │
@@ -529,6 +548,27 @@ Single Server Request (e.g. GET /)
                                                        │ createdAt            │
                                                        │ updatedAt            │
                                                        └──────────────────────┘
+
+┌─────────────────────┐
+│     audit_log       │
+├─────────────────────┤
+│ id          (PK)    │
+│ adminId     (FK)────┤►── user.id
+│ adminName           │
+│ adminEmail          │
+│ action (enum)───────┤►
+│   booking.confirmed │
+│   booking.cancelled │
+│   booking.completed │
+│   car.created       │
+│   location.updated  │
+│   ...               │
+│ targetType          │
+│ targetId            │
+│ previousValue (text)│
+│ newValue (text)     │
+│ createdAt           │
+└─────────────────────┘
 ```
 
 ---
