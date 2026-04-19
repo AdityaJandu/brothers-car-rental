@@ -10,6 +10,7 @@ import { adminAddCarRouter } from '@/modules/admin/add-car/server/procedures';
 import { adminBookingsRouter } from '@/modules/admin/bookings/server/procedures';
 import { adminLocationsRouter } from '@/modules/admin/locations/server/procedures';
 import { userLocationsRouter } from '@/modules/user/locations/server/procedures';
+import { adminAuditRouter } from '@/modules/admin/audit-log/server/procedures';
 
 export const appRouter = createTRPCRouter({
     userBrowse: carRouter,
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
     adminAddCar: adminAddCarRouter,
     adminBookings: adminBookingsRouter,
     adminLocations: adminLocationsRouter,
+    adminAudit: adminAuditRouter,
 });
 
 // export type definition of API
