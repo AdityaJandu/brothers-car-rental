@@ -13,24 +13,23 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+    // Auth guard must run BEFORE the admin-only prefetch
+    // to avoid server-side errors from the adminProcedure middleware
+    const session = await getSession();
 
-    const queryClient = getQueryClient();
-
-    const [session] = await Promise.all([
-        getSession(),
-        queryClient.prefetchQuery(
-            trpc.adminAudit.getAllAuditLogs.queryOptions()
-        ),
-    ]);
-
-    // No session, redirect to home page (or sign-in page)
     if (!session) {
-        redirect("/sign-in"); // server-side redirect
+        redirect("/sign-in");
     }
 
     if (session.user.role !== 'admin') {
         redirect('/');
     }
+
+    // Only prefetch after confirming admin authorization
+    const queryClient = getQueryClient();
+    await queryClient.prefetchQuery(
+        trpc.adminAudit.getAllAuditLogs.queryOptions()
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>

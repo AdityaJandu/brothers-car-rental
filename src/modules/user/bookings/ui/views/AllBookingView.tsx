@@ -34,7 +34,7 @@ export function AllBookingView() {
                     onPageChange={(page) => { setFilters({ page }) }}
                 />
             </div>
-            <div className="min-h-[70vh] max-w-350 bg-[#F8F9FA] px-6 lg:px-12 sm:py-10 font-sans">
+            <div className="min-h-[70vh] bg-[#F8F9FA] px-4 lg:px-8 sm:py-10 font-sans">
                 {/* Cars Grid */}
                 <DataTable
                     columns={bookingColumns}

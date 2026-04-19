@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { auditLog, user } from "@/db/schema";
 import { createTRPCRouter, adminProcedure } from "@/trpc/init";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 export const adminAuditRouter = createTRPCRouter({
     getAllAuditLogs: adminProcedure
@@ -15,9 +15,10 @@ export const adminAuditRouter = createTRPCRouter({
                     previousValue: auditLog.previousValue,
                     newValue: auditLog.newValue,
                     createdAt: auditLog.createdAt,
-                    // Resolve admin identity from the joined user table
-                    adminName: user.name,
-                    adminEmail: user.email,
+                    // Prefer live user data, fall back to stored audit values
+                    // (handles deleted/edited admin accounts gracefully)
+                    adminName: sql<string>`coalesce(${user.name}, ${auditLog.adminName})`.as("admin_name"),
+                    adminEmail: sql<string>`coalesce(${user.email}, ${auditLog.adminEmail})`.as("admin_email"),
                 })
                 .from(auditLog)
                 .leftJoin(user, eq(auditLog.adminId, user.id))

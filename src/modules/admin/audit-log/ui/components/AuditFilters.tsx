@@ -56,6 +56,7 @@ export function AuditFilters({
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                     id="audit-search"
+                    aria-label="Search audit logs"
                     placeholder="Search by admin, action, or target..."
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
@@ -69,7 +70,7 @@ export function AuditFilters({
 
                 {/* Action Filter */}
                 <Select value={actionFilter} onValueChange={onActionFilterChange}>
-                    <SelectTrigger className="h-9 w-[170px] bg-white border-slate-200 text-sm">
+                    <SelectTrigger aria-label="Filter by action" className="h-9 w-[170px] bg-white border-slate-200 text-sm">
                         <SelectValue placeholder="All Actions" />
                     </SelectTrigger>
                     <SelectContent>
@@ -83,7 +84,7 @@ export function AuditFilters({
 
                 {/* Target Filter */}
                 <Select value={targetFilter} onValueChange={onTargetFilterChange}>
-                    <SelectTrigger className="h-9 w-[150px] bg-white border-slate-200 text-sm">
+                    <SelectTrigger aria-label="Filter by target" className="h-9 w-[150px] bg-white border-slate-200 text-sm">
                         <SelectValue placeholder="All Targets" />
                     </SelectTrigger>
                     <SelectContent>

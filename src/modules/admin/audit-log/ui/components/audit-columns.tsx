@@ -13,6 +13,7 @@ import {
     Ban,
     MapPin,
     Clock,
+    type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,30 +39,29 @@ export type AuditLogEntry = {
     adminEmail: string | null;
 };
 
+type ActionMeta = { icon: LucideIcon; bg: string; text: string; dotColor: string };
+
 /**
- * Maps audit action strings to their icon and color scheme.
+ * Exact-match mapping from audit action strings to their icon and color scheme.
+ * Using exact keys prevents substring priority collisions
+ * (e.g. "location.updated" incorrectly matching the "updated" check before "location").
  */
-function getActionMeta(action: string) {
-    if (action.includes("confirmed"))
-        return { icon: CheckCircle2, bg: "bg-emerald-100", text: "text-emerald-700", dotColor: "bg-emerald-500" };
-    if (action.includes("cancelled"))
-        return { icon: XCircle, bg: "bg-rose-100", text: "text-rose-700", dotColor: "bg-rose-500" };
-    if (action.includes("completed"))
-        return { icon: CheckCircle2, bg: "bg-blue-100", text: "text-blue-700", dotColor: "bg-blue-500" };
-    if (action.includes("expired"))
-        return { icon: Clock, bg: "bg-amber-100", text: "text-amber-700", dotColor: "bg-amber-500" };
-    if (action.includes("created"))
-        return { icon: PlusCircle, bg: "bg-emerald-100", text: "text-emerald-700", dotColor: "bg-emerald-500" };
-    if (action.includes("updated"))
-        return { icon: Pencil, bg: "bg-blue-100", text: "text-blue-700", dotColor: "bg-blue-500" };
-    if (action.includes("deleted"))
-        return { icon: Trash2, bg: "bg-rose-100", text: "text-rose-700", dotColor: "bg-rose-500" };
-    if (action.includes("banned"))
-        return { icon: Ban, bg: "bg-rose-100", text: "text-rose-700", dotColor: "bg-rose-500" };
-    if (action.includes("location"))
-        return { icon: MapPin, bg: "bg-violet-100", text: "text-violet-700", dotColor: "bg-violet-500" };
-    // Default
-    return { icon: ShieldAlert, bg: "bg-slate-100", text: "text-slate-700", dotColor: "bg-slate-500" };
+const ACTION_META: Record<string, ActionMeta> = {
+    "booking.confirmed": { icon: CheckCircle2, bg: "bg-emerald-100", text: "text-emerald-700", dotColor: "bg-emerald-500" },
+    "booking.cancelled": { icon: XCircle, bg: "bg-rose-100", text: "text-rose-700", dotColor: "bg-rose-500" },
+    "booking.completed": { icon: CheckCircle2, bg: "bg-blue-100", text: "text-blue-700", dotColor: "bg-blue-500" },
+    "booking.expired":   { icon: Clock, bg: "bg-amber-100", text: "text-amber-700", dotColor: "bg-amber-500" },
+    "car.created":       { icon: PlusCircle, bg: "bg-emerald-100", text: "text-emerald-700", dotColor: "bg-emerald-500" },
+    "car.updated":       { icon: Pencil, bg: "bg-blue-100", text: "text-blue-700", dotColor: "bg-blue-500" },
+    "car.deleted":       { icon: Trash2, bg: "bg-rose-100", text: "text-rose-700", dotColor: "bg-rose-500" },
+    "user.banned":       { icon: Ban, bg: "bg-rose-100", text: "text-rose-700", dotColor: "bg-rose-500" },
+    "location.updated":  { icon: MapPin, bg: "bg-violet-100", text: "text-violet-700", dotColor: "bg-violet-500" },
+};
+
+const DEFAULT_META: ActionMeta = { icon: ShieldAlert, bg: "bg-slate-100", text: "text-slate-700", dotColor: "bg-slate-500" };
+
+function getActionMeta(action: string): ActionMeta {
+    return ACTION_META[action] ?? DEFAULT_META;
 }
 
 /**
@@ -95,7 +95,7 @@ export const auditColumns: ColumnDef<AuditLogEntry>[] = [
             return (
                 <div className="flex flex-col">
                     <span className="font-medium text-slate-900">{format(date, "MMM dd, yyyy")}</span>
-                    <span className="text-xs text-slate-500">{format(date, "HH:mm:ss a")}</span>
+                    <span className="text-xs text-slate-500">{format(date, "hh:mm:ss a")}</span>
                 </div>
             );
         },
