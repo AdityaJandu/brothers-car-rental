@@ -22,7 +22,9 @@ import { toast } from "sonner";
 
 interface AdminBookingIdViewProps {
     bookingId: string;
-};
+}
+
+type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
 export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
     const trpc = useTRPC();
@@ -33,7 +35,7 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
     }));
 
     // Initialize local state for the select dropdown
-    const [status, setStatus] = useState(data?.status.toLowerCase() || 'pending');
+    const [status, setStatus] = useState<BookingStatus>(data.status as BookingStatus);
 
     const updateStatus = useMutation(
         trpc.adminBookings.updateOneAdmin.mutationOptions({
@@ -52,19 +54,17 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
     const isPending = updateStatus.isPending;
 
     const handleStatusChange = (newStatus: string) => {
-        setStatus(newStatus.toLowerCase());
+        setStatus(newStatus as BookingStatus);
     };
 
     const handleSave = () => {
         updateStatus.mutate({
             bookingId: data.id,
-            status: status as "pending" | "confirmed" | "cancelled" | "completed"
+            status,
         });
     };
 
-    const hasChanged = status !== data.status.toLowerCase();
-
-    if (!data) return null;
+    const hasChanged = status !== data.status;
 
     return (
         <div className="min-h-screen bg-muted p-4 md:p-8 w-full">

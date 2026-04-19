@@ -31,7 +31,6 @@ export const adminAddCarRouter = createTRPCRouter({
                     .insert(car)
                     .values({
                         ...input,
-                        headerImage: input.headerImage,
                     })
                     .returning();
 

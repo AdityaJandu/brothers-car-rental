@@ -5,10 +5,10 @@ import { Separator } from "@/components/ui/separator";
 interface AdminBookingPricingInfoProps {
     dailyRate: number;
     days: number;
-    protectionFee: number | null;
-    surchargeFee: number | null;
+    protectionFee: number;
+    surchargeFee: number;
     totalPrice: number;
-    paymentMethod: string | null;
+    paymentMethod: string;
 }
 
 export const AdminBookingPricingInfo = ({

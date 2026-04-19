@@ -34,6 +34,7 @@ A premium, modern web application for luxury vehicle rentals built with Next.js,
 * **Multi-Layered Rate Limiting**: IP-based auth rate limiting at the edge middleware, per-user tRPC rate limiting (30 req/min) via `rateLimitedProtectedProcedure` on **mutations only**, and stricter domain-specific limits (e.g., 5 bookings/min) for critical mutations. Read queries use `protectedProcedure` (auth-only) to avoid unnecessary Redis overhead.
 * **Admin-Managed Physical Hubs**: Administrators manage secure, fixed pickup hubs for fleet distribution, enabling controlled car deployment and location-based search.
 * **Optimized Design**: Custom responsive aesthetic adhering tightly to modern curved (`rounded-md` clamped bounds) and drop-shadow architectures.
+* **Robust Code Quality & Type Safety**: Replaced unsafe type bindings with direct Drizzle schema derivations (`$inferSelect`), standardizing shared Zod schemas (e.g., `paginationInputSchema`), and rigorously eliminating null-unsafety in tRPC operations. Explicit extraction of full administrative context into the immutable audit trails prevents silent logging failures. Environment bindings leverage fail-fast assertions to protect edge setups.
 
 ## ⚡ Performance Architecture
 

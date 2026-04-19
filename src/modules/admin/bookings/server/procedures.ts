@@ -3,17 +3,14 @@ import { db } from "@/db";
 import { booking, car, auditLog } from "@/db/schema";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import { MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE, DEFAULT_PAGE } from "@/constants";
+import { paginationInputSchema } from "@/constants";
 import { getTableColumns, eq, desc, count } from "drizzle-orm";
 import { getCachedData, setCachedData, invalidateCacheGroup } from "@/lib/redis-cache";
 import { inngest } from "@/inngest/client";
 
 export const adminBookingsRouter = createTRPCRouter({
     getAllAdmin: protectedProcedure
-        .input(z.object({
-            page: z.number().default(DEFAULT_PAGE),
-            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
-        }))
+        .input(paginationInputSchema)
         .query(async ({ input }) => {
             const { page, pageSize } = input;
 
@@ -30,22 +27,19 @@ export const adminBookingsRouter = createTRPCRouter({
                 .limit(pageSize)
                 .offset((page - 1) * pageSize);
 
-            if (!allBookings) {
-                throw new TRPCError({
-                    code: "NOT_FOUND",
-                    message: "No bookings found",
-                });
+            if (allBookings.length === 0) {
+                return { items: [], total: 0, totalPages: 0 };
             }
 
-            const [total] = await db
+            const [totalResult] = await db
                 .select({ count: count() })
                 .from(booking);
 
-            const totalPages = Math.ceil(total.count / pageSize);
+            const totalPages = Math.ceil((totalResult?.count ?? 0) / pageSize);
 
             const response = {
                 items: allBookings,
-                total: total.count,
+                total: totalResult?.count ?? 0,
                 totalPages,
             };
 
@@ -109,6 +103,13 @@ export const adminBookingsRouter = createTRPCRouter({
                 .where(eq(booking.id, bookingId))
                 .limit(1);
 
+            if (!before) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Booking not found.",
+                });
+            }
+
             const [updatedBooking] = await tx
                 .update(booking)
                 .set({
@@ -137,15 +138,16 @@ export const adminBookingsRouter = createTRPCRouter({
                 expired: "booking.expired",
             };
 
-            if (status !== "pending") {
+            const auditAction = auditActionMap[status];
+            if (auditAction) {
                 await tx.insert(auditLog).values({
                     adminId: ctx.auth.user.id,
                     adminName: ctx.auth.user.name,
                     adminEmail: ctx.auth.user.email,
-                    action: auditActionMap[status],
+                    action: auditAction,
                     targetType: "booking",
                     targetId: bookingId,
-                    previousValue: JSON.stringify({ status: before?.status }),
+                    previousValue: JSON.stringify({ status: before.status }),
                     newValue: JSON.stringify({ status }),
                 });
             }

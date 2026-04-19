@@ -43,6 +43,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
                         src={car.headerImage}
                         alt={car.name}
                         fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
                         loading="eager"
                         className="object-cover opacity-90"
                     />

@@ -1,8 +1,9 @@
-import type { booking, car } from "@/db/schema";
+import type { booking, car, user } from "@/db/schema";
 
 // --- Types (derived from Drizzle schema) ---
 export type Booking = typeof booking.$inferSelect;
 export type Car = typeof car.$inferSelect;
+export type User = typeof user.$inferSelect;
 
 // --- Formatting Utilities ---
 export function formatCurrency(amount: number): string {

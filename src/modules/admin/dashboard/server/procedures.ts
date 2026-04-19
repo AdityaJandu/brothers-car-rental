@@ -4,7 +4,7 @@ import { car } from "@/db/schema";
 import { db } from "@/db";
 
 import { count, eq, ilike, and, getTableColumns, isNull } from "drizzle-orm";
-import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
+import { paginationInputSchema } from "@/constants";
 import { CarStatus } from "../types";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
@@ -12,9 +12,7 @@ import { getCachedData, setCachedData } from "@/lib/redis-cache";
 
 export const adminDashboardRouter = createTRPCRouter({
     getAllAdmin: protectedProcedure
-        .input(z.object({
-            page: z.number().default(DEFAULT_PAGE),
-            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+        .input(paginationInputSchema.extend({
             search: z.string().nullish(),
             status: z.enum([
                 CarStatus.Available,
@@ -49,6 +47,13 @@ export const adminDashboardRouter = createTRPCRouter({
                 .limit(pageSize)
                 .offset((page - 1) * pageSize);
 
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "No cars found",
+                });
+            }
+
             const [total] = await db
                 .select({ count: count() })
                 .from(car)
@@ -62,13 +67,6 @@ export const adminDashboardRouter = createTRPCRouter({
 
             const totalPages = Math.ceil(total.count / pageSize);
 
-            if (!data) {
-                throw new TRPCError({
-                    code: "NOT_FOUND",
-                    message: "Car not found or you don't have access to it.",
-                });
-            }
-
             const response = {
                 items: data,
                 total: total.count,
@@ -81,4 +79,3 @@ export const adminDashboardRouter = createTRPCRouter({
             return response;
         }),
 });
-

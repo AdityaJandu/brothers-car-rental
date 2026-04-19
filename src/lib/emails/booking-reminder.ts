@@ -1,9 +1,6 @@
-import type { user } from "@/db/schema";
 import { resend, FROM_EMAIL } from "./client";
 import { emailLayout, bookingTable, formatDate } from "./templates";
-import type { Booking, Car } from "./templates";
-
-type User = typeof user.$inferSelect;
+import type { Booking, Car, User } from "./templates";
 
 /**
  * Sends a 24h pickup reminder to the customer only.

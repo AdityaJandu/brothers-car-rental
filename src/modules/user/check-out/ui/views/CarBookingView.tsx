@@ -83,7 +83,6 @@ export function CarBookingView({ carId }: CarBookingProps) {
     });
 
     const onSubmit = (values: z.infer<typeof bookingFormSchema>) => {
-        console.log("Form submitted:", values);
         createBooking.mutate(values);
     };
 

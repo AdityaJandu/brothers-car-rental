@@ -79,6 +79,8 @@ export const adminLocationsRouter = createTRPCRouter({
 
                 await tx.insert(auditLog).values({
                     adminId: ctx.auth.user.id,
+                    adminName: ctx.auth.user.name,
+                    adminEmail: ctx.auth.user.email,
                     // Ensure "location.updated" is added to your schema enum!
                     action: "location.updated",
                     targetType: "location",

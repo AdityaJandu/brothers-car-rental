@@ -1,9 +1,6 @@
-import type { user } from "@/db/schema";
 import { resend, FROM_EMAIL } from "./client";
 import { emailLayout, bookingTable, statusBadge } from "./templates";
-import type { Booking, Car } from "./templates";
-
-type User = typeof user.$inferSelect;
+import type { Booking, Car, User } from "./templates";
 
 const STATUS_MESSAGES: Record<string, string> = {
     confirmed: "Great news! Your booking has been confirmed by our team. Your car will be ready for pick-up on the scheduled date.",
@@ -19,7 +16,7 @@ export async function sendStatusChangeEmail(
     b: Booking,
     carData: Car,
     userData: User,
-    newStatus: string,
+    newStatus: Booking["status"],
 ): Promise<void> {
     const message = STATUS_MESSAGES[newStatus] || `Your booking status has been updated to ${newStatus}.`;
 

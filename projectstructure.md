@@ -233,7 +233,7 @@ The pure marketing and branding UX architecture.
 Drizzle ORM central mapping architecture.
 
   * `index.ts`: The core database connector binding Drizzle explicitly to the Supabase Postgres connection string. **Configured with connection pooling** (`max: 10`, `idle_timeout: 20`, `connect_timeout: 10`) and `prepare: false` (required for Supabase's transaction-mode pooler on port 6543) to eliminate cold-connection overhead.
-  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `location`, `car`, `booking`, **`audit_log`**) mapped bi-directionally alongside enum limitations natively generating SQL constraints. 
+  * `schema.ts`: Absolute ground truth declaring table relations (`user`, `session`, `location`, `car`, `booking`, **`audit_log`**) mapped bi-directionally alongside enum limitations natively generating SQL constraints. Component property types natively infer directly from here via `$inferSelect` to strictly prevent misalignment.
       * Includes a composite index `booking_car_dates_idx` on `(carId, startDate, endDate)` for optimized booking conflict detection. 
       * The `bookingStatusEnum` includes `"expired"` for auto-expired pending bookings.
       * Includes `auditActionEnum` for strict type-safety on system logging (e.g., `booking.confirmed`, `location.updated`) providing immutable history for high-stakes admin modifications.
@@ -263,7 +263,7 @@ Durable workflow engine powered by Inngest for automated booking lifecycle manag
 
 Server-Client bridge guaranteeing purely typed data-fetching.
 
-  * `init.ts`: The baseline core tRPC initialization creating `createTRPCRouter` alongside layered auth/rate-limit middleware:
+  * `init.ts`: The baseline core tRPC initialization creating `createTRPCRouter` alongside layered auth/rate-limit middleware (context stubs cleanly resolved out natively across standard REST headers):
       * `baseProcedure`: Raw tRPC procedure with no middleware.
       * `protectedProcedure`: Validates session via Better Auth using a **React `cache()`-wrapped session getter** that deduplicates auth DB calls within a single server request. **Used by all read-only queries** (browse, bookings) for optimal performance.
       * `rateLimitedProtectedProcedure`: Extends `protectedProcedure` with a general per-user rate limit (30 req/min via Upstash Redis). **Used only by mutations** (booking creation, admin operations) to avoid unnecessary Redis overhead on reads.
@@ -301,10 +301,10 @@ Server-Client bridge guaranteeing purely typed data-fetching.
       * `booking-confirmation.ts` — Sends `sendBookingConfirmationEmail` to both the customer and admin (new booking alert).
       * `status-change.ts` — Sends `sendStatusChangeEmail` directly to the customer based on booking transition states.
       * `booking-reminder.ts` — Sends `sendBookingReminderEmail` exclusively to the customer as a 24-hour pickup heads-up.
-  * `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure.
+  * `redis.ts`: Upstash Redis client instance powering the rate limiting infrastructure (features fail-fast URL/Token validation at boot).
   * `ratelimit.ts`: Upstash rate limiter definitions with three tiers:
       * `authRateLimit` — IP-based, 10 req/60s (used in edge middleware for auth endpoints).
       * `generalRateLimit` — User-based, 30 req/60s (used in `rateLimitedProtectedProcedure` for **mutation-only** tRPC procedures).
       * `bookingRateLimit` — User-based, 5 req/60s (stricter inline limit for booking mutations).
-  * `supabase-client.ts`: CDN bucket connector providing external file payload resolution securely.
+  * `supabase-client.ts`: CDN bucket connector providing external file payload resolution securely (features explicit initialization environment validation).
   * `utils.ts`: Tailwind utility merge logic (`cn()`).

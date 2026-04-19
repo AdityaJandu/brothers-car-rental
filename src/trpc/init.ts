@@ -6,10 +6,12 @@ import { getSession } from '@/lib/cached-session';
  * This context creator accepts `headers` so it can be reused in both
  * the RSC server caller (where you pass `next/headers`) and the
  * API route handler (where you pass the request headers).
+ *
+ * Note: Authentication is handled by session middleware in protectedProcedure,
+ * not through context. This function provides a baseline context object.
  */
 export const createTRPCContext = async (_opts: { headers: Headers }) => {
-    // const user = await auth(opts.headers);
-    return { userId: 'user_123' };
+    return {};
 };
 
 // Avoid exporting the entire t-object

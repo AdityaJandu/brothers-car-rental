@@ -3,9 +3,9 @@ import { CalendarDays, Car, Clock } from "lucide-react";
 import { format } from "date-fns";
 
 interface AdminBookingRentalInfoProps {
-    carId: string | null;
-    startDate: string;
-    endDate: string;
+    carId: string;
+    startDate: Date | string;
+    endDate: Date | string;
     days: number;
     carName?: string | null;
     carMake?: string | null;
@@ -23,11 +23,11 @@ export const AdminBookingRentalInfo = ({
     carModel,
     carYear
 }: AdminBookingRentalInfoProps) => {
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString: Date | string) => {
         try {
             return format(new Date(dateString), "MMM d, yyyy, h:mm a");
         } catch {
-            return dateString;
+            return String(dateString);
         }
     };
 

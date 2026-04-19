@@ -58,6 +58,12 @@
 │                                                                         │
 │  index.ts ──► Drizzle + Postgres (pooled, prepare: false)               │
 │  schema.ts ──► user | session | car | booking                           │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────┐                 │
+│  │ Shared Types & Schemas                             │                 │
+│  │ ──► constants.ts (paginationInputSchema)           │                 │
+│  │ ──► emails/templates.ts (User, Car, Booking types) │                 │
+│  └────────────────────────────────────────────────────┘                 │
 └──────────────────────────────┬──────────────────────────────────────────┘
                                │
                                ▼

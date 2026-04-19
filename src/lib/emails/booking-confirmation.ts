@@ -1,9 +1,6 @@
-import type { user } from "@/db/schema";
 import { resend, FROM_EMAIL, ADMIN_EMAIL } from "./client";
 import { emailLayout, bookingTable, statusBadge } from "./templates";
-import type { Booking, Car } from "./templates";
-
-type User = typeof user.$inferSelect;
+import type { Booking, Car, User } from "./templates";
 
 /**
  * Sends booking confirmation to the customer + actionable alert to admin.

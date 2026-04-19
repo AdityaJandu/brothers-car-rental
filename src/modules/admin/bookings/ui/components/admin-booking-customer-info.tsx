@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Mail, Phone, FileText } from "lucide-react";
 
 interface AdminBookingCustomerInfoProps {
-    fullName: string | null;
-    email: string | null;
-    phoneNumber: string | null;
-    licenseNumber: string | null;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    licenseNumber: string;
 }
 
 export const AdminBookingCustomerInfo = ({

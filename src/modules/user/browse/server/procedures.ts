@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import z from "zod";
 import { and, count, eq, getTableColumns, ilike, isNull } from "drizzle-orm";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
+import { paginationInputSchema } from "@/constants";
 import { TRPCError } from "@trpc/server";
 import { getCachedData, setCachedData } from "@/lib/redis-cache";
 
@@ -48,9 +48,7 @@ export const carRouter = createTRPCRouter({
     ,
 
     getAll: protectedProcedure
-        .input(z.object({
-            page: z.number().default(DEFAULT_PAGE),
-            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+        .input(paginationInputSchema.extend({
             search: z.string().nullish(),
             locationId: z.string().nullish(),
         }))
@@ -106,13 +104,6 @@ export const carRouter = createTRPCRouter({
                 );
 
             const totalPages = Math.ceil(total.count / pageSize);
-
-            if (!data) {
-                throw new TRPCError({
-                    code: "NOT_FOUND",
-                    message: "Cars not found or you don't have access to it.",
-                });
-            }
 
             const response = {
                 items: data,

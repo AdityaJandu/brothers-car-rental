@@ -2,7 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { booking, car, location } from "@/db/schema";
 import z from "zod";
-import { DEFAULT_PAGE, MIN_PAGE_SIZE, MAX_PAGE_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
+import { paginationInputSchema } from "@/constants";
 import { getTableColumns, eq, desc, count } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getCachedData, setCachedData } from "@/lib/redis-cache";
@@ -14,10 +14,7 @@ const dropOffLoc = alias(location, "dropOffLocation");
 
 export const userBookingsRouter = createTRPCRouter({
     getAll: protectedProcedure
-        .input(z.object({
-            page: z.number().default(DEFAULT_PAGE),
-            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
-        }))
+        .input(paginationInputSchema)
         .query(async ({ input, ctx }) => {
             const { page, pageSize } = input;
             const userId = ctx.auth.user.id;
