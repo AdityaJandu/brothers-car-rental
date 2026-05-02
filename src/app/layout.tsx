@@ -23,6 +23,9 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Brothers Car Rental",
   description: "Premium car rental experience",
+  icons: {
+    icon: "/app-logo.svg",
+  },
 };
 
 export default function RootLayout({
