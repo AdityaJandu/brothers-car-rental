@@ -47,6 +47,7 @@ export function Footer() {
                         <h4 className="font-bold text-base mb-6 font-heading">Support</h4>
                         <ul className="flex flex-col gap-4 text-sm text-white/70">
                             <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                            <li><Link href="/support" className="hover:text-white transition-colors">Support Center</Link></li>
                             <li><Link href="/terms" className="hover:text-white transition-colors">Terms</Link></li>
                             <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
                         </ul>
