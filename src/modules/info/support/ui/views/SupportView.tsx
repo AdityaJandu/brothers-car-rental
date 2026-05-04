@@ -37,7 +37,7 @@ export function SupportView() {
                             height={720}
                             priority
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/40 to-transparent"></div>
+                        <div className="absolute inset-0 bg-linear-to-r from-primary via-primary/40 to-transparent"></div>
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@ function CategoryCard({ icon, title, description }: { icon: React.ReactNode, tit
                 {icon}
             </div>
             <h3 className="font-heading text-xl font-bold text-primary mb-4">{title}</h3>
-            <p className="font-sans text-muted-foreground text-sm leading-relaxed mb-8 flex-grow">{description}</p>
+            <p className="font-sans text-muted-foreground text-sm leading-relaxed mb-8 grow">{description}</p>
             <div className="flex items-center gap-2 text-secondary font-bold text-sm cursor-pointer hover:gap-3 transition-all">
                 View Articles <ArrowRight className="w-4 h-4" />
             </div>

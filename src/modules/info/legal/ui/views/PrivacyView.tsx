@@ -5,7 +5,7 @@ export function PrivacyView() {
     return (
         <main className="min-h-screen pt-20">
             <InfoSection containerClassName="max-w-4xl py-24">
-                <article className="bg-card rounded-[2rem] p-8 md:p-16 shadow-ambient relative overflow-hidden border border-border/10">
+                <article className="bg-card rounded-4xl p-8 md:p-16 shadow-ambient relative overflow-hidden border border-border/10">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
 
                     <header className="mb-16 border-b border-border/40 pb-12">

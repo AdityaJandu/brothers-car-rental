@@ -46,7 +46,7 @@ export function ContactInfo() {
 function ContactMethod({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
     return (
         <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-primary flex-shrink-0">
+            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-primary shrink-0">
                 {icon}
             </div>
             <div>

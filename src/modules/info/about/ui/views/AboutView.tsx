@@ -25,7 +25,7 @@ export function AboutView() {
                     </div>
 
                     <div className="relative">
-                        <div className="rounded-[3rem] overflow-hidden shadow-ambient aspect-[4/5] relative z-10">
+                        <div className="rounded-[3rem] overflow-hidden shadow-ambient aspect-4/5 relative z-10">
                             <Image
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY0lEz15G9liVtx12gKTaTqGP0v4lBpllg7zXLF8HUloW1nWypPrx8PUscNZczKD59agUiq2-Ys1rWqWXADY6lI3UKi9opbedhgUW2nC9mjRgEgu4hBOX7vJFE3q1Dc2fxFVhD8aGB8ymZ50DnA7SRfHaev7liztC2Ppk39rN0Jzwm0e65kgrRl36yaqnnEyxMg95yXVPAkC8ippkj_f_Kt6U0ltvzN5lGrmf4y2Jo3fLK7JxKGzXo0McfJzK6jMLPRx7EtCAIKOfP"
                                 className="w-full h-full object-cover"

@@ -20,7 +20,7 @@ export function TermsView() {
                 </aside>
 
                 {/* Main Content */}
-                <article className="md:w-3/4 bg-card rounded-[2rem] p-8 md:p-16 shadow-ambient relative overflow-hidden border border-border/10">
+                <article className="md:w-3/4 bg-card rounded-4xl p-8 md:p-16 shadow-ambient relative overflow-hidden border border-border/10">
                     <div className="absolute top-0 right-0 w-80 h-80 bg-secondary/5 rounded-full blur-[100px] -mr-40 -mt-40 pointer-events-none z-0"></div>
 
                     <div className="relative z-10">

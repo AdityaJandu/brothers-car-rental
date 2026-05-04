@@ -1,12 +1,12 @@
-import React from 'react';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, NavigationOff } from 'lucide-react';
 
 export function NotFoundView() {
     return (
-        <main className="flex-grow flex flex-col pt-20 bg-background min-h-screen">
-            <div className="flex-grow grid grid-cols-1 lg:grid-cols-2">
+        <main className="grow flex flex-col pt-20 bg-background min-h-screen">
+            <div className="grow grid grid-cols-1 lg:grid-cols-2">
                 <div className="flex flex-col justify-center px-8 sm:px-16 lg:px-24 relative z-10">
                     <div className="absolute top-1/4 -left-10 text-[15rem] font-heading font-black text-muted/30 select-none z-0 pointer-events-none">
                         404
@@ -43,7 +43,7 @@ export function NotFoundView() {
                 </div>
 
                 <div className="relative h-96 lg:h-auto overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent z-10 w-32 hidden lg:block"></div>
+                    <div className="absolute inset-0 bg-linear-to-r from-background via-transparent to-transparent z-10 w-32 hidden lg:block"></div>
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                         style={{
