@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { booking, car, location } from "@/db/schema";
 import z from "zod";
 import { paginationInputSchema } from "@/constants";
-import { getTableColumns, eq, desc, count } from "drizzle-orm";
+import { getTableColumns, eq, desc, count, asc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getCachedData, setCachedData } from "@/lib/redis-cache";
 import { alias } from "drizzle-orm/pg-core";
@@ -138,6 +138,52 @@ export const userBookingsRouter = createTRPCRouter({
                 message: "No bookings found",
             });
         }
+
+        await setCachedData(cacheKey, data);
+        return data;
+    }),
+
+    getActiveOrUpcomingBooking: protectedProcedure.query(async ({ ctx }) => {
+        const userId = ctx.auth.user.id;
+
+        const cacheKey = `bookings:user:${userId}:active-or-upcoming`;
+
+        type ActiveBookingWithCar = {
+            booking: typeof booking.$inferSelect;
+            car: typeof car.$inferSelect;
+            pickUpLocationName: string | null;
+            dropOffLocationName: string | null;
+        };
+
+        const cached = await getCachedData<ActiveBookingWithCar>(cacheKey);
+        if (cached) return cached;
+
+        const now = new Date();
+
+        const [data] = await db
+            .select({
+                booking: getTableColumns(booking),
+                car: getTableColumns(car),
+                pickUpLocationName: pickUpLoc.name,
+                dropOffLocationName: dropOffLoc.name,
+            })
+            .from(booking)
+            .innerJoin(car, eq(booking.carId, car.id))
+            .innerJoin(pickUpLoc, eq(booking.pickUpLocation, pickUpLoc.id))
+            .innerJoin(dropOffLoc, eq(booking.dropOffLocation, dropOffLoc.id))
+            .where(eq(booking.userId, userId))
+            .orderBy(asc(booking.startDate))
+            .limit(10)
+            .then((rows) =>
+                rows.filter(
+                    (r) =>
+                        (r.booking.status === "pending" || r.booking.status === "confirmed") &&
+                        r.booking.endDate >= now
+                )
+            );
+
+        // Return null (no error) when there's simply no active/upcoming booking
+        if (!data) return null;
 
         await setCachedData(cacheKey, data);
         return data;

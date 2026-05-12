@@ -54,7 +54,7 @@ export const ProfileView = () => {
 
     return (
         <div className="min-h-screen bg-[#FAFAFA] py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto space-y-10">
+            <div className="max-w-6xl mx-auto space-y-10">
 
                 <ProfileHeader
                     name={name}
@@ -69,7 +69,7 @@ export const ProfileView = () => {
                 </section>
 
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                    <PersonalInfoCard name={name} phone={userData.phone || null} />
+                    <PersonalInfoCard name={name} phone={userData.phone || null} licenseNumber={userData.licenseNumber || null} />
                     <div className="space-y-10">
                         <PaymentMethodsCard />
                         <SecuritySettingsCard />
