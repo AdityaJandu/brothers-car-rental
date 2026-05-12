@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, Wallet, Banknote, CheckCircle2, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Loader2, AlertCircle } from "lucide-react";
+import { Wallet, Banknote, CheckCircle2, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Loader2, AlertCircle, BadgeCheck, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -40,6 +40,13 @@ interface CheckoutFormProps {
     isPending: boolean;
     unavailableDates: UnavailableDateRange[];
     activeLocations: { id: string; name: string; city: string; fullAddress: string }[];
+    missingProfile: boolean;
+    prefilled: {
+        fullName: boolean;
+        email: boolean;
+        phoneNumber: boolean;
+        licenseNumber: boolean;
+    };
 }
 
 /**
@@ -91,7 +98,7 @@ function getNextAvailableDate(
     return candidate;
 }
 
-export function CheckoutForm({ isPending, unavailableDates, activeLocations }: CheckoutFormProps) {
+export function CheckoutForm({ isPending, unavailableDates, activeLocations, missingProfile, prefilled }: CheckoutFormProps) {
     // Tap into the parent's form state
     const form = useFormContext<z.infer<typeof bookingInsertSchema>>();
 
@@ -248,7 +255,7 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations }: C
                                     <label className="text-[11px] px-2 font-semibold uppercase tracking-wider text-slate-500">
                                         {field.label}
                                     </label>
-                                    <Select onValueChange={formField.onChange} defaultValue={formField.value}>
+                                    <Select onValueChange={formField.onChange} value={formField.value}>
                                         <FormControl>
                                             <SelectTrigger className="bg-[#F8F9FA] rounded-md px-4 py-5.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0F172A]/10 w-full h-auto">
                                                 <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
@@ -272,39 +279,67 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations }: C
 
             {/* PERSONAL DETAILS */}
             <section>
-                <div className="mb-8">
+                <div className="mb-6">
                     <h2 className="text-3xl font-bold mb-2">Personal Details</h2>
-                    <p className="text-sm text-slate-500">Please provide your official information.</p>
+                    <p className="text-sm text-slate-500">Your official information for the booking.</p>
                 </div>
 
+                {/* Missing profile banner */}
+                {missingProfile && (
+                    <div className="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-md px-4 py-3 text-sm animate-in fade-in slide-in-from-top-1 duration-200">
+                        <TriangleAlert className="w-4 h-4 mt-0.5 shrink-0 text-amber-500" />
+                        <div>
+                            <p className="font-semibold">Your profile is incomplete</p>
+                            <p className="text-xs mt-0.5 opacity-80">
+                                Save your phone number and driving licence on your{" "}
+                                <a href="/profile" className="underline font-semibold hover:text-amber-900">
+                                    profile
+                                </a>{" "}
+                                to skip this section on future bookings.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {[
+                    {([
                         { name: "fullName", label: "Full Name", type: "text" },
                         { name: "email", label: "Email Address", type: "email" },
                         { name: "phoneNumber", label: "Phone Number", type: "tel" },
                         { name: "licenseNumber", label: "License Number", type: "text" },
-                    ].map((field) => (
-                        <FormField
-                            key={field.name}
-                            control={form.control}
-                            name={field.name as "fullName" | "email" | "phoneNumber" | "licenseNumber"}
-                            render={({ field: formField }) => (
-                                <FormItem className="flex flex-col gap-1 space-y-0">
-                                    <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                                        {field.label}
-                                    </label>
-                                    <FormControl>
-                                        <input
-                                            type={field.type}
-                                            {...formField}
-                                            className="bg-[#F8F9FA] rounded-md px-4 py-3.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0F172A]/10 w-full"
-                                        />
-                                    </FormControl>
-                                    <FormMessage className="text-xs text-red-500" />
-                                </FormItem>
-                            )}
-                        />
-                    ))}
+                    ] as const).map((field) => {
+                        const isSaved = prefilled[field.name as keyof typeof prefilled];
+                        return (
+                            <FormField
+                                key={field.name}
+                                control={form.control}
+                                name={field.name as "fullName" | "email" | "phoneNumber" | "licenseNumber"}
+                                render={({ field: formField }) => (
+                                    <FormItem className="flex flex-col gap-1 space-y-0">
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                                                {field.label}
+                                            </label>
+                                            {isSaved && (
+                                                <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
+                                                    <BadgeCheck className="w-3.5 h-3.5" />
+                                                    Saved
+                                                </span>
+                                            )}
+                                        </div>
+                                        <FormControl>
+                                            <input
+                                                type={field.type}
+                                                {...formField}
+                                                className="bg-[#F8F9FA] rounded-md px-4 py-3.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0F172A]/10 w-full"
+                                            />
+                                        </FormControl>
+                                        <FormMessage className="text-xs text-red-500" />
+                                    </FormItem>
+                                )}
+                            />
+                        );
+                    })}
                 </div>
             </section>
 
@@ -312,13 +347,13 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations }: C
             <section>
                 <div className="mb-6">
                     <h2 className="text-3xl font-bold">Payment Method</h2>
+                    <p className="text-sm text-slate-500 mt-1">Paid at drop-off only — cash or UPI accepted.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     {[
-                        { key: "cash", icon: Banknote, title: "Pay with Cash", desc: "Pay at pickup" },
-                        { key: "card", icon: CreditCard, title: "Credit / Debit Card", desc: "Secure processing" },
-                        { key: "wallet", icon: Wallet, title: "Digital Wallet", desc: "UPI / Apple Pay" },
+                        { key: "cash", icon: Banknote, title: "Cash on Drop-off", desc: "Pay in cash at return" },
+                        { key: "wallet", icon: Wallet, title: "UPI", desc: "Pay via any UPI app at drop-off" },
                     ].map((method) => {
                         const Icon = method.icon;
                         const active = paymentMethod === method.key;
@@ -327,7 +362,7 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations }: C
                             <button
                                 key={method.key}
                                 type="button"
-                                onClick={() => form.setValue("paymentMethod", method.key as "cash" | "card" | "wallet", { shouldValidate: true })}
+                                onClick={() => form.setValue("paymentMethod", method.key as "cash" | "wallet", { shouldValidate: true })}
                                 className={cn(
                                     "flex items-center justify-between p-5 rounded-md border transition",
                                     active ? "bg-white border-[#0F172A] shadow" : "bg-[#F8F9FA] border-transparent hover:bg-slate-100"
@@ -346,23 +381,6 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations }: C
                     })}
                 </div>
 
-                {/* CARD INPUTS */}
-                {paymentMethod === "card" && (
-                    <div className="bg-white rounded-md border p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <div className="sm:col-span-2 flex flex-col gap-2">
-                            <label className="text-xs font-semibold uppercase text-slate-500">Card Number</label>
-                            <input placeholder="0000 0000 0000 0000" className="bg-[#F8F9FA] rounded-md px-4 py-3 w-full font-mono" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <label className="text-xs font-semibold uppercase text-slate-500">Expiry Date</label>
-                            <input placeholder="MM/YY" className="bg-[#F8F9FA] rounded-md px-4 py-3 w-full font-mono" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <label className="text-xs font-semibold uppercase text-slate-500">CVV</label>
-                            <input placeholder="123" maxLength={4} className="bg-[#F8F9FA] rounded-md px-4 py-3 w-full font-mono" />
-                        </div>
-                    </div>
-                )}
             </section>
 
             {/* ACTION */}

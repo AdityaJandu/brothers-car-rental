@@ -14,18 +14,17 @@ interface Props {
 export default async function Page({ params }: Props) {
     const { carId } = await params;
 
-    // Run auth check and data prefetch in parallel
-    const queryClient = getQueryClient();
-    const [session] = await Promise.all([
-        getSession(),
-        queryClient.prefetchQuery(
-            trpc.userBrowse.getOne.queryOptions({ id: carId }),
-        ),
-    ]);
-
+    // Auth check first — no point prefetching data for unauthenticated users
+    const session = await getSession();
     if (!session) {
-        redirect("/sign-in"); // server-side redirect
+        redirect("/sign-in");
     }
+
+    // Server-side prefetch — auth cookies are forwarded via headers()
+    const queryClient = getQueryClient();
+    await queryClient.prefetchQuery(
+        trpc.userCheckout.getCheckoutData.queryOptions({ carId }),
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
