@@ -12,7 +12,6 @@ import { RewardsStatusCard } from "../components/RewardsStatusCard";
 import { ActiveBookingCard } from "../components/ActiveBookingCard";
 import { PersonalInfoCard } from "../components/PersonalInfoCard";
 import { PaymentMethodsCard } from "../components/PaymentMethodsCard";
-import { SecuritySettingsCard } from "../components/SecuritySettingsCard";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
