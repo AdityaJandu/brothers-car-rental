@@ -5,6 +5,7 @@ import { LoadingState } from "@/components/self/loading-state";
 import { ErrorState } from "@/components/self/error-state";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 
 import { ProfileHeader } from "../components/ProfileHeader";
 import { RewardsStatusCard } from "../components/RewardsStatusCard";
@@ -70,18 +71,28 @@ export const ProfileView = () => {
 
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                     <PersonalInfoCard name={name} phone={userData.phone || null} licenseNumber={userData.licenseNumber || null} />
-                    <div className="space-y-10">
-                        <PaymentMethodsCard />
-                        <SecuritySettingsCard />
-                    </div>
+                    <PaymentMethodsCard />
                 </section>
 
                 {/* SIGN OUT BUTTON */}
                 <div className="flex justify-center pt-8 pb-12">
-                    <button onClick={logOut} disabled={loggingOut} className="flex items-center gap-3 bg-[#F1F3F5] text-[#D92D20] font-bold text-sm px-8 py-3.5 rounded-md hover:bg-[#E5E9EC] transition-colors shadow-sm">
-                        {loggingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
-                        {loggingOut ? "Signing out..." : "Sign Out from Executive Portal"}
-                    </button>
+                    <Button
+                        onClick={logOut}
+                        disabled={loggingOut}
+                        variant="destructive"
+                        size="lg"
+                        aria-busy={loggingOut}
+                        className="group w-full sm:w-auto gap-3 font-semibold text-base px-10 h-14 rounded-2xl shadow-sm hover:shadow-md hover:shadow-red-500/25 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                    >
+                        {loggingOut ? (
+                            <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                        ) : (
+                            <LogOut className="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" />
+                        )}
+                        <span className="truncate">
+                            {loggingOut ? "Signing out..." : "Sign Out"}
+                        </span>
+                    </Button>
                 </div>
 
             </div>
