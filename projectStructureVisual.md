@@ -14,9 +14,12 @@
 │  │(onboard) │  │  (auth)  │  │  (user)  │  │ (admin)  │  │   api/   │   │
 │  │    /     │  │ sign-in  │  │  browse  │  │dashboard │  │auth/[..] │   │
 │  │          │  │ sign-up  │  │  profile │  │ add-car  │  │trpc/[..] │   │
-│  │          │  │          │  │check-out │  │ bookings │  │          │   │
+│  │          │  │          │  │check-out │  │ bookings │  │inngest   │   │
 │  │          │  │          │  │ bookings │  │ locations│  │          │   │
-│  │          │  │          │  │          │  │audit-log │  │          │   │
+│  │          │  │          │  │  about   │  │audit-log │  │          │   │
+│  │          │  │          │  │ contact  │  │          │  │          │   │
+│  │          │  │          │  │ support  │  │          │  │          │   │
+│  │          │  │          │  │terms/priv│  │          │  │          │   │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
 │       │              │             │              │              │      │
 └───────┼──────────────┼─────────────┼──────────────┼──────────────┼──────┘
@@ -32,8 +35,17 @@
 │  │  components/│  │  layout/    │  │  bookings/  │  │  dashboard/ │     │
 │  │  data/      │  │             │  │  check-out/ │  │  bookings/  │     │
 │  │             │  │             │  │  locations/ │  │  locations/ │     │
-│  │             │  │             │  │  profile/   │  │             │     │
+│  │             │  │             │  │  profile/   │  │  audit-log/ │     │
 │  │             │  │             │  │  car-id-view│  │             │     │
+│  │             │  │             │  │             │  │             │     │
+│  ├─────────────┤  │             │  ├─────────────┤  │             │     │
+│  │    info     │  │             │  │             │  │             │     │
+│  │  ─────────  │  │             │  │             │  │             │     │
+│  │  about/     │  │             │  │             │  │             │     │
+│  │  contact/   │  │             │  │             │  │             │     │
+│  │  support/   │  │             │  │             │  │             │     │
+│  │  legal/     │  │             │  │             │  │             │     │
+│  │  not-found/ │  │             │  │             │  │             │     │
 │  └─────────────┘  └─────────────┘  └──────┬──────┘  └──────┬──────┘     │
 │                                           │                │            │
 │                              ┌────────────┴────────────────┘            │
@@ -46,7 +58,8 @@
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                     src/trpc/ (RPC Bridge Layer)                        │
 │                                                                         │
-│  init.ts ──► baseProcedure ──► protectedProcedure ──► rateLimited...    │
+│  init.ts ──► baseProcedure ──► protectedProcedure ──► adminProcedure    │
+│                                       └──► rateLimitedProtectedProcedure│
 │  routers/_app.ts ──► Central multiplexer                                │
 │  client.tsx ──► React-Query provider                                    │
 │  server.tsx ──► RSC hydration pipeline                                  │
@@ -108,8 +121,18 @@ brothers-car-rental/
 │   │   │   │   ├── page.tsx                    #    → Promise.all(getSession, prefetch)
 │   │   │   │   └── [bookingId]/
 │   │   │   │       └── page.tsx
-│   │   │   └── profile/
-│   │   │       └── page.tsx                    #    → Promise.all(getSession, prefetch)
+│   │   │   ├── profile/
+│   │   │   │   └── page.tsx                    #    → Promise.all(getSession, prefetch)
+│   │   │   ├── about/
+│   │   │   │   └── page.tsx                    #    → AboutView (info module)
+│   │   │   ├── contact/
+│   │   │   │   └── page.tsx                    #    → ContactView (info module)
+│   │   │   ├── support/
+│   │   │   │   └── page.tsx                    #    → SupportView (info module)
+│   │   │   ├── terms/
+│   │   │   │   └── page.tsx                    #    → TermsView (info module)
+│   │   │   └── privacy/
+│   │   │       └── page.tsx                    #    → PrivacyView (info module)
 │   │   │
 │   │   ├── (admin)/                            # 🔐 Admin Routes
 │   │   │   ├── layout.tsx                      #    → AdminNavbar wrapper
@@ -134,6 +157,7 @@ brothers-car-rental/
 │   │   │   └── trpc/[trpc]/
 │   │   │       └── route.ts                    #    → tRPC catch-all
 │   │   │
+│   │   ├── not-found.tsx                       # Global 404 → NotFoundView
 │   │   ├── layout.tsx                          # Root layout (providers)
 │   │   └── loading.tsx                         # Global loading fallback
 │   │
@@ -213,6 +237,8 @@ brothers-car-rental/
 │   │   │   │   │       ├── CarGrid.tsx
 │   │   │   │   │       ├── DatePicker.tsx           #    disabled: Matcher | Matcher[]
 │   │   │   │   │       └── FiltersBar.tsx
+│   │   │   │   ├── hooks/
+│   │   │   │   │   └── use-car-filters-user.tsx
 │   │   │   │   ├── params.ts
 │   │   │   │   └── types.ts
 │   │   │   │
@@ -222,6 +248,8 @@ brothers-car-rental/
 │   │   │   │       │   └── CarIdView.tsx
 │   │   │   │       └── components/
 │   │   │   │           ├── ImageSlider.tsx
+│   │   │   │           ├── CarDetailsSection.tsx
+│   │   │   │           ├── CarBookingSection.tsx
 │   │   │   │           ├── PricingCard.tsx          #    ✅/🕐 availability indicator
 │   │   │   │           └── Spec.tsx
 │   │   │   │
@@ -233,17 +261,22 @@ brothers-car-rental/
 │   │   │   │   │                               # 🔒 create (Mutation + conflict check)
 │   │   │   │   ├── schemas.ts                  #    bookingInsertSchema (server)
 │   │   │   │   │                               #    bookingFormSchema (client)
+│   │   │   │   ├── hooks/
+│   │   │   │   │   └── use-booking-filters-user.tsx
 │   │   │   │   ├── params.ts
+│   │   │   │   ├── types.ts                    #    BookingInsertInput, BookingRow, etc.
 │   │   │   │   └── ui/
 │   │   │   │       ├── views/
 │   │   │   │       │   └── CarBookingView.tsx   #    fetches unavailableDates
 │   │   │   │       └── components/
 │   │   │   │           ├── CheckoutForm.tsx     #    ✅/❌ availability banner
-│   │   │   │           └── SummaryCard.tsx
+│   │   │   │           ├── SummaryCard.tsx
+│   │   │   │           └── BookingStepper.tsx   #    Visual multi-step progress
 │   │   │   │
 │   │   │   ├── bookings/
 │   │   │   │   ├── server/
-│   │   │   │   │   └── procedures.ts           # 📖 getAll, getBookingWithDetails, getLatestBooking (Query, no rate limit)
+│   │   │   │   │   └── procedures.ts           # 📖 getAll, getBookingWithDetails, getLatestBooking, getActiveOrUpcomingBooking
+│   │   │   │   ├── types.ts                    #    GetOneBookingDetails, GetOneBooking, GetLocationOne
 │   │   │   │   ├── utils/
 │   │   │   │   │   └── BookingPdf.tsx          #    React-PDF invoice template
 │   │   │   │   └── ui/
@@ -256,11 +289,12 @@ brothers-car-rental/
 │   │   │   │           ├── CustomerInfoCard.tsx
 │   │   │   │           ├── PaymentSummaryCard.tsx
 │   │   │   │           ├── ScheduleLocationCard.tsx
+│   │   │   │           ├── booking-columns.tsx  #    TanStack Table column defs
 │   │   │   │           └── BookingActions.tsx  #    PDFDownloadLink integration
 │   │   │   │
-│   │   │   └── profile/
-│   │   │       ├── server/
-│   │   │       │   └── procedures.ts           # 📖 getUser (Query, no rate limit)
+│   │   │   ├── profile/
+│   │   │   │   ├── server/
+│   │   │   │   │   └── procedures.ts           # 📖 getUser (Query) + 🔒 updateProfile (Mutation)
 │   │   │       └── ui/
 │   │   │           ├── views/
 │   │   │           │   └── ProfileView.tsx
@@ -297,16 +331,39 @@ brothers-car-rental/
 │   │           └── layout/
 │   │               └── AuthHeader.tsx
 │   │
+│   │   ├── info/                                # ─── Info Pages Module ───
+│   │   │   ├── components/
+│   │   │   │   ├── InfoPageHeader.tsx           #    Shared header component
+│   │   │   │   └── InfoSection.tsx             #    Shared section wrapper
+│   │   │   ├── about/
+│   │   │   │   └── ui/views/AboutView.tsx
+│   │   │   ├── contact/
+│   │   │   │   └── ui/
+│   │   │   │       ├── views/ContactView.tsx
+│   │   │   │       └── components/
+│   │   │   │           ├── ContactForm.tsx
+│   │   │   │           └── ContactInfo.tsx
+│   │   │   ├── support/
+│   │   │   │   └── ui/views/SupportView.tsx
+│   │   │   ├── legal/
+│   │   │   │   └── ui/views/
+│   │   │   │       ├── TermsView.tsx
+│   │   │   │       └── PrivacyView.tsx
+│   │   │   └── not-found/
+│   │   │       └── ui/views/NotFoundView.tsx
+│   │
 │   ├── trpc/                                   # ─── RPC Bridge Layer ───
 │   │   ├── init.ts                             #    Procedure definitions + cache()
 │   │   ├── routers/
 │   │   │   └── _app.ts                         #    Central router multiplexer
+│   │   ├── query-client.ts                     #    QueryClient factory
 │   │   ├── client.tsx                          #    React-Query tRPC provider
 │   │   └── server.tsx                          #    RSC caller + queryClient
 │   │
 │   ├── db/                                     # ─── Data Layer ───
 │   │   ├── index.ts                            #    Drizzle + postgres (pooled)
-│   │   └── schema.ts                           #    user, session, location, car, booking
+│   │   └── schema.ts                           #    user, session, account, verification,
+│   │                                            #    location, car, booking, audit_log
 │   │                                            #    + booking_car_dates_idx (overlap)
 │   │                                            #    + bookingStatusEnum: expired
 │   │
@@ -331,12 +388,21 @@ brothers-car-rental/
 │   │   │   ├── data-pagination.tsx
 │   │   │   ├── loading-state.tsx
 │   │   │   ├── error-state.tsx
-│   │   │   └── empty-state.tsx
+│   │   │   ├── empty-state.tsx
+│   │   │   ├── form-field.tsx
+│   │   │   ├── generated-avatar.tsx               #    DiceBear avatar generation
+│   │   │   └── command-select.tsx
 │   │   └── ui/                                 #    Shadcn/UI primitives
 │   │       ├── button.tsx
 │   │       ├── card.tsx
 │   │       ├── input.tsx
-│   │       └── ...
+│   │       └── ...                              #    60+ Shadcn UI components
+│   │
+│   ├── hooks/                                  # ─── Global Hooks ───
+│   │   └── use-mobile.ts                       #    Responsive breakpoint detection
+│   │
+│   ├── constants.ts                            #    Pagination schemas & defaults
+│   ├── rate-middleware.ts                      #    Edge auth rate limiting
 │   │
 │   └── lib/                                    # ─── Utilities & Configs ───
 │       ├── auth.ts                             #    Better-Auth server config
@@ -346,20 +412,25 @@ brothers-car-rental/
 │       ├── redis-cache.ts                      #    Read-path caching wrapper
 │       ├── emails/                             #    📧 Modular Email Layer (Resend)
 │       │   ├── client.ts                       #    → Resend API initialization & env
+│       │   ├── index.ts                        #    → Barrel export for all email fns
 │       │   ├── templates.ts                    #    → HTML layouts & helpers
 │       │   ├── booking-confirmation.ts         #    → sendBookingConfirmationEmail
 │       │   ├── status-change.ts                #    → sendStatusChangeEmail
 │       │   └── booking-reminder.ts             #    → sendBookingReminderEmail
 │       ├── ratelimit.ts                        #    3-tier rate limiters
+│       ├── resend.ts                           #    Deprecated: re-exports from emails/
 │       ├── supabase-client.ts                  #    Storage bucket connector
 │       └── utils.ts                            #    cn() utility
 │
+├── scripts/
+│   └── redis-cache-flush.ts                    #    npm run flush:redis
+│
 ├── projectstructure.md                         # Detailed architecture docs
-├── projectStructVisual.md                      # This file
+├── projectStructureVisual.md                   # This file
 ├── README.md
 ├── package.json
 ├── next.config.ts
-├── tailwind.config.ts
+├── components.json                             # Shadcn UI config
 ├── tsconfig.json
 ├── drizzle.config.ts
 └── .env
@@ -444,13 +515,16 @@ baseProcedure
          │         ├── adminLocations.getAll
          │         └── adminAudit.getAllAuditLogs   # limit(500), JSON parse
          │
-         ├── 📖 READ QUERIES (no Redis)
+         ├── 📖 READ QUERIES (no Redis overhead)
          │   ├── userBrowse.getAll
          │   ├── userBrowse.getOne
          │   ├── userBookings.getAll
-         │   ├── userBookings.getOne
+         │   ├── userBookings.getBookingWithDetails
+         │   ├── userBookings.getLatestBooking
+         │   ├── userBookings.getActiveOrUpcomingBooking
          │   ├── userCheckout.getUnavailableDates   ⛔ availability engine
          │   ├── userProfile.getUser
+         │   ├── userProfile.updateProfile          # phone + license mutation
          │   ├── userLocations.getActiveLocations
          │   ├── adminDashboard.getAllAdmin
          │   ├── adminBookings.getAllAdmin
@@ -506,12 +580,19 @@ Single Server Request (e.g. GET /)
 │ id          (PK)    │◄───┐   │ id           (PK)    │
 │ name                │    │   │ userId       (FK)────┤►
 │ email (unique)      │    │   │ token                │
-│ emailVerified       │    │   │ expiresAt            │
-│ image               │    │   │ ipAddress            │
-│ role (user|admin)   │    │   │ userAgent            │
-│ createdAt           │    │   │ createdAt            │
-│ updatedAt           │    │   │ updatedAt            │
-└──────────┬──────────┘    │   └──────────────────────┘
+│ phone               │    │   │ expiresAt            │
+│ emailVerified       │    │   │ ipAddress            │
+│ phoneVerified       │    │   │ userAgent            │
+│ image               │    │   │ device               │
+│ role (cust|admin)   │    │   │ location             │
+│ licenseNumber       │    │   │ createdAt            │
+│ isActive            │    │   │ updatedAt            │
+│ twoFactorEnabled    │    │   └──────────────────────┘
+│ lastLoginAt         │    │
+│ banned / banReason  │    │   Also: account, verification
+│ createdAt           │    │   (Better-Auth managed tables)
+│ updatedAt           │    │
+└──────────┬──────────┘    │
            │               │
            │ 1:N           │
            ▼               │
@@ -520,26 +601,31 @@ Single Server Request (e.g. GET /)
 ├─────────────────────┤    │   ├──────────────────────┤
 │ id          (PK)    │    │   │ id           (PK)    │
 │ userId      (FK)────┤►───┘   │ locationId   (FK)────┤►────────┐
-│ carId       (FK)────┤►───────┤► make                │         │
-│ startDate           │        │ model                │         │
-│ endDate             │        │ year                 │         │
-│ pickUpLocation      │        │ pricePerDay          │         │
-│ dropOffLocation     │        │ licensePlate         │         │
-│ totalPrice          │        │ seats                │         │
-│ status (enum)───────┤►       │ transmission         │         │
-│   pending           │   ┌────│ fuelType             │         │
-│   confirmed         │   │    │ category             │         │
-│   cancelled         │   │    │ headerImage          │         │
-│   completed         │   │    │ images[]             │         │
-│ createdAt           │   │    │ status (enum)────────┤►        │
-│ updatedAt           │   │    │   available          │         │
-└─────────────────────┘   │    │   rented             │         │
-                          │    │   maintenance        │         │
-                     N:1  │    │ rating               │         │
-                          │    │ description          │         │
-                          │    │ createdAt            │         │
-                          │    │ updatedAt            │         │
-                          │    └──────────────────────┘         │
+│ carId       (FK)────┤►───────┤► name                │         │
+│ startDate           │        │ make                 │         │
+│ endDate             │        │ model                │         │
+│ pickUpLocation (FK) │        │ year                 │         │
+│ dropOffLocation(FK) │        │ category / tier      │         │
+│ fullName            │        │ pricePerDay          │         │
+│ email               │        │ plateNumber (unique) │         │
+│ phoneNumber         │        │ seats                │         │
+│ licenseNumber       │        │ transmission (enum)  │         │
+│ paymentMethod (enum)│        │ fuelType (enum)      │         │
+│ paymentStatus (enum)│        │ headerImage          │         │
+│ dailyRate           │        │ imageUrls[]          │         │
+│ days                │        │ features[]           │         │
+│ protectionFee       │        │ status (enum)────────┤►        │
+│ surchargeFee        │        │   available          │         │
+│ totalPrice          │        │   rented             │         │
+│ status (enum)───────┤►       │   maintenance        │         │
+│   pending           │   ┌────│ rating               │         │
+│   confirmed         │   │    │ description          │         │
+│   cancelled         │   │    │ isActive             │         │
+│   completed         │   │    │ deletedAt            │         │
+│   expired           │   │    │ createdAt            │         │
+│ cancelledAt/By      │   │    │ updatedAt            │         │
+│ createdAt           │   │    └──────────────────────┘         │
+│ updatedAt           │   │                                     │
                           │                                     │
                           └── booking.carId ──► car.id          │
                                                                 ▼
@@ -706,8 +792,6 @@ module-name/
 Legend:
   📖 Query    → protectedProcedure (auth-only, no Redis)
   🔒 Mutation → rateLimitedProtectedProcedure (auth + Redis)
+  🛡️ Admin    → adminProcedure (auth + role enforcement)
   ⛔ Conflict → checkBookingConflict (overlap guard)
 ```
-
-Additional files:
-scripts/redis-cache-flush.ts - Flushes the redis cache

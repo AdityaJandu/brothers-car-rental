@@ -36,6 +36,15 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
   * `check-out/[carId]/page.tsx`: The multi-step booking checkout form. **Uses `Promise.all` to parallelize auth + car data prefetch**, eliminating sequential waterfall delays.
   * `bookings/page.tsx`: Display of the authenticated user's internal booking history. **Uses `Promise.all` for parallel auth + booking prefetch.**
   * `bookings/[bookingId]/page.tsx`: Detailed breakdown and summary for a specific user booking.
+  * `about/page.tsx`: Company about page. Renders `AboutView` from the `info` module.
+  * `contact/page.tsx`: Contact page with form and info. Renders `ContactView` from the `info` module.
+  * `support/page.tsx`: Customer support / FAQ page. Renders `SupportView` from the `info` module.
+  * `terms/page.tsx`: Terms of Service page. Renders `TermsView` from the `info` module.
+  * `privacy/page.tsx`: Privacy Policy page. Renders `PrivacyView` from the `info` module.
+
+### 🌍 Root-Level Pages
+
+  * `not-found.tsx`: Global 404 handler rendering `NotFoundView` from the `info/not-found` module.
 
 <br>
 
@@ -101,7 +110,7 @@ Handles fetching and sorting global fleet metrics.
   * **`server/procedures.ts`**:
       * `getAllAdmin` **(Query)**: Pulls paginated, sorted vehicle objects bypassing customer filters mapping raw datastores to the dashboard metrics. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
   * `ui/views/FleetClientView.tsx`: The primary analytical dashboard component rendering fleet states.
-  * `ui/components/car-columns.tsx` & `VehicleInventoryHeader.tsx`: UI chunks for presenting grid layout and table data mapping.
+  * `ui/components/car-columns.tsx`, `VehicleInventoryHeader.tsx`, `FleetListHeader.tsx`, `CarSearchFilter.tsx`: UI chunks for presenting grid layout, table data mapping, fleet list headers, and search filtering.
   * `schemas.ts`: Core validation mapping rules dictating the shape of DB inputs/outputs.
   * `hooks/user-car-filters.tsx` / `params.ts` / `types.ts`: Local state management logic.
 
@@ -143,7 +152,14 @@ Publicly facing gallery modules for vehicle discovery.
       * `getOne` **(Query)**: Pulls explicitly defined attributes for a single car entity. Uses `protectedProcedure` (auth-only, no rate limit).
   * `user/browse/ui/views/BrowseView.tsx`: The core gallery layout wrapper component.
   * `user/browse/ui/components/CarCard.tsx`, `CarGrid.tsx`, `DatePicker.tsx`, `FiltersBar.tsx`: Modular presentation layer components building the responsive filtering logic natively. **`DatePicker.tsx` accepts `Matcher | Matcher[]` for its `disabled` prop**, enabling unavailable date range blocking from the checkout page.
-  * `user/car-id-view/ui/views/CarIdView.tsx` & components (`ImageSlider.tsx`, `Spec.tsx`, `PricingCard.tsx` etc.): Granular rendering block for a single vehicle page layout. **`PricingCard.tsx` fetches unavailable dates and shows a real-time availability indicator** (Available Now / Next available from [date]).
+  * `user/browse/hooks/use-car-filters-user.tsx`: Client-side `nuqs` hook managing URL state for search, page, and locationId filters.
+  * `user/browse/params.ts` & `types.ts`: URL parameter definitions and TypeScript type derivations.
+  * `user/car-id-view/ui/views/CarIdView.tsx` & components: Granular rendering block for a single vehicle page layout:
+      * `ImageSlider.tsx`: Interactive image carousel for vehicle photos.
+      * `CarDetailsSection.tsx`: Comprehensive vehicle specifications and description display.
+      * `CarBookingSection.tsx`: Booking action section bridging the car detail view to the checkout flow.
+      * `PricingCard.tsx`: **Fetches unavailable dates and shows a real-time availability indicator** (Available Now / Next available from [date]).
+      * `Spec.tsx`: Individual specification badge component.
 
 <br>
 
@@ -163,16 +179,20 @@ Transactional engine powering the reservation logic.
   * `ui/views/CarBookingView.tsx`: Page wrapping logic managing form state via `useForm<z.infer<typeof bookingFormSchema>>` with properly typed `zodResolver(bookingFormSchema)`. **Fetches unavailable dates and passes them to CheckoutForm for date picker integration.**
   * `ui/components/CheckoutForm.tsx`: Client-side form with **availability-aware DatePicker** — disables all days within blocked date ranges, shows a live availability banner with next-available-date hint, and disables the submit button when dates conflict.
   * `ui/components/SummaryCard.tsx`: Dynamic pricing summary with live form state watching.
-
-<br>
+  * `ui/components/BookingStepper.tsx`: Visual multi-step progress indicator (Location → Car → Details → Payment → Confirm) with color-coded step states (complete/current/upcoming).
+  * `hooks/use-booking-filters-user.tsx`: Client-side `nuqs` hook for checkout URL state management.
+  * `params.ts` & `types.ts`: URL parameter definitions and TypeScript types (`BookingInsertInput`, `BookingRow`, etc.).
 
 ### 📜 `user/bookings`
 
 Customer dashboard tracking standard historical reservations.
 
   * **`server/procedures.ts`**:
-      * `getAllUser` **(Query)**: Fetches and structures booking receipts locally bound specifically to the contextual `userId` authenticated session token. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
-      * `getOne` **(Query)**: Fetches detailed information for a specific booking by ID. Uses `protectedProcedure` (auth-only, no rate limit).
+      * `getAll` **(Query)**: Fetches paginated booking receipts bound to the contextual `userId` session token with Redis read-through caching. Uses `protectedProcedure` (auth-only, no rate limit).
+      * `getBookingWithDetails` **(Query)**: Fetches a single booking with full relational JOINs — car details, aliased pickup and drop-off location names. Uses `protectedProcedure` with Redis caching.
+      * `getLatestBooking` **(Query)**: Returns the user's most recent booking with attached car object via `innerJoin`. Uses `protectedProcedure` with Redis caching.
+      * `getActiveOrUpcomingBooking` **(Query)**: Fetches the user's next active or upcoming booking (status `pending`/`confirmed`, `endDate >= now`) with car + aliased locations. Returns `null` gracefully when none exist. Used by the profile `ActiveBookingCard`. Uses `protectedProcedure` with Redis caching.
+  * `types.ts`: Type derivations using `inferRouterOutputs<AppRouter>` for `GetOneBookingDetails`, `GetOneBooking`, and `GetLocationOne`.
   * `ui/views/AllBookingView.tsx` & `ui/components/booking-columns.tsx`: Frontend mapped React Tables rendering state outputs transparently.
   * `ui/views/BookingIdView.tsx`: Displays a comprehensive breakdown of a single booking.
   * `ui/components/`: Modular child components for the booking details page:
@@ -201,10 +221,13 @@ User dashboard tracking their specific session characteristics and secure auth s
 
   * **`server/procedures.ts`**:
       * `getUser` **(Query)**: Pulls authenticated relational metadata securely via standard Drizzle equality maps against contextual session objects natively. Uses `protectedProcedure` (auth-only, no rate limit) for optimized read performance.
+      * `updateProfile` **(Mutation)**: Updates user phone number and/or license number with Zod-validated input. Uses `protectedProcedure`. Enables persistent personal info for faster checkout.
   * `ui/components/`: Modular presentation components safely decoupling logic blocks:
       * `ProfileHeader.tsx`: Avatar bounds, name mapping, and email verification badge layout.
-      * `RewardsStatusCard.tsx` / `ActiveBookingCard.tsx`: Central grid mock data presentations resolving static aesthetic metrics natively.
-      * `PersonalInfoCard.tsx` / `PaymentMethodsCard.tsx` / `SecuritySettingsCard.tsx`: Interactive dashboard fields mapping strict styling grids organically.
+      * `RewardsStatusCard.tsx`: Central grid mock data presentations resolving static aesthetic metrics natively.
+      * `ActiveBookingCard.tsx`: Displays the user's current active or upcoming booking with car image, dates, and location names. Fetches live data via `getActiveOrUpcomingBooking`.
+      * `PersonalInfoCard.tsx`: Editable phone number and driving license fields with inline save via `updateProfile` mutation.
+      * `PaymentMethodsCard.tsx` / `SecuritySettingsCard.tsx`: Interactive dashboard fields mapping strict styling grids organically.
   * `ui/views/ProfileView.tsx`: Client-tier rendering node explicitly binding the decoupled components to React Suspense boundaries dynamically.
 
 <br>
@@ -222,6 +245,23 @@ The pure marketing and branding UX architecture.
 
   * `ui/views/SignInView.tsx` & `SignUpView.tsx`: Styled NextJS Client Components natively interfacing with BetterAuth APIs including structured Error catching boundaries and seamless native Google OAuth social logins.
   * `ui/layout/AuthHeader.tsx`: Wrapper injecting context UI logic appropriately.
+
+<br>
+
+### ℹ️ `info` (Informational Pages Module)
+
+A self-contained module housing all static informational pages with shared reusable components.
+
+  * **`components/InfoPageHeader.tsx`**: Shared page header component providing consistent title/subtitle/icon styling across all info pages.
+  * **`components/InfoSection.tsx`**: Reusable content section wrapper used by all info views for consistent layout and spacing.
+  * **`about/ui/views/AboutView.tsx`**: Company about page. Route: `(user)/about`.
+  * **`contact/ui/views/ContactView.tsx`**: Contact page composition root.
+  * **`contact/ui/components/ContactForm.tsx`**: Interactive contact form component.
+  * **`contact/ui/components/ContactInfo.tsx`**: Static contact information display (address, email, phone). Route: `(user)/contact`.
+  * **`support/ui/views/SupportView.tsx`**: Customer support / FAQ page. Route: `(user)/support`.
+  * **`legal/ui/views/TermsView.tsx`**: Terms of Service page. Route: `(user)/terms`.
+  * **`legal/ui/views/PrivacyView.tsx`**: Privacy Policy page. Route: `(user)/privacy`.
+  * **`not-found/ui/views/NotFoundView.tsx`**: Custom 404 page. Used by the root `app/not-found.tsx`.
 
 <br>
 <br>
@@ -266,8 +306,10 @@ Server-Client bridge guaranteeing purely typed data-fetching.
   * `init.ts`: The baseline core tRPC initialization creating `createTRPCRouter` alongside layered auth/rate-limit middleware (context stubs cleanly resolved out natively across standard REST headers):
       * `baseProcedure`: Raw tRPC procedure with no middleware.
       * `protectedProcedure`: Validates session via Better Auth using a **React `cache()`-wrapped session getter** that deduplicates auth DB calls within a single server request. **Used by all read-only queries** (browse, bookings) for optimal performance.
+      * `adminProcedure`: Extends `protectedProcedure` with admin role enforcement. **Used by admin-only read queries** (audit logs).
       * `rateLimitedProtectedProcedure`: Extends `protectedProcedure` with a general per-user rate limit (30 req/min via Upstash Redis). **Used only by mutations** (booking creation, admin operations) to avoid unnecessary Redis overhead on reads.
-  * `routers/_app.ts`: The central router multiplexer tying `adminAddCarRouter`, `carRouter`, `bookingRouter`, `userProfile`, etc. natively back into one overarching namespace root.
+  * `routers/_app.ts`: The central router multiplexer tying `adminAddCarRouter`, `carRouter`, `bookingRouter`, `userProfile`, `adminAudit`, etc. natively back into one overarching namespace root.
+  * `query-client.ts`: React-Query `QueryClient` factory with default configuration.
   * `client.tsx`: React-Query provider wrapper enabling `trpc.module.endpoint.useQuery` natively on frontend UI code.
   * `server.tsx`: Server-side context hydration pipeline for RSC payload handling.
 
@@ -278,10 +320,13 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 
 ## 📁 `src/components/` (UI Presentation Layer)
 
-  * **`layout/`**: `AdminHeaderNavBar.tsx`, `Header.tsx`, `Footer.tsx`, `MobileNav.tsx`: Site-wide structural frames dictating routing bars correctly. `Header.tsx` uses the cached session utility (`getSession()`) to avoid redundant auth DB calls.
+  * **`layout/`**: `AdminHeaderNavBar.tsx`, `Header.tsx`, `HeaderClient.tsx`, `Footer.tsx`, `MobileNav.tsx`: Site-wide structural frames dictating routing bars correctly. `Header.tsx` uses the cached session utility (`getSession()`) to avoid redundant auth DB calls. `HeaderClient.tsx` provides client-side header interactivity.
   * **`self/`**: Pre-built functional units tying multiple standard UI blocks together:
       * `data-table.tsx` & `data-pagination.tsx`: Reusable tanstack/react-table components natively capable.
       * `loading-state.tsx`, `error-state.tsx`, `empty-state.tsx`: Pure fallback UX templates.
+      * `form-field.tsx`: Reusable form field wrapper component.
+      * `generated-avatar.tsx`: DiceBear-powered deterministic avatar generation.
+      * `command-select.tsx`: Command-palette style select component.
   * **`ui/`**: A fully decoupled, heavily constrained customized variant of the Shadcn/UI primitive library bridging modern Radix accessibility seamlessly to perfectly generated rounded tailwind standards internally modified by project-wide scripts to explicitly adhere to the `rounded-md` curves mapping.
 
 <br>
@@ -307,4 +352,17 @@ Server-Client bridge guaranteeing purely typed data-fetching.
       * `generalRateLimit` — User-based, 30 req/60s (used in `rateLimitedProtectedProcedure` for **mutation-only** tRPC procedures).
       * `bookingRateLimit` — User-based, 5 req/60s (stricter inline limit for booking mutations).
   * `supabase-client.ts`: CDN bucket connector providing external file payload resolution securely (features explicit initialization environment validation).
+  * `resend.ts`: Deprecated modularization fallback. Re-exports the unified email layer from `./emails` for backward compatibility.
   * `utils.ts`: Tailwind utility merge logic (`cn()`).
+
+<br>
+<br>
+
+-----
+
+## 📁 Root-Level Files
+
+  * `src/constants.ts`: Shared pagination constants (`DEFAULT_PAGE`, `DEFAULT_PAGE_SIZE`, `MAX_PAGE_SIZE`) and the reusable `paginationInputSchema` Zod schema.
+  * `src/rate-middleware.ts`: Edge middleware for IP-based auth endpoint rate limiting (`/api/auth/*`). Returns 429 with proper `Retry-After` headers.
+  * `src/hooks/use-mobile.ts`: Global React hook for responsive mobile breakpoint detection (768px).
+  * `scripts/redis-cache-flush.ts`: Utility script to flush the Redis cache (`npm run flush:redis`).
