@@ -28,6 +28,7 @@ export function HeaderClient({ session }: HeaderClientProps) {
     const navItems = [
         { name: "Home", href: "/", requireAuth: false },
         { name: "Browse", href: "/browse", requireAuth: false },
+        { name: "Blog", href: "/blog", requireAuth: false },
         { name: "Bookings", href: "/bookings", requireAuth: true },
         { name: "Profile", href: "/profile", requireAuth: true },
     ];

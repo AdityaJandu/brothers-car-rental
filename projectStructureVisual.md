@@ -13,13 +13,11 @@
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
 │  │(onboard) │  │  (auth)  │  │  (user)  │  │ (admin)  │  │   api/   │   │
 │  │    /     │  │ sign-in  │  │  browse  │  │dashboard │  │auth/[..] │   │
-│  │          │  │ sign-up  │  │  profile │  │ add-car  │  │trpc/[..] │   │
-│  │          │  │          │  │check-out │  │ bookings │  │inngest   │   │
-│  │          │  │          │  │ bookings │  │ locations│  │          │   │
-│  │          │  │          │  │  about   │  │audit-log │  │          │   │
-│  │          │  │          │  │ contact  │  │          │  │          │   │
-│  │          │  │          │  │ support  │  │          │  │          │   │
-│  │          │  │          │  │terms/priv│  │          │  │          │   │
+│  │  blog    │  │ sign-up  │  │  profile │  │ add-car  │  │trpc/[..] │   │
+│  │  about   │  │          │  │check-out │  │ bookings │  │inngest   │   │
+│  │  contact │  │          │  │ bookings │  │ locations│  │          │   │
+│  │  support │  │          │  │          │  │audit-log │  │          │   │
+│  │terms/priv│  │          │  │          │  │          │  │          │   │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
 │       │              │             │              │              │      │
 └───────┼──────────────┼─────────────┼──────────────┼──────────────┼──────┘
@@ -41,6 +39,7 @@
 │  ├─────────────┤  │             │  ├─────────────┤  │             │     │
 │  │    info     │  │             │  │             │  │             │     │
 │  │  ─────────  │  │             │  │             │  │             │     │
+│  │  blog/      │  │             │  │             │  │             │     │
 │  │  about/     │  │             │  │             │  │             │     │
 │  │  contact/   │  │             │  │             │  │             │     │
 │  │  support/   │  │             │  │             │  │             │     │
@@ -97,10 +96,16 @@ brothers-car-rental/
 │   │
 │   ├── app/                                    # ─── Next.js App Router ───
 │   │   │
-│   │   ├── (onboarding)/                       # 🏠 Landing Page
+│   │   ├── (onboarding)/                       # 🏠 Landing Page & Info
 │   │   │   ├── layout.tsx
-│   │   │   └── page.tsx                        #    → getSession() + conditional prefetch
-│   │   │                                       #    → HydrationBoundary for FeaturedFleet
+│   │   │   ├── page.tsx                        #    → getSession() + conditional prefetch
+│   │   │   │                                   #    → HydrationBoundary for FeaturedFleet
+│   │   │   ├── blog/                           #    → Static + SSG routes (force-static)
+│   │   │   ├── about/                          #    → Static (force-static)
+│   │   │   ├── contact/                        #    → Static (force-static)
+│   │   │   ├── support/                        #    → Static (force-static)
+│   │   │   ├── terms/                          #    → Static (force-static)
+│   │   │   └── privacy/                        #    → Static (force-static)
 │   │   │
 │   │   ├── (auth)/                             # 🔑 Authentication
 │   │   │   ├── sign-in/
@@ -121,18 +126,8 @@ brothers-car-rental/
 │   │   │   │   ├── page.tsx                    #    → Promise.all(getSession, prefetch)
 │   │   │   │   └── [bookingId]/
 │   │   │   │       └── page.tsx
-│   │   │   ├── profile/
-│   │   │   │   └── page.tsx                    #    → Promise.all(getSession, prefetch)
-│   │   │   ├── about/
-│   │   │   │   └── page.tsx                    #    → AboutView (info module)
-│   │   │   ├── contact/
-│   │   │   │   └── page.tsx                    #    → ContactView (info module)
-│   │   │   ├── support/
-│   │   │   │   └── page.tsx                    #    → SupportView (info module)
-│   │   │   ├── terms/
-│   │   │   │   └── page.tsx                    #    → TermsView (info module)
-│   │   │   └── privacy/
-│   │   │       └── page.tsx                    #    → PrivacyView (info module)
+│   │   │   └── profile/
+│   │   │       └── page.tsx                    #    → Promise.all(getSession, prefetch)
 │   │   │
 │   │   ├── (admin)/                            # 🔐 Admin Routes
 │   │   │   ├── layout.tsx                      #    → AdminNavbar wrapper
@@ -158,6 +153,7 @@ brothers-car-rental/
 │   │   │       └── route.ts                    #    → tRPC catch-all
 │   │   │
 │   │   ├── not-found.tsx                       # Global 404 → NotFoundView
+│   │   ├── sitemap.ts                          # Dynamic + Static Sitemap generator
 │   │   ├── layout.tsx                          # Root layout (providers)
 │   │   └── loading.tsx                         # Global loading fallback
 │   │
@@ -335,6 +331,11 @@ brothers-car-rental/
 │   │   │   ├── components/
 │   │   │   │   ├── InfoPageHeader.tsx           #    Shared header component
 │   │   │   │   └── InfoSection.tsx             #    Shared section wrapper
+│   │   │   ├── blog/
+│   │   │   │   ├── data/posts.ts                #    Static JSON blog data
+│   │   │   │   └── ui/
+│   │   │   │       ├── views/                   #    BlogView & BlogPostView
+│   │   │   │       └── components/              #    PostCard, BlogFilters, RelatedPosts
 │   │   │   ├── about/
 │   │   │   │   └── ui/views/AboutView.tsx
 │   │   │   ├── contact/
