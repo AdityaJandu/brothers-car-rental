@@ -38,7 +38,7 @@ export function PostCard({ post, compact = false }: PostCardProps) {
                 className={cn(
                     "card-showroom overflow-hidden transition-all duration-500",
                     "hover:-translate-y-1 hover:shadow-[0_32px_64px_-12px_oklch(0.27_0.05_262_/_0.12)]",
-                    compact ? "rounded-xl" : "rounded-2xl"
+                    "rounded-md"
                 )}
             >
                 {/* Cover Image */}

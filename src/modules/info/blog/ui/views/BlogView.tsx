@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { FileText } from "lucide-react";
+import { useMemo, useState } from "react";
 import { InfoPageHeader } from "../../../components/InfoPageHeader";
 import { InfoSection } from "../../../components/InfoSection";
 import { PostCard } from "../components/PostCard";
 import { BlogFilters } from "../components/BlogFilters";
+import { EmptyState } from "@/components/self/empty-state";
+import { useQueryState, parseAsString } from "nuqs";
 import { getAllPublishedPosts, getAllTags } from "../../data/posts";
 import type { BlogTag } from "../../types";
 
@@ -13,7 +14,10 @@ export function BlogView() {
     const allPosts = useMemo(() => getAllPublishedPosts(), []);
     const allTags = useMemo(() => getAllTags(), []);
 
-    const [activeTag, setActiveTag] = useState<BlogTag | null>(null);
+    const [activeTagStr, setActiveTagStr] = useQueryState("tag", parseAsString.withDefault(""));
+    const activeTag = (activeTagStr || null) as BlogTag | null;
+    const setActiveTag = (tag: BlogTag | null) => setActiveTagStr(tag || "");
+
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredPosts = useMemo(() => {
@@ -81,16 +85,11 @@ export function BlogView() {
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-24 text-center">
-                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
-                            <FileText className="size-7 text-muted-foreground" />
-                        </div>
-                        <h3 className="font-heading text-xl font-bold text-primary mb-2">
-                            No articles found
-                        </h3>
-                        <p className="text-muted-foreground text-sm max-w-md">
-                            Try adjusting your search or clearing the tag filter to browse all articles.
-                        </p>
+                    <div className="mt-10">
+                        <EmptyState
+                            title="No articles found"
+                            descr="Try adjusting your search or clearing the tag filter to browse all articles."
+                        />
                     </div>
                 )}
             </InfoSection>

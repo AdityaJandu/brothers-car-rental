@@ -369,7 +369,7 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 ## 📁 Root-Level Files
 
   * `src/constants.ts`: Shared pagination constants (`DEFAULT_PAGE`, `DEFAULT_PAGE_SIZE`, `MAX_PAGE_SIZE`) and the reusable `paginationInputSchema` Zod schema.
-  * `src/app/sitemap.ts`: Dynamic sitemap generator that natively parallel fetches active DB models (Cars, Locations) and static markdown content (Blog) natively merging alongside priority route statics. Wraps fetches safely in `try/catch` fallbacks.
+  * `src/app/sitemap.ts`: Dynamic sitemap generator that natively parallel fetches active DB models (Cars, Locations) and static TS data from `src/modules/info/blog/data/posts.ts` natively merging alongside priority route statics. Wraps fetches safely in `try/catch` fallbacks.
   * `src/rate-middleware.ts`: Edge middleware for IP-based auth endpoint rate limiting (`/api/auth/*`). Returns 429 with proper `Retry-After` headers.
   * `src/hooks/use-mobile.ts`: Global React hook for responsive mobile breakpoint detection (768px).
   * `scripts/redis-cache-flush.ts`: Utility script to flush the Redis cache (`npm run flush:redis`).

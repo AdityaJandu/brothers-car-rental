@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { BlogTag } from "../../types";
 
@@ -40,28 +42,30 @@ export function BlogFilters({
             <div className="relative max-w-md">
                 <Search
                     className={cn(
-                        "absolute left-4 top-1/2 -translate-y-1/2 size-4 transition-colors duration-200",
+                        "absolute left-4 top-1/2 -translate-y-1/2 size-4 transition-colors duration-200 z-10",
                         isFocused ? "text-secondary" : "text-muted-foreground"
                     )}
                 />
-                <input
+                <Input
                     type="text"
                     placeholder="Search articles..."
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className="input-executive pl-11 pr-10 py-3 w-full rounded-md text-sm"
+                    className="pl-11 pr-10 h-12 w-full rounded-md text-sm"
                     id="blog-search"
                 />
                 {searchQuery && (
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => onSearchChange("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary transition-colors"
                         aria-label="Clear search"
                     >
                         <X className="size-4" />
-                    </button>
+                    </Button>
                 )}
             </div>
 

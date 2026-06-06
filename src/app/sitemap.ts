@@ -107,8 +107,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }));
 
         return [...staticRoutes, ...carRoutes, ...blogRoutes, ...locationRoutes];
-    } catch {
+    } catch (err) {
         // If DB is unreachable, return static routes so the sitemap never breaks
+        console.error("[sitemap] Sitemap generation failed, falling back to static routes:", err);
         return staticRoutes;
     }
 }
