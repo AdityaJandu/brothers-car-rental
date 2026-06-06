@@ -36,11 +36,6 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
   * `check-out/[carId]/page.tsx`: The multi-step booking checkout form. **Uses `Promise.all` to parallelize auth + car data prefetch**, eliminating sequential waterfall delays.
   * `bookings/page.tsx`: Display of the authenticated user's internal booking history. **Uses `Promise.all` for parallel auth + booking prefetch.**
   * `bookings/[bookingId]/page.tsx`: Detailed breakdown and summary for a specific user booking.
-  * `about/page.tsx`: Company about page. Renders `AboutView` from the `info` module.
-  * `contact/page.tsx`: Contact page with form and info. Renders `ContactView` from the `info` module.
-  * `support/page.tsx`: Customer support / FAQ page. Renders `SupportView` from the `info` module.
-  * `terms/page.tsx`: Terms of Service page. Renders `TermsView` from the `info` module.
-  * `privacy/page.tsx`: Privacy Policy page. Renders `PrivacyView` from the `info` module.
 
 ### 🌍 Root-Level Pages
 
@@ -51,6 +46,13 @@ The `app` directory utilizes Next.js routing groups to enforce layout boundaries
 ### 👋 Onboarding & Auth (`(onboarding)`, `(auth)`)
 
   * `(onboarding)/page.tsx` & `layout.tsx`: The primary landing page featuring rich SEO marketing, hero sections, and CTA funnels. **Server-side prefetches `FeaturedFleet` data and wraps the view in a `HydrationBoundary`**, eliminating a full client→server roundtrip for the fleet carousel.
+  * `(onboarding)/blog/page.tsx`: SEO-optimized blog listing page. **Statically generated** (`force-static`).
+  * `(onboarding)/blog/[slug]/page.tsx`: Individual blog post pages. **Build-time pre-rendered** via `generateStaticParams`.
+  * `(onboarding)/about/page.tsx`: Company about page. **Statically generated** (`force-static`).
+  * `(onboarding)/contact/page.tsx`: Contact page with form and info. **Statically generated** (`force-static`).
+  * `(onboarding)/support/page.tsx`: Customer support / FAQ page. **Statically generated** (`force-static`).
+  * `(onboarding)/terms/page.tsx`: Terms of Service page. **Statically generated** (`force-static`).
+  * `(onboarding)/privacy/page.tsx`: Privacy Policy page. **Statically generated** (`force-static`).
   * `(auth)/sign-in/page.tsx`: Login gateway UI. **Uses cached session to redirect already-authenticated users.**
   * `(auth)/sign-up/page.tsx`: Registration gateway UI. **Uses cached session to redirect already-authenticated users.**
 
@@ -254,13 +256,17 @@ A self-contained module housing all static informational pages with shared reusa
 
   * **`components/InfoPageHeader.tsx`**: Shared page header component providing consistent title/subtitle/icon styling across all info pages.
   * **`components/InfoSection.tsx`**: Reusable content section wrapper used by all info views for consistent layout and spacing.
-  * **`about/ui/views/AboutView.tsx`**: Company about page. Route: `(user)/about`.
+  * **`about/ui/views/AboutView.tsx`**: Company about page. Route: `(onboarding)/about`.
+  * **`blog/ui/views/BlogView.tsx`**: Blog listing page composition root.
+  * **`blog/ui/views/BlogPostView.tsx`**: Individual blog post rendering with structured JSON-LD data.
+  * **`blog/ui/components/`**: Presentation components like `PostCard.tsx`, `BlogFilters.tsx`, and `RelatedPosts.tsx`.
+  * **`blog/data/posts.ts`**: SEO-optimized static seed data powering the blog module natively.
   * **`contact/ui/views/ContactView.tsx`**: Contact page composition root.
   * **`contact/ui/components/ContactForm.tsx`**: Interactive contact form component.
-  * **`contact/ui/components/ContactInfo.tsx`**: Static contact information display (address, email, phone). Route: `(user)/contact`.
-  * **`support/ui/views/SupportView.tsx`**: Customer support / FAQ page. Route: `(user)/support`.
-  * **`legal/ui/views/TermsView.tsx`**: Terms of Service page. Route: `(user)/terms`.
-  * **`legal/ui/views/PrivacyView.tsx`**: Privacy Policy page. Route: `(user)/privacy`.
+  * **`contact/ui/components/ContactInfo.tsx`**: Static contact information display (address, email, phone). Route: `(onboarding)/contact`.
+  * **`support/ui/views/SupportView.tsx`**: Customer support / FAQ page. Route: `(onboarding)/support`.
+  * **`legal/ui/views/TermsView.tsx`**: Terms of Service page. Route: `(onboarding)/terms`.
+  * **`legal/ui/views/PrivacyView.tsx`**: Privacy Policy page. Route: `(onboarding)/privacy`.
   * **`not-found/ui/views/NotFoundView.tsx`**: Custom 404 page. Used by the root `app/not-found.tsx`.
 
 <br>
@@ -363,6 +369,7 @@ Server-Client bridge guaranteeing purely typed data-fetching.
 ## 📁 Root-Level Files
 
   * `src/constants.ts`: Shared pagination constants (`DEFAULT_PAGE`, `DEFAULT_PAGE_SIZE`, `MAX_PAGE_SIZE`) and the reusable `paginationInputSchema` Zod schema.
+  * `src/app/sitemap.ts`: Dynamic sitemap generator that natively parallel fetches active DB models (Cars, Locations) and static markdown content (Blog) natively merging alongside priority route statics. Wraps fetches safely in `try/catch` fallbacks.
   * `src/rate-middleware.ts`: Edge middleware for IP-based auth endpoint rate limiting (`/api/auth/*`). Returns 429 with proper `Retry-After` headers.
   * `src/hooks/use-mobile.ts`: Global React hook for responsive mobile breakpoint detection (768px).
   * `scripts/redis-cache-flush.ts`: Utility script to flush the Redis cache (`npm run flush:redis`).

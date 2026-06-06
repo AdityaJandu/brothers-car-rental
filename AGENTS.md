@@ -10,7 +10,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - **Domain-Driven Design**: All features live in `src/modules/{domain}/{feature}/` with `server/procedures.ts` (tRPC) + `ui/views/` + `ui/components/`.
 - **App Router**: Routes in `src/app/` with `(onboarding)`, `(auth)`, `(user)`, `(admin)` route groups. Always use `Promise.all` for parallel auth + data prefetching in server pages.
-- **Info Module**: Static informational pages (About, Contact, Support, Legal, NotFound) in `src/modules/info/` with shared `InfoPageHeader` and `InfoSection` components.
+- **Info Module**: Static informational pages (About, Contact, Support, Legal, Blog, NotFound) in `src/modules/info/` with shared `InfoPageHeader` and `InfoSection` components.
 
 ## Critical Patterns
 
