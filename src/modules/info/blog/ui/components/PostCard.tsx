@@ -8,6 +8,8 @@ interface PostCardProps {
     post: BlogPost;
     /** Compact variant for related posts grid */
     compact?: boolean;
+    /** Whether to load the image eagerly (LCP optimization) */
+    priority?: boolean;
 }
 
 /** Formats a tag slug into a human-readable label */
@@ -27,7 +29,7 @@ function formatDate(date: Date): string {
     });
 }
 
-export function PostCard({ post, compact = false }: PostCardProps) {
+export function PostCard({ post, compact = false, priority = false }: PostCardProps) {
     return (
         <Link
             href={`/blog/${post.slug}`}
@@ -37,7 +39,7 @@ export function PostCard({ post, compact = false }: PostCardProps) {
             <article
                 className={cn(
                     "card-showroom overflow-hidden transition-all duration-500",
-                    "hover:-translate-y-1 hover:shadow-[0_32px_64px_-12px_oklch(0.27_0.05_262_/_0.12)]",
+                    "hover:-translate-y-1 hover:shadow-[0_32px_64px_-12px_oklch(0.27_0.05_262/0.12)]",
                     "rounded-md"
                 )}
             >
@@ -45,7 +47,7 @@ export function PostCard({ post, compact = false }: PostCardProps) {
                 <div
                     className={cn(
                         "relative overflow-hidden",
-                        compact ? "aspect-[16/10]" : "aspect-[16/9]"
+                        compact ? "aspect-16/10" : "aspect-video"
                     )}
                 >
                     <Image
@@ -54,6 +56,7 @@ export function PostCard({ post, compact = false }: PostCardProps) {
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority={priority}
                     />
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
