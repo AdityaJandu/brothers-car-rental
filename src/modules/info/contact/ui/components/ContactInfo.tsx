@@ -26,16 +26,16 @@ export function ContactInfo() {
                 <h3 className="font-heading text-xl font-bold text-primary mb-6">Our Offices</h3>
                 <div className="space-y-4">
                     <LocationCard
-                        city="Delhi (HQ)"
-                        address="Connaught Place, Block A, New Delhi, 110001"
+                        city="Dehradun (HQ)"
+                        address="Rajpur Road, Clock Tower, Dehradun, 248001"
                     />
                     <LocationCard
-                        city="Gurgaon"
-                        address="Cyber Hub, Phase 2, Gurugram, 122002"
+                        city="Sirsa"
+                        address="Dabwali Road, City Centre, Sirsa, 125055"
                     />
                     <LocationCard
-                        city="Noida"
-                        address="Sector 18, Commercial Belt, Noida, 201301"
+                        city="Hisar"
+                        address="Delhi Road, Model Town, Hisar, 125001"
                     />
                 </div>
             </div>

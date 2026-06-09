@@ -28,7 +28,7 @@ export const posts: BlogPost[] = [
 <p>Flat tyre at midnight? Need to extend your booking by a day? Our concierge team is available around the clock via phone, email, and in-app chat. We don't just hand you keys — we're your travel partner from pickup to drop-off.</p>
 
 <h2>Flexible Pick-Up &amp; Drop-Off</h2>
-<p>With locations across major cities and airports, we make it easy to start and end your journey wherever suits you best. Need to pick up in Delhi and drop off in Jaipur? One-way rentals are our speciality.</p>
+<p>With locations across major cities and airports, we make it easy to start and end your journey wherever suits you best. Need to pick up in Dehradun and drop off in Jaipur? One-way rentals are our speciality.</p>
 
 <h2>Real Reviews, Real Trust</h2>
 <p>Don't just take our word for it — our customer satisfaction rating speaks for itself. We've been recognised as a leader in executive mobility services for five consecutive years, and we continue to raise the bar every day.</p>
@@ -41,13 +41,13 @@ export const posts: BlogPost[] = [
     },
 
     // ────────────────────────────────────────────────────
-    // 2. City guide — Delhi
+    // 2. City guide — Dehradun
     // ────────────────────────────────────────────────────
     {
         slug: "best-road-trips-from-delhi",
-        title: "Best Road Trips from Delhi — 5 Scenic Routes You Can't Miss",
+        title: "Best Road Trips from Dehradun — 5 Scenic Routes You Can't Miss",
         excerpt:
-            "From the misty hills of Shimla to the regal forts of Jaipur, here are the five best road trips from Delhi — complete with distance, drive time, and the best car to rent.",
+            "From the misty hills of Shimla to the regal forts of Jaipur, here are the five best road trips from Dehradun — complete with distance, drive time, and the best car to rent.",
         coverImage: "/blog/road-trips-delhi.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "tips"],
@@ -55,26 +55,26 @@ export const posts: BlogPost[] = [
         publishedAt: new Date("2025-12-01"),
         isPublished: true,
         content: `
-<p>Delhi is the perfect launchpad for some of India's most unforgettable road trips. With well-maintained highways connecting you to mountains, deserts, and heritage cities, all you need is the right car and a sense of adventure. Here are our top five picks.</p>
+<p>Dehradun is the perfect launchpad for some of India's most unforgettable road trips. With well-maintained highways connecting you to mountains, deserts, and heritage cities, all you need is the right car and a sense of adventure. Here are our top five picks.</p>
 
-<h2>1. Delhi → Shimla (350 km, ~7 hours)</h2>
+<h2>1. Dehradun → Shimla (350 km, ~7 hours)</h2>
 <p>The classic hill station escape. Wind through pine forests on NH44 and NH5, stopping at Pinjore Gardens and the charming town of Solan along the way. <strong>Best car:</strong> A mid-size SUV handles the mountain curves with ease — <a href="/browse?category=suv">browse our SUV range</a>.</p>
 
-<h2>2. Delhi → Jaipur (280 km, ~5 hours)</h2>
+<h2>2. Dehradun → Jaipur (280 km, ~5 hours)</h2>
 <p>The Pink City is a straight shot down NH48. Visit Amber Fort, explore the colourful bazaars of Johari Bazaar, and feast on dal baati churma. A comfortable sedan makes this highway drive a breeze.</p>
 
-<h2>3. Delhi → Rishikesh (250 km, ~6 hours)</h2>
+<h2>3. Dehradun → Rishikesh (250 km, ~6 hours)</h2>
 <p>For the spiritually inclined or the adventure seeker. Rishikesh offers yoga retreats, white-water rafting, and the iconic Lakshman Jhula. The road via Haridwar is scenic and well-paved.</p>
 
-<h2>4. Delhi → Agra (230 km, ~4 hours)</h2>
-<p>The Yamuna Expressway makes this one of the fastest road trips from Delhi. See the Taj Mahal at sunrise, explore Agra Fort, and be back by dinner. Perfect for a day trip in a <a href="/browse?category=sedan">comfortable sedan</a>.</p>
+<h2>4. Dehradun → Agra (230 km, ~4 hours)</h2>
+<p>The Yamuna Expressway makes this one of the fastest road trips from Dehradun. See the Taj Mahal at sunrise, explore Agra Fort, and be back by dinner. Perfect for a day trip in a <a href="/browse?category=sedan">comfortable sedan</a>.</p>
 
-<h2>5. Delhi → Jim Corbett National Park (260 km, ~6 hours)</h2>
+<h2>5. Dehradun → Jim Corbett National Park (260 km, ~6 hours)</h2>
 <p>India's oldest national park is a wildlife lover's dream. Spot Bengal tigers, elephants, and over 600 bird species. An SUV is essential for the unpaved park roads.</p>
 
 <h2>Tips for Your Road Trip</h2>
 <ul>
-    <li>Start early — aim to leave Delhi before 6 AM to beat traffic</li>
+    <li>Start early — aim to leave Dehradun before 6 AM to beat traffic</li>
     <li>Keep your driving licence and rental agreement handy at toll plazas</li>
     <li>Download offline maps — network coverage drops in the mountains</li>
     <li>Check your tyre pressure and fuel level before departing</li>
@@ -207,7 +207,7 @@ export const posts: BlogPost[] = [
 
 <h2>Choose a Sedan If…</h2>
 <ul>
-    <li><strong>You're driving on highways:</strong> Sedans have a lower centre of gravity, making them more stable and fuel-efficient on long, straight roads. The Delhi-Jaipur expressway? A sedan's paradise.</li>
+    <li><strong>You're driving on highways:</strong> Sedans have a lower centre of gravity, making them more stable and fuel-efficient on long, straight roads. The Dehradun-Jaipur expressway? A sedan's paradise.</li>
     <li><strong>You're on a budget:</strong> Sedans typically cost 20-30% less per day than comparable SUVs, and their superior fuel economy saves even more.</li>
     <li><strong>It's just 1-3 people:</strong> A compact or mid-size sedan offers more than enough space for a couple or a small group.</li>
     <li><strong>City driving:</strong> Easier to park, easier to manoeuvre in tight traffic. Explore <a href="/browse?category=sedan">our sedan range</a>.</li>

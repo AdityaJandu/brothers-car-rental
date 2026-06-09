@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
 import { notFound } from "next/navigation";
 import { InfoSection } from "../../../components/InfoSection";
 import { RelatedPosts } from "../components/RelatedPosts";
+import { ReadingProgressBar } from "../components/ReadingProgressBar";
 import { getPostBySlug } from "../../data/posts";
 
 /** Formats a tag slug into a human-readable label */
@@ -34,30 +35,10 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
         notFound();
     }
 
-    const jsonLd = {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        headline: post.title,
-        description: post.excerpt,
-        datePublished: post.publishedAt.toISOString(),
-        author: {
-            "@type": "Organization",
-            name: "Brothers Car Rental",
-        },
-        publisher: {
-            "@type": "Organization",
-            name: "Brothers Car Rental",
-        },
-        image: post.coverImage,
-    };
-
     return (
         <>
-            {/* JSON-LD structured data */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
+            {/* Reading progress bar */}
+            <ReadingProgressBar />
 
             <main className="min-h-screen">
                 {/* Hero Cover */}

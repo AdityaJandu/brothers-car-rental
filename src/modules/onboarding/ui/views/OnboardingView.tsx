@@ -12,6 +12,43 @@ import { AuthButtons, AuthButtonsSkeleton } from "../components/AuthButtons";
 export async function OnboardingView() {
     return (
         <div className="min-h-screen bg-background text-foreground pb-20 md:pb-0 font-sans overflow-x-hidden">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "CarRental",
+                        "name": "Brothers Car Rental",
+                        "url": "https://www.brothersgroupindia.online",
+                        "logo": "https://www.brothersgroupindia.online/app-logo.svg",
+                        "telephone": "+91-9785324323",
+                        "priceRange": "₹₹",
+                        "areaServed": ["Dehradun", "Hisar", "Sirsa"],
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressRegion": "Uttarakhand & Haryana",
+                            "addressCountry": "IN"
+                        },
+                        "sameAs": []
+                    })
+                }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "WebSite",
+                        "name": "Brothers Car Rental",
+                        "url": "https://www.brothersgroupindia.online",
+                        "potentialAction": {
+                            "@type": "SearchAction",
+                            "target": "https://www.brothersgroupindia.online/browse?q={search_term_string}",
+                            "query-input": "required name=search_term_string"
+                        }
+                    })
+                }}
+            />
 
             <main className="container max-w-7xl mx-auto px-6 pt-12 lg:pt-24 lg:px-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
@@ -38,7 +75,7 @@ export async function OnboardingView() {
                             <Image
                                 priority={true}
                                 src={"/images/onboarding.jpg"}
-                                alt="Car-image"
+                                alt="Premium rental cars available at Brothers Car Rental — Hisar, Dehradun and Sirsa"
                                 width={600}
                                 height={400}
                                 className="w-full h-auto object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.05]"
