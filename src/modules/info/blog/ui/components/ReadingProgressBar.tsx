@@ -22,10 +22,19 @@ export function ReadingProgressBar() {
         }
 
         window.addEventListener("scroll", handleScroll, { passive: true });
+        window.addEventListener("resize", handleScroll, { passive: true });
+
+        const resizeObserver = new ResizeObserver(() => {
+            handleScroll();
+        });
+        resizeObserver.observe(document.documentElement);
+
         handleScroll();
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", handleScroll);
+            resizeObserver.disconnect();
         };
     }, []);
 
