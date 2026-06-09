@@ -20,8 +20,59 @@ export const CarIdView = ({ carId }: CarIdViewProps) => {
 
     const images = car.imageUrls?.length ? car.imageUrls : [car.headerImage];
 
+    const productJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: `${car.make} ${car.model}`,
+        description: car.description,
+        image: car.headerImage,
+        offers: {
+            "@type": "Offer",
+            price: car.pricePerDay,
+            priceCurrency: "INR",
+            availability:
+                car.status === "available"
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+            url: `https://www.brothersgroupindia.online/browse/${car.id}`,
+        },
+    };
+
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://www.brothersgroupindia.online",
+            },
+            {
+                "@type": "ListItem",
+                position: 2,
+                name: "Browse",
+                item: "https://www.brothersgroupindia.online/browse",
+            },
+            {
+                "@type": "ListItem",
+                position: 3,
+                name: `${car.make} ${car.model}`,
+                item: `https://www.brothersgroupindia.online/browse/${car.id}`,
+            },
+        ],
+    };
+
     return (
         <div className="min-h-screen bg-white text-slate-900 pb-20">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
             <main className=" mx-auto px-6 lg:px-12 pt-8">
                 <div className="grid grid-cols-1 lg:grid-cols-13 gap-12 lg:gap-20">
                     <div className="lg:col-span-8 flex flex-col">
