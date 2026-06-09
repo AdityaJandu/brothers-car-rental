@@ -44,7 +44,7 @@ export const posts: BlogPost[] = [
     // 2. City guide — Dehradun
     // ────────────────────────────────────────────────────
     {
-        slug: "best-road-trips-from-delhi",
+        slug: "best-road-trips-from-dehradun",
         title: "Best Road Trips from Dehradun — 5 Scenic Routes You Can't Miss",
         excerpt:
             "From the misty hills of Shimla to the regal forts of Jaipur, here are the five best road trips from Dehradun — complete with distance, drive time, and the best car to rent.",

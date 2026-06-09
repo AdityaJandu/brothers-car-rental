@@ -19,6 +19,15 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog/best-road-trips-from-delhi',
+        destination: '/blog/best-road-trips-from-dehradun',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
