@@ -1,4 +1,4 @@
-import { rateLimitedProtectedProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { rateLimitedProtectedProcedure, createTRPCRouter, protectedProcedure, baseProcedure } from "@/trpc/init";
 import { bookingInsertSchema } from "../schemas";
 import { db } from "@/db";
 import { booking, car, location, user } from "@/db/schema";
@@ -87,7 +87,7 @@ export const bookingRouter = createTRPCRouter({
      * Query: Get all unavailable date ranges for a specific car.
      * Used by the checkout DatePicker to disable blocked dates.
      */
-    getUnavailableDates: protectedProcedure
+    getUnavailableDates: baseProcedure
         .input(z.object({ carId: z.string() }))
         .query(async ({ input }) => {
             return getUnavailableDateRanges(input.carId);
