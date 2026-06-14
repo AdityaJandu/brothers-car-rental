@@ -332,7 +332,7 @@ brothers-car-rental/
 │   │   │   │   ├── InfoPageHeader.tsx           #    Shared header component
 │   │   │   │   └── InfoSection.tsx             #    Shared section wrapper
 │   │   │   ├── blog/
-│   │   │   │   ├── data/posts.ts                #    Static JSON blog data
+│   │   │   │   ├── data/posts.ts                #    Static JSON blog data (25 SEO posts)
 │   │   │   │   └── ui/
 │   │   │   │       ├── views/                   #    BlogView & BlogPostView
 │   │   │   │       └── components/              #    PostCard, BlogFilters, RelatedPosts

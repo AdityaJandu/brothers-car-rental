@@ -260,7 +260,7 @@ A self-contained module housing all static informational pages with shared reusa
   * **`blog/ui/views/BlogView.tsx`**: Blog listing page composition root.
   * **`blog/ui/views/BlogPostView.tsx`**: Individual blog post rendering with structured JSON-LD data.
   * **`blog/ui/components/`**: Presentation components like `PostCard.tsx`, `BlogFilters.tsx`, and `RelatedPosts.tsx`.
-  * **`blog/data/posts.ts`**: SEO-optimized static seed data powering the blog module natively.
+  * **`blog/data/posts.ts`**: SEO-optimized static seed data powering the blog module natively (featuring 25 highly structured articles).
   * **`contact/ui/views/ContactView.tsx`**: Contact page composition root.
   * **`contact/ui/components/ContactForm.tsx`**: Interactive contact form component.
   * **`contact/ui/components/ContactInfo.tsx`**: Static contact information display (address, email, phone). Route: `(onboarding)/contact`.
