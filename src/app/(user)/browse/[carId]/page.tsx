@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { getSession } from "@/lib/cached-session";
 import { CarIdViewLoading, CarIdViewError, CarIdView } from "@/modules/user/car-id-view/ui/views/CarIdView";
 
 import { getQueryClient, trpc } from "@/trpc/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { db } from "@/db";
@@ -85,19 +84,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const Page = async ({ params }: Props) => {
     const { carId } = await params;
 
-    // Run auth check and data prefetch in parallel
     const queryClient = getQueryClient();
-    const [session] = await Promise.all([
-        getSession(),
-        queryClient.prefetchQuery(
-            trpc.userBrowse.getOne.queryOptions({ id: carId }),
-        ),
-    ]);
-
-    if (!session) {
-        redirect("/sign-in");
-    }
-
+    await queryClient.prefetchQuery(
+        trpc.userBrowse.getOne.queryOptions({ id: carId }),
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
@@ -108,8 +98,6 @@ const Page = async ({ params }: Props) => {
             </Suspense>
         </HydrationBoundary>
     );
-
-
 }
 
 export default Page;

@@ -1,5 +1,5 @@
 import { car } from "@/db/schema";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { db } from "@/db";
 import z from "zod";
 import { and, count, eq, getTableColumns, ilike, isNull } from "drizzle-orm";
@@ -11,7 +11,7 @@ import { getCachedData, setCachedData } from "@/lib/redis-cache";
 
 export const carRouter = createTRPCRouter({
 
-    getOne: protectedProcedure
+    getOne: baseProcedure
         .input(z.object({
             id: z.string()
         }))
@@ -47,7 +47,7 @@ export const carRouter = createTRPCRouter({
         })
     ,
 
-    getAll: protectedProcedure
+    getAll: baseProcedure
         .input(paginationInputSchema.extend({
             search: z.string().nullish(),
             locationId: z.string().nullish(),
