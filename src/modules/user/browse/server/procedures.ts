@@ -38,7 +38,7 @@ export const carRouter = createTRPCRouter({
             if (!data) {
                 throw new TRPCError({
                     code: "NOT_FOUND",
-                    message: "Car not found or you don't have access to it.",
+                    message: "Car not found.",
                 });
             }
 
