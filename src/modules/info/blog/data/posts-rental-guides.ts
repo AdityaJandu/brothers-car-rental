@@ -6,7 +6,7 @@ export const rentalGuidePosts: BlogPost[] = [
         title: "Age Limit for Car Rental in India: Complete Rules",
         excerpt:
             "What is the minimum age to rent a car in India? Complete guide to age requirements, licence rules, and young driver policies for self-drive rentals.",
-        coverImage: "/blog/age-limit-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "faq"],
         readingTime: 6,
@@ -79,7 +79,7 @@ export const rentalGuidePosts: BlogPost[] = [
         title: "Security Deposit for Car Rental: Everything to Know",
         excerpt:
             "How much is the security deposit for car rentals in India? Complete guide to deposit amounts, payment methods, refund timelines, and zero-deposit options.",
-        coverImage: "/blog/security-deposit-guide.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "faq"],
         readingTime: 7,
@@ -163,7 +163,7 @@ export const rentalGuidePosts: BlogPost[] = [
         title: "Toll Charges & FASTag Guide for Rental Cars",
         excerpt:
             "Everything about toll charges and FASTag for rental cars in India. Who pays the tolls, how FASTag works, and highway toll costs for popular routes.",
-        coverImage: "/blog/fastag-toll-guide.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "tips"],
         readingTime: 7,
@@ -236,7 +236,7 @@ export const rentalGuidePosts: BlogPost[] = [
         title: "Car Rental Fuel Policy Explained: Full-to-Full Guide",
         excerpt:
             "Understand the Full-to-Full fuel policy for car rentals in India. Learn how to avoid inflated refueling charges and save money on your self-drive trip.",
-        coverImage: "/blog/fuel-policy-guide.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "tips"],
         readingTime: 6,
@@ -300,7 +300,7 @@ export const rentalGuidePosts: BlogPost[] = [
         title: "How to Book a Self-Drive Car Online: Step by Step",
         excerpt:
             "Book a self-drive car in 5 minutes with our step-by-step online booking guide. From vehicle selection to KYC verification to pickup — everything explained.",
-        coverImage: "/blog/book-online-guide.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "how-to"],
         readingTime: 6,
@@ -390,7 +390,7 @@ export const rentalGuidePosts: BlogPost[] = [
         title: "Outstation Car Rental Rules You Must Know in 2026",
         excerpt:
             "Know the rules before renting a car for outstation trips. Interstate permits, mileage limits, fuel policies, and return conditions explained clearly.",
-        coverImage: "/blog/outstation-rental-rules.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "how-to"],
         readingTime: 7,

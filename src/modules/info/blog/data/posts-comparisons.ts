@@ -6,7 +6,7 @@ export const comparisonPosts: BlogPost[] = [
         title: "Self-Drive vs Taxi: Which Saves More Money?",
         excerpt:
             "Compare the real costs of self-drive car rentals vs taxis in India. We break down daily rates, fuel, tolls, and surge pricing to find the cheapest option.",
-        coverImage: "/blog/self-drive-vs-taxi.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "tips"],
         readingTime: 8,
@@ -83,7 +83,7 @@ export const comparisonPosts: BlogPost[] = [
         title: "Monthly Car Rental vs Buying: 2026 Cost Analysis",
         excerpt:
             "Should you buy a car or rent monthly? Complete cost comparison including EMIs, insurance, depreciation, and maintenance vs flat monthly rental fees.",
-        coverImage: "/blog/monthly-vs-buying.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "how-to"],
         readingTime: 9,
@@ -163,7 +163,7 @@ export const comparisonPosts: BlogPost[] = [
         title: "Hatchback vs Sedan Rental: Best for City Driving",
         excerpt:
             "Choosing between a hatchback and sedan rental? Compare fuel economy, parking ease, boot space, and highway comfort to find the best car for your trip.",
-        coverImage: "/blog/hatchback-vs-sedan.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "tips"],
         readingTime: 7,
@@ -236,7 +236,7 @@ export const comparisonPosts: BlogPost[] = [
         title: "Automatic vs Manual Car Rental: What to Choose?",
         excerpt:
             "Should you rent an automatic or manual car in India? Compare driving ease, fuel costs, city comfort, and mountain performance to make the right choice.",
-        coverImage: "/blog/automatic-vs-manual.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "tips"],
         readingTime: 7,
@@ -303,7 +303,7 @@ export const comparisonPosts: BlogPost[] = [
         title: "Diesel vs Petrol Rental Cars: Highway Mileage Guide",
         excerpt:
             "Compare diesel and petrol rental car mileage for Indian highway trips. Find which fuel type saves more money based on distance, route, and driving style.",
-        coverImage: "/blog/diesel-vs-petrol.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "tips"],
         readingTime: 7,

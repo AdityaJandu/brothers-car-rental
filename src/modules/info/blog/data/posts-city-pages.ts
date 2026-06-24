@@ -9,7 +9,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Delhi: Self-Drive Guide 2026",
         excerpt:
             "Your definitive guide to self-drive car rentals in Delhi. Compare fleet options, airport pickups at IGI, and the best routes across the national capital.",
-        coverImage: "/blog/car-rental-delhi.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 10,
@@ -105,7 +105,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Self-Drive Car Rental in Gurgaon: Prices & Fleet",
         excerpt:
             "Rent a self-drive car in Gurgaon for business or weekend getaways. Explore fleet options, pricing, and best routes from India's corporate capital.",
-        coverImage: "/blog/car-rental-gurgaon.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "commercial"],
         readingTime: 9,
@@ -192,7 +192,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Noida: Best Self-Drive Cars & Routes",
         excerpt:
             "Find affordable self-drive car rentals in Noida. Browse SUVs, sedans, and hatchbacks with doorstep delivery across Greater Noida and the Expressway.",
-        coverImage: "/blog/car-rental-noida.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 9,
@@ -275,7 +275,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Self-Drive Car Rental in Ghaziabad: Complete Guide",
         excerpt:
             "Rent a self-drive car in Ghaziabad with doorstep delivery. Find the best routes to Delhi, Meerut, and hill stations with our complete rental guide.",
-        coverImage: "/blog/car-rental-ghaziabad.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 8,
@@ -349,7 +349,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Faridabad: Affordable Self-Drive Cars",
         excerpt:
             "Affordable self-drive car rentals in Faridabad with doorstep delivery. Drive to Delhi, Agra, or Mathura with our budget-friendly fleet options.",
-        coverImage: "/blog/car-rental-faridabad.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "commercial"],
         readingTime: 8,
@@ -415,7 +415,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Greater Noida: Fleet, Routes & Tips",
         excerpt:
             "Self-drive car rentals in Greater Noida with Yamuna Expressway access. Explore fleet options for Formula 1 circuit visits, Expo Mart events, and Agra trips.",
-        coverImage: "/blog/car-rental-greater-noida.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide"],
         readingTime: 8,
@@ -481,7 +481,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Haridwar: Pilgrimage & Adventure Ready",
         excerpt:
             "Self-drive car rental in Haridwar for Char Dham yatra, Rishikesh trips, and Garhwal exploration. Find SUVs, sedans, and budget cars with flexible plans.",
-        coverImage: "/blog/car-rental-haridwar.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 9,
@@ -555,7 +555,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Rishikesh: Adventure & Yoga Trips",
         excerpt:
             "Rent a self-drive car in Rishikesh for rafting, yoga retreats, and Himalayan road trips. Find SUVs and sedans with flexible plans and mountain-ready features.",
-        coverImage: "/blog/car-rental-rishikesh.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 9,
@@ -628,7 +628,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Mussoorie: Hill Station Driving Guide",
         excerpt:
             "Rent a self-drive car for Mussoorie. Navigate the Queen of Hills with our guide to mountain driving, scenic viewpoints, and the best SUVs for hill roads.",
-        coverImage: "/blog/car-rental-mussoorie.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "tips"],
         readingTime: 9,
@@ -704,7 +704,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Self-Drive Car Rental in Chandigarh: City Beautiful",
         excerpt:
             "Rent a self-drive car in Chandigarh for Shimla trips, Manali road trips, and city exploration. Find the best fleet, pricing, and sector navigation tips.",
-        coverImage: "/blog/car-rental-chandigarh.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 9,
@@ -783,7 +783,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental in Jaipur: Explore Rajasthan Self-Drive",
         excerpt:
             "Rent a self-drive car in Jaipur to explore the Pink City, Amber Fort, and royal Rajasthan. Find fleet options, desert driving tips, and outstation routes.",
-        coverImage: "/blog/car-rental-jaipur.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "how-to"],
         readingTime: 9,
@@ -858,7 +858,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Self-Drive Car Rental NCR: Delhi, Noida, Gurgaon",
         excerpt:
             "Complete guide to self-drive car rentals across Delhi NCR. Compare fleet options in Delhi, Noida, Gurgaon, Ghaziabad, and Faridabad with one-stop booking.",
-        coverImage: "/blog/car-rental-ncr.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "commercial"],
         readingTime: 10,
@@ -941,7 +941,7 @@ export const cityPagePosts: BlogPost[] = [
         title: "Car Rental Near Jolly Grant Airport Dehradun",
         excerpt:
             "Rent a self-drive car at Jolly Grant Airport, Dehradun. Skip the taxi lines and drive straight to Rishikesh, Mussoorie, or the Garhwal Himalayas.",
-        coverImage: "/blog/car-rental-jolly-grant.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["city-guide", "airport"],
         readingTime: 8,

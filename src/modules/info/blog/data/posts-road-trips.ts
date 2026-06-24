@@ -9,7 +9,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Mussoorie Road Trip: Route & Car Guide",
         excerpt:
             "Plan a Delhi to Mussoorie road trip with our complete driving guide. Best routes, pit stops, hill driving tips, and the ideal rental car for mountain roads.",
-        coverImage: "/blog/delhi-to-mussoorie.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 9,
@@ -107,7 +107,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Rishikesh by Car: Scenic Drive Guide",
         excerpt:
             "Drive from Delhi to Rishikesh in 5.5 hours via the best route. Complete guide with pit stops, car recommendations, and adventure activity planning.",
-        coverImage: "/blog/delhi-to-rishikesh.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 9,
@@ -194,7 +194,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Haridwar Road Trip: Highway Tips & Stops",
         excerpt:
             "Drive from Delhi to Haridwar in under 5 hours. Complete highway guide with best routes, toll costs, food stops, and the perfect rental car for pilgrimage.",
-        coverImage: "/blog/delhi-to-haridwar.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -279,7 +279,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Dehradun to Auli Road Trip: Snow & Mountain Drive",
         excerpt:
             "Plan the epic Dehradun to Auli road trip. Get route details, snow driving tips, best SUV recommendations, and scenic viewpoints on this Himalayan drive.",
-        coverImage: "/blog/dehradun-to-auli.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "seasonal"],
         readingTime: 9,
@@ -377,7 +377,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Dehradun to Mussoorie: Quick 35 km Hill Escape",
         excerpt:
             "The complete guide to driving from Dehradun to Mussoorie. Navigate 15 hairpin bends, find the best viewpoints, and choose the right rental car for the hill climb.",
-        coverImage: "/blog/dehradun-to-mussoorie.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "city-guide"],
         readingTime: 7,
@@ -462,7 +462,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Dehradun to Rishikesh: The Perfect Day Trip by Car",
         excerpt:
             "Drive from Dehradun to Rishikesh in 45 minutes. Plan the perfect day trip with our guide to riverside drives, adventure activities, and the best parking spots.",
-        coverImage: "/blog/dehradun-to-rishikesh.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "city-guide"],
         readingTime: 7,
@@ -552,7 +552,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Chandigarh to Manali Road Trip: Mountain Drive Guide",
         excerpt:
             "Drive Chandigarh to Manali in 7 hours through the Kullu Valley. Complete guide with mountain driving tips, SUV recommendations, and scenic pit stops.",
-        coverImage: "/blog/chandigarh-to-manali.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 9,
@@ -644,7 +644,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Shimla by Car: Hill Station Road Trip 2026",
         excerpt:
             "Drive from Delhi to Shimla in 7 hours through pine forests and mountain passes. Complete route guide with car recommendations and scenic stop details.",
-        coverImage: "/blog/delhi-to-shimla.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -726,7 +726,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Jaipur Road Trip: Royal Rajasthan Drive",
         excerpt:
             "The ultimate Delhi to Jaipur road trip guide. Drive the NH48 expressway in 5 hours with our route planner, food stops, and rental car recommendations.",
-        coverImage: "/blog/delhi-to-jaipur.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -812,7 +812,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Agra Road Trip: Taj Mahal Day Drive",
         excerpt:
             "Drive Delhi to Agra in 3.5 hours on the Yamuna Expressway. Plan the perfect Taj Mahal day trip with our car rental guide, toll info, and visit schedule.",
-        coverImage: "/blog/delhi-to-agra.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -903,7 +903,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Best Road Trips from Delhi: 10 Scenic Routes by Car",
         excerpt:
             "Discover the 10 best road trips from Delhi by self-drive car. From Jaipur to Rishikesh, Shimla to Agra — distance charts, car tips, and route guides.",
-        coverImage: "/blog/best-road-trips-delhi.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips", "city-guide"],
         readingTime: 10,
@@ -983,7 +983,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Dehradun Road Trip: Highway Route Planner",
         excerpt:
             "Plan the Delhi to Dehradun drive via the fastest highway route. Complete guide with drive time, toll costs, food stops, and rental car recommendations.",
-        coverImage: "/blog/delhi-to-dehradun.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -1066,7 +1066,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Dehradun to Nainital Road Trip: Lake District Drive",
         excerpt:
             "Drive from Dehradun to Nainital through the Kumaon hills. Route guide with mountain driving tips, scenic stops at Bhimtal and Naukuchiatal, and car advice.",
-        coverImage: "/blog/dehradun-to-nainital.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -1148,7 +1148,7 @@ export const roadTripPosts: BlogPost[] = [
         title: "Delhi to Lansdowne: Hidden Hill Station Road Trip",
         excerpt:
             "Discover Lansdowne — the quiet cantonment hill station 260 km from Delhi. Drive guide with route details, oak forest walks, and SUV rental tips.",
-        coverImage: "/blog/delhi-to-lansdowne.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 7,

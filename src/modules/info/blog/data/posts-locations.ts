@@ -9,7 +9,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Self-Drive in Uttarakhand: Rules & Driving Tips",
         excerpt:
             "Everything you need to know about self-driving in Uttarakhand. Road rules, permit requirements, mountain etiquette, and seasonal advisories for Devbhoomi.",
-        coverImage: "/blog/uttarakhand-driving.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "tips"],
         readingTime: 8,
@@ -98,7 +98,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Char Dham Yatra by Self-Drive Car: Complete Guide",
         excerpt:
             "Plan the Char Dham Yatra in a self-drive SUV. Route maps, driving days, accommodation stops, and the best rental car for Badrinath, Kedarnath, Gangotri, Yamunotri.",
-        coverImage: "/blog/char-dham-self-drive.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "rental-guide"],
         readingTime: 10,
@@ -195,7 +195,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Car Rental at Delhi Airport (IGI): Terminal Guide",
         excerpt:
             "Rent a self-drive car at Delhi IGI Airport. Terminal-wise pickup instructions, pricing, and tips for seamless car collection after your flight.",
-        coverImage: "/blog/delhi-airport-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["airport", "city-guide"],
         readingTime: 7,
@@ -283,7 +283,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Jim Corbett National Park: Self-Drive Safari Guide",
         excerpt:
             "Drive to Jim Corbett in your own rental SUV. Entry rules, safari zones, driving regulations inside the park, and the best vehicle for wildlife spotting.",
-        coverImage: "/blog/jim-corbett-drive.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -372,7 +372,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Driving in Delhi Traffic: Survival Guide for Renters",
         excerpt:
             "First time driving in Delhi? Survive the chaos with our guide to Delhi traffic rules, peak hours, parking, and the unwritten rules of NCR roads.",
-        coverImage: "/blog/delhi-traffic-guide.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "city-guide"],
         readingTime: 8,
@@ -457,7 +457,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Haridwar to Rishikesh by Car: 25 km River Drive",
         excerpt:
             "Drive from Haridwar to Rishikesh along the Ganga in 30 minutes. Route details, riverside stops, parking tips, and what to see on this sacred river drive.",
-        coverImage: "/blog/haridwar-to-rishikesh.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "city-guide"],
         readingTime: 6,
@@ -542,7 +542,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Valley of Flowers Road Trip from Dehradun by Car",
         excerpt:
             "Drive from Dehradun to Govindghat for the Valley of Flowers trek. Complete self-drive route guide with SUV recommendations and mountain driving tips.",
-        coverImage: "/blog/valley-of-flowers.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "seasonal"],
         readingTime: 8,
@@ -618,7 +618,7 @@ export const locationDeepDivePosts: BlogPost[] = [
         title: "Driving in Rajasthan: Highway Tips for Road Trips",
         excerpt:
             "Master Rajasthan highway driving with tips on desert roads, camel crossings, summer heat management, and the best routes through the Land of Kings.",
-        coverImage: "/blog/rajasthan-driving.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,

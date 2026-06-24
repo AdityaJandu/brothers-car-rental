@@ -9,7 +9,7 @@ export const extraPosts: BlogPost[] = [
         title: "Summer Road Trips: Hill Stations Near Delhi by Car",
         excerpt:
             "Escape Delhi's heat with these 8 hill station road trips under 8 hours. Temperature comparisons, best months, and the ideal rental car for each escape.",
-        coverImage: "/blog/summer-hill-stations.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["seasonal", "road-trip"],
         readingTime: 9,
@@ -80,7 +80,7 @@ export const extraPosts: BlogPost[] = [
         title: "Best Cars for Family Road Trips in India: 2026",
         excerpt:
             "Find the perfect rental car for your family road trip. Compare SUVs, sedans, and 7-seaters by space, safety, comfort, and budget for Indian families.",
-        coverImage: "/blog/family-road-trip-cars.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["family", "comparison"],
         readingTime: 8,
@@ -163,7 +163,7 @@ export const extraPosts: BlogPost[] = [
         title: "Monthly Car Rental: Benefits of Car Subscription",
         excerpt:
             "Why monthly car subscription is smarter than buying in 2026. Flexibility, zero maintenance stress, and flat monthly costs — the future of personal mobility.",
-        coverImage: "/blog/monthly-subscription.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["commercial", "how-to"],
         readingTime: 7,
@@ -248,7 +248,7 @@ export const extraPosts: BlogPost[] = [
         title: "Car Rental for College Students: Budget Guide 2026",
         excerpt:
             "College students can rent self-drive cars from ₹749/day. Learn about age requirements, student-friendly cars, group cost splitting, and budget tips.",
-        coverImage: "/blog/student-car-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["commercial", "tips"],
         readingTime: 7,
@@ -398,7 +398,7 @@ export const extraPosts: BlogPost[] = [
         title: "Long-Term Car Rental in India: Complete 2026 Guide",
         excerpt:
             "Everything about long-term car rental in India. Compare monthly, quarterly, and annual plans. Insurance, maintenance, and swap flexibility explained.",
-        coverImage: "/blog/long-term-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "commercial"],
         readingTime: 7,
@@ -479,7 +479,7 @@ export const extraPosts: BlogPost[] = [
         title: "Corporate Car Rental & Fleet Solutions for Business",
         excerpt:
             "Brothers Car Rental corporate solutions: dedicated fleet management, employee car programs, client transport, and volume-based business pricing.",
-        coverImage: "/blog/corporate-fleet.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "commercial"],
         readingTime: 7,
@@ -568,7 +568,7 @@ export const extraPosts: BlogPost[] = [
         title: "Car Rental Insurance in India: What You Must Know",
         excerpt:
             "Understand car rental insurance in India. Compare standard coverage, comprehensive protection, and what's actually covered when you rent a self-drive car.",
-        coverImage: "/blog/rental-insurance-guide.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["rental-guide", "faq"],
         readingTime: 7,
@@ -660,7 +660,7 @@ export const extraPosts: BlogPost[] = [
         title: "Diwali Road Trip Ideas: Where to Drive This Diwali",
         excerpt:
             "Plan the perfect Diwali road trip from Delhi. 5 festive destinations with celebrations, light displays, and special driving tips for the festival weekend.",
-        coverImage: "/blog/diwali-road-trips.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["seasonal", "road-trip"],
         readingTime: 7,
@@ -731,7 +731,7 @@ export const extraPosts: BlogPost[] = [
         title: "Long Weekend Road Trips 2027: Holiday Calendar & Guide",
         excerpt:
             "Plan every long weekend in 2027 with our holiday road trip calendar. Destination recommendations, driving distances, and advance booking tips.",
-        coverImage: "/blog/long-weekend-calendar.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["seasonal", "tips"],
         readingTime: 8,
@@ -805,7 +805,7 @@ export const extraPosts: BlogPost[] = [
         title: "Airport Car Rental vs Taxi: Which is Better?",
         excerpt:
             "Compare airport self-drive rental with taxis for your India trip. Cost analysis, convenience factors, and when each option saves you more money.",
-        coverImage: "/blog/airport-rental-vs-taxi.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "airport"],
         readingTime: 7,
@@ -888,7 +888,7 @@ export const extraPosts: BlogPost[] = [
         title: "Speed Limits on Indian Highways: Guide for Renters",
         excerpt:
             "Know the speed limits on Indian highways before you drive. Expressway, national highway, city, and mountain road limits with penalty details.",
-        coverImage: "/blog/speed-limits-india.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "rental-guide"],
         readingTime: 6,
@@ -967,7 +967,7 @@ export const extraPosts: BlogPost[] = [
         title: "EV Rental vs Petrol Car Rental: India 2026 Guide",
         excerpt:
             "Compare electric car rentals with petrol rentals in India. Range anxiety reality, charging infrastructure, cost savings, and which routes are EV-ready.",
-        coverImage: "/blog/ev-vs-petrol-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["comparison", "tips"],
         readingTime: 7,
@@ -1045,7 +1045,7 @@ export const extraPosts: BlogPost[] = [
         title: "Hatchback Rental India: Best Budget Self-Drive Cars",
         excerpt:
             "Why hatchbacks are the smartest rental choice in India. Fuel economy, city parking, and rates from ₹749/day — the ultimate budget traveller's guide.",
-        coverImage: "/blog/hatchback-rental-budget.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["commercial", "tips"],
         readingTime: 6,
@@ -1125,7 +1125,7 @@ export const extraPosts: BlogPost[] = [
         title: "Best Navigation Apps for Indian Road Trips: 2026",
         excerpt:
             "Compare Google Maps, Apple Maps, and MapMyIndia for Indian road trips. Offline maps, live traffic, speed warnings, and mountain route accuracy reviewed.",
-        coverImage: "/blog/navigation-apps-india.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "how-to"],
         readingTime: 6,
@@ -1204,7 +1204,7 @@ export const extraPosts: BlogPost[] = [
         title: "Kedarnath Road Trip: Self-Drive Car Guide 2026",
         excerpt:
             "Drive to Kedarnath base (Sonprayag) in a self-drive SUV. Route from Delhi and Dehradun, road conditions, overnight stops, and essential mountain driving tips.",
-        coverImage: "/blog/kedarnath-road-trip.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "rental-guide"],
         readingTime: 9,
@@ -1281,7 +1281,7 @@ export const extraPosts: BlogPost[] = [
         title: "Spiti Valley Road Trip: The Ultimate Self-Drive Guide",
         excerpt:
             "Planning a Spiti Valley circuit? Discover which route to take (Shimla vs Manali), required permits, best SUVs, and crucial high-altitude driving tips.",
-        coverImage: "/blog/spiti-valley-road-trip.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["road-trip", "tips"],
         readingTime: 8,
@@ -1341,7 +1341,7 @@ export const extraPosts: BlogPost[] = [
         title: "Night Driving in India: 7 Crucial Safety Rules",
         excerpt:
             "Driving at night on Indian highways requires extreme caution. Learn how to handle high beams, avoid hazards, and stay safe during night drives.",
-        coverImage: "/blog/night-driving-india.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "how-to"],
         readingTime: 5,

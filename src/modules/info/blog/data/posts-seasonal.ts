@@ -6,7 +6,7 @@ export const seasonalPosts: BlogPost[] = [
         title: "Best Monsoon Road Trips from Delhi by Self-Drive",
         excerpt:
             "Chase the rain from Delhi with these scenic monsoon road trips. Lush valleys, misty mountains, and waterfall drives — with the right rental car guide.",
-        coverImage: "/blog/monsoon-trips-delhi.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["seasonal", "road-trip"],
         readingTime: 8,
@@ -71,7 +71,7 @@ export const seasonalPosts: BlogPost[] = [
         title: "Weekend Getaways Near Delhi by Self-Drive Car",
         excerpt:
             "Escape Delhi for the weekend with these 10 self-drive destinations under 6 hours. Hill stations, heritage forts, and lake towns — all within easy reach.",
-        coverImage: "/blog/weekend-getaways-delhi.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["seasonal", "road-trip", "city-guide"],
         readingTime: 9,
@@ -153,7 +153,7 @@ export const seasonalPosts: BlogPost[] = [
         title: "Winter Road Trips from Dehradun: Snow Driving Guide",
         excerpt:
             "Plan winter road trips from Dehradun to Auli, Chopta, and Dhanaulti. Snow driving tips, SUV recommendations, and the best routes for snow chasers.",
-        coverImage: "/blog/winter-trips-dehradun.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["seasonal", "road-trip"],
         readingTime: 8,

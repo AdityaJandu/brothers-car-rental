@@ -6,7 +6,7 @@ export const tipsPosts: BlogPost[] = [
         title: "First-Time Car Rental in India: 15 Essential Tips",
         excerpt:
             "First time renting a car in India? These 15 tips cover everything from document prep to driving etiquette so your rental experience is stress-free.",
-        coverImage: "/blog/first-time-tips.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "how-to"],
         readingTime: 8,
@@ -93,7 +93,7 @@ export const tipsPosts: BlogPost[] = [
         title: "Mountain Driving Tips for Beginners in India",
         excerpt:
             "First time driving on mountain roads in India? Master hairpin bends, hill starts, engine braking, and monsoon safety with our beginner mountain driving guide.",
-        coverImage: "/blog/mountain-driving-tips.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "road-trip"],
         readingTime: 9,
@@ -195,7 +195,7 @@ export const tipsPosts: BlogPost[] = [
         title: "NRI Guide: How to Rent a Car During India Visits",
         excerpt:
             "NRIs visiting India: complete guide to renting a self-drive car. International licence rules, driving tips for Indian roads, and the best rental options.",
-        coverImage: "/blog/nri-guide-car-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "rental-guide"],
         readingTime: 8,
@@ -275,7 +275,7 @@ export const tipsPosts: BlogPost[] = [
         title: "Ultimate Road Trip Packing Checklist for India",
         excerpt:
             "Never forget essentials again. The complete road trip packing checklist for Indian highways, mountain drives, and monsoon adventures — organized by category.",
-        coverImage: "/blog/packing-checklist.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "road-trip"],
         readingTime: 7,
@@ -386,7 +386,7 @@ export const tipsPosts: BlogPost[] = [
         title: "Night Highway Driving Tips for Indian Roads",
         excerpt:
             "Stay safe driving on Indian highways at night. Expert tips for managing truck traffic, high beams, fatigue, and animal crossings on dark roads.",
-        coverImage: "/blog/night-driving-tips.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "road-trip"],
         readingTime: 7,
@@ -477,7 +477,7 @@ export const tipsPosts: BlogPost[] = [
         title: "How to Save Fuel on Road Trips: Driving Tips",
         excerpt:
             "Cut your road trip fuel costs by 15-25%. Learn fuel-saving driving techniques, speed optimization, and maintenance checks that maximize mileage.",
-        coverImage: "/blog/save-fuel-tips.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["tips", "how-to"],
         readingTime: 7,

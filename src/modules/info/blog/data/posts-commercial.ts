@@ -6,7 +6,7 @@ export const commercialPosts: BlogPost[] = [
         title: "Cheapest Self-Drive Cars on Rent in India: 2026",
         excerpt:
             "Find the most affordable self-drive rental cars in India. Compare hatchback, sedan, and SUV rates starting from ₹749/day with zero hidden charges.",
-        coverImage: "/blog/cheapest-cars-india.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["commercial", "tips"],
         readingTime: 8,
@@ -81,7 +81,7 @@ export const commercialPosts: BlogPost[] = [
         title: "Best SUV Rentals in Dehradun: Fleet & Pricing",
         excerpt:
             "Explore the best SUV rentals in Dehradun for mountain road trips. Compare compact and full-size SUVs with pricing, features, and route recommendations.",
-        coverImage: "/blog/suv-rental-dehradun.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["commercial", "city-guide"],
         readingTime: 8,
@@ -156,7 +156,7 @@ export const commercialPosts: BlogPost[] = [
         title: "Best 7-Seater Cars on Rent for Group Travel India",
         excerpt:
             "Planning a group road trip? Explore the best 7-seater SUVs and MUVs on rent. Compare space, pricing, and comfort for 6-7 passenger travel.",
-        coverImage: "/blog/7-seater-rental.jpg",
+        coverImage: "/images/onboarding.jpg",
         authorName: "Brothers Car Rental",
         tags: ["commercial", "family"],
         readingTime: 7,
