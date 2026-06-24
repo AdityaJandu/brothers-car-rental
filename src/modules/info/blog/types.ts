@@ -7,7 +7,11 @@ export type BlogTag =
     | "luxury"
     | "seasonal"
     | "faq"
-    | "brand";
+    | "brand"
+    | "road-trip"
+    | "commercial"
+    | "rental-guide"
+    | "airport";
 
 export interface BlogPost {
     slug: string;

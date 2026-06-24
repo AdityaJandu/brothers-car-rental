@@ -16,6 +16,10 @@ const TAG_KEYWORDS: Record<BlogTag, string[]> = {
     family: ["family car rental india", "rent car for family", "best family car india"],
     luxury: ["luxury car rental india", "premium car hire", "luxury car rent dehradun"],
     seasonal: ["monsoon road trip", "best car monsoon india", "seasonal car rental"],
+    "road-trip": ["road trip india", "self drive road trip", "best driving routes india"],
+    commercial: ["cheap self drive car", "affordable car rental", "best rental deals india"],
+    "rental-guide": ["car rental rules india", "rental documents", "car hire process india"],
+    airport: ["airport car rental india", "car rental near airport", "airport pickup car hire"],
 };
 
 export async function generateStaticParams() {

@@ -1,4 +1,13 @@
 import type { BlogPost, BlogTag } from "../types";
+import { cityPagePosts } from "./posts-city-pages";
+import { roadTripPosts } from "./posts-road-trips";
+import { comparisonPosts } from "./posts-comparisons";
+import { rentalGuidePosts } from "./posts-rental-guides";
+import { seasonalPosts } from "./posts-seasonal";
+import { commercialPosts } from "./posts-commercial";
+import { tipsPosts } from "./posts-tips";
+import { locationDeepDivePosts } from "./posts-locations";
+import { extraPosts } from "./posts-extra";
 
 export const posts: BlogPost[] = [
     // ────────────────────────────────────────────────────
@@ -881,44 +890,7 @@ export const posts: BlogPost[] = [
 `,
     },
 
-    // ────────────────────────────────────────────────────
-    // 23. NRI / Tourist
-    // ────────────────────────────────────────────────────
-    {
-        slug: "nri-guide-renting-cars-india-vacation",
-        title: "The NRI Guide to Renting Self-Drive Cars in India",
-        excerpt:
-            "Visiting India for the holidays? Here is the ultimate guide for NRIs and tourists on renting self-drive cars, navigating local traffic, and required permits.",
-        coverImage: "/blog/nri-car-rental-india.jpg",
-        authorName: "Brothers Car Rental",
-        tags: ["how-to", "faq"],
-        readingTime: 7,
-        publishedAt: new Date("2026-07-12"),
-        isPublished: true,
-        content: `
-<img src="/blog/nri-car-rental-india.jpg" alt="NRI self drive car rental at Indian airport" class="w-full h-auto rounded-xl mb-8 object-cover aspect-video shadow-md" />
-<p>For Non-Resident Indians (NRIs) and international tourists visiting family or vacationing across the subcontinent, relying on relatives for transportation or constantly haggling with local cab drivers is incredibly frustrating. Renting a <strong>self-drive car directly at the airport</strong> grants you total independence and mobility the exact moment you clear customs and land.</p>
-
-<h2>Licensing Rules for NRIs and Tourists in India</h2>
-<p>Navigating Indian motor laws is simple if you are prepared. If you hold a valid foreign driving licence (from the US, UK, Canada, UAE, Australia, etc.), you must legally pair it with an International Driving Permit (IDP) issued in your home country to legally drive in India. Indian highway authorities and local traffic police will not accept a foreign licence alone at checkpoints, so ensure your IDP is sorted before your flight.</p>
-
-<h2>Driving Safely in Indian Traffic</h2>
-<p>If you are accustomed to strictly regulated Western traffic lanes, driving in India requires a brief, but vital, mental adjustment. Defensive driving is absolutely paramount here.</p>
-<ul>
-    <li><strong>Expect the Unexpected:</strong> Always anticipate two-wheelers, stray cattle, and pedestrians merging without warning.</li>
-    <li><strong>Opt for Maximum Protection:</strong> We strongly suggest opting for our Comprehensive Protection plan to completely cover any minor bumper scratches or mirror dings without paying excess fees.</li>
-    <li><strong>Go Automatic:</strong> An <a href="/browse?category=suv" title="Rent an automatic SUV in India">automatic transmission vehicle</a> is highly recommended to significantly reduce left-leg fatigue in stop-and-go city traffic.</li>
-</ul>
-
-<h2>Seamless Airport Handover</h2>
-<p>With Brothers Car Rental, you can pre-book your vehicle online. Upload your passport, visa, and IDP securely through our portal. Your sanitized, fully-fueled vehicle will be waiting for you at the airport arrivals terminal. <a href="/browse" title="Book airport car rental">Browse our airport delivery options</a> to kickstart your Indian holiday right.</p>
-
-<div class="blog-cta">
-    <p><strong>Secure your holiday vehicle before you fly.</strong></p>
-    <a href="/browse" class="blog-cta-button" title="Book your vacation rental car">Reserve Your Car Now →</a>
-</div>
-`,
-    },
+    // ── Article 23 (NRI guide) moved to posts-tips.ts ──
 
     // ────────────────────────────────────────────────────
     // 24. Weddings / Events
@@ -986,7 +958,17 @@ export const posts: BlogPost[] = [
     <a href="/browse" class="blog-cta-button" title="Book airport car delivery">Reserve Airport Pickup →</a>
 </div>
 `,
-    }
+    },
+    // ── New category batches (spread in) ──────────────
+    ...cityPagePosts,
+    ...roadTripPosts,
+    ...comparisonPosts,
+    ...rentalGuidePosts,
+    ...seasonalPosts,
+    ...commercialPosts,
+    ...tipsPosts,
+    ...locationDeepDivePosts,
+    ...extraPosts,
 ];
 
 // ────────────────────────────────────────────────────
