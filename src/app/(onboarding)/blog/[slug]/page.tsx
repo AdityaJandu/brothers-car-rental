@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPostView } from "@/modules/info/blog/ui/views/BlogPostView";
-import { getAllPublishedPosts, getPostBySlug } from "@/modules/info/blog/data/posts";
+import { getMdxPost, getAllPostSlugs, type TocHeading } from "@/lib/mdx";
 import type { BlogTag } from "@/modules/info/blog/types";
+import { ArticleStructuredData } from "@/components/blog/seo/ArticleStructuredData";
 
 export const dynamic = "force-static";
 
@@ -22,10 +23,39 @@ const TAG_KEYWORDS: Record<BlogTag, string[]> = {
     airport: ["airport car rental india", "car rental near airport", "airport pickup car hire"],
 };
 
+/** Extracts heading info from MDX content string for Table of Contents */
+function extractHeadings(slug: string): TocHeading[] {
+    // Headings are generated at render time by rehype-slug.
+    // We parse the MDX source file to extract heading text.
+    const fs = require("fs");
+    const path = require("path");
+    const filePath = path.join(process.cwd(), "content", "blog", `${slug}.mdx`);
+
+    if (!fs.existsSync(filePath)) return [];
+
+    const source: string = fs.readFileSync(filePath, "utf-8");
+    const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+    const headings: TocHeading[] = [];
+    let match;
+
+    while ((match = headingRegex.exec(source)) !== null) {
+        const level = match[1].length;
+        const text = match[2].trim();
+        const id = text
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/--+/g, "-")
+            .replace(/^-+|-+$/g, "");
+        headings.push({ id, text, level });
+    }
+
+    return headings;
+}
+
 export async function generateStaticParams() {
-    return getAllPublishedPosts().map((post) => ({
-        slug: post.slug,
-    }));
+    const slugs = getAllPostSlugs();
+    return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -34,42 +64,40 @@ export async function generateMetadata({
     params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
 
-    if (!post) {
-        notFound();
-    }
+    const mdxPost = await getMdxPost(slug);
+    if (!mdxPost) notFound();
 
-    const keywords = post.tags.flatMap((tag) => TAG_KEYWORDS[tag]);
-
+    const { metadata: meta } = mdxPost;
+    const keywords = meta.tags.flatMap((tag) => TAG_KEYWORDS[tag]);
     return {
-        title: post.title,
-        description: post.excerpt,
+        title: meta.title,
+        description: meta.description,
         keywords,
         openGraph: {
             type: "article",
-            title: post.title,
-            description: post.excerpt,
-            url: `https://www.brothersgroupindia.online/blog/${post.slug}`,
+            title: meta.title,
+            description: meta.description,
+            url: `https://www.brothersgroupindia.online/blog/${meta.slug}`,
             images: [
                 {
-                    url: post.coverImage,
+                    url: meta.coverImage,
                     width: 1200,
                     height: 630,
-                    alt: post.title,
+                    alt: meta.title,
                 },
             ],
-            publishedTime: post.publishedAt.toISOString(),
-            tags: post.tags,
+            publishedTime: new Date(meta.publishedAt).toISOString(),
+            tags: meta.tags,
         },
         twitter: {
             card: "summary_large_image",
-            title: post.title,
-            description: post.excerpt,
-            images: [post.coverImage],
+            title: meta.title,
+            description: meta.description,
+            images: [meta.coverImage],
         },
         alternates: {
-            canonical: `https://www.brothersgroupindia.online/blog/${post.slug}`,
+            canonical: meta.canonicalUrl,
         },
     };
 }
@@ -80,75 +108,19 @@ export default async function BlogPostPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
 
-    if (!post) {
-        notFound();
-    }
+    const mdxPost = await getMdxPost(slug);
+    if (!mdxPost) notFound();
 
-    const articleJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        headline: post.title,
-        description: post.excerpt,
-        image: post.coverImage,
-        datePublished: post.publishedAt.toISOString(),
-        dateModified: post.publishedAt.toISOString(),
-        author: {
-            "@type": "Organization",
-            name: "Brothers Car Rental",
-            url: "https://www.brothersgroupindia.online",
-        },
-        publisher: {
-            "@type": "Organization",
-            name: "Brothers Car Rental",
-            logo: {
-                "@type": "ImageObject",
-                url: "https://www.brothersgroupindia.online/app-logo.svg",
-            },
-        },
-        mainEntityOfPage: {
-            "@type": "WebPage",
-            "@id": `https://www.brothersgroupindia.online/blog/${post.slug}`,
-        },
-    };
-
-    const breadcrumbJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-            {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: "https://www.brothersgroupindia.online",
-            },
-            {
-                "@type": "ListItem",
-                position: 2,
-                name: "Blog",
-                item: "https://www.brothersgroupindia.online/blog",
-            },
-            {
-                "@type": "ListItem",
-                position: 3,
-                name: post.title,
-                item: `https://www.brothersgroupindia.online/blog/${post.slug}`,
-            },
-        ],
-    };
+    const { Component, metadata: meta } = mdxPost;
+    const headings = extractHeadings(slug);
 
     return (
         <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-            />
-            <BlogPostView slug={slug} />
+            <ArticleStructuredData meta={meta} />
+            <BlogPostView meta={meta} headings={headings}>
+                <Component />
+            </BlogPostView>
         </>
     );
 }

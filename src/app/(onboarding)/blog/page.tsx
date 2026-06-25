@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BlogView } from "@/modules/info/blog/ui/views/BlogView";
+import { getAllPublishedPosts, getAllTags } from "@/lib/mdx";
 
 export const dynamic = "force-static";
 
@@ -67,14 +68,17 @@ const faqJsonLd = {
     ],
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+    const allPosts = await getAllPublishedPosts();
+    const allTags = await getAllTags();
+
     return (
         <>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
             />
-            <BlogView />
+            <BlogView allPosts={allPosts} allTags={allTags} />
         </>
     );
 }

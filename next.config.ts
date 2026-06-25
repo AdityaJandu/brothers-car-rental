@@ -1,8 +1,11 @@
+import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  // Configuration is important as it tells Next.JS about the images we're allowing
+  // Configure `pageExtensions` to include MDX files
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+
+  // Image configuration for external image hosts
   images: {
     remotePatterns: [
       {
@@ -30,4 +33,17 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [
+      // Use string form for Turbopack compatibility
+      "remark-gfm",
+    ],
+    rehypePlugins: [
+      "rehype-slug",
+    ],
+  },
+});
+
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig);

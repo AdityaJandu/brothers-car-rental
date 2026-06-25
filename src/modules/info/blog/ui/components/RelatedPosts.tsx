@@ -1,12 +1,12 @@
-import { getRelatedPosts } from "../../data/posts";
+import { getRelatedPosts } from "@/lib/mdx";
 import { PostCard } from "./PostCard";
 
 interface RelatedPostsProps {
     currentSlug: string;
 }
 
-export function RelatedPosts({ currentSlug }: RelatedPostsProps) {
-    const related = getRelatedPosts(currentSlug, 3);
+export async function RelatedPosts({ currentSlug }: RelatedPostsProps) {
+    const related = await getRelatedPosts(currentSlug, 3);
 
     if (related.length === 0) return null;
 
