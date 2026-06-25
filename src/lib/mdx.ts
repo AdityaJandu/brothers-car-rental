@@ -47,11 +47,16 @@ async function loadAllMetadata(): Promise<MdxPostMeta[]> {
     const slugs = getAllPostSlugs();
     const metas: MdxPostMeta[] = [];
 
+    const now = new Date().getTime();
+
     for (const slug of slugs) {
         try {
             const mod = await import(`@content/blog/${slug}.mdx`);
             if (mod.metadata) {
-                metas.push(mod.metadata as MdxPostMeta);
+                const meta = mod.metadata as MdxPostMeta;
+                if (new Date(meta.publishedAt).getTime() <= now) {
+                    metas.push(meta);
+                }
             }
         } catch (err) {
             console.error(`[mdx] Failed to load metadata for "${slug}":`, err);
@@ -139,9 +144,16 @@ export async function getRelatedPosts(
 export async function getMdxPost(slug: string) {
     try {
         const mod = await import(`@content/blog/${slug}.mdx`);
+        const metadata = mod.metadata as MdxPostMeta;
+
+        // Return null if post is future-dated
+        if (new Date(metadata.publishedAt).getTime() > new Date().getTime()) {
+            return null;
+        }
+
         return {
             Component: mod.default as React.ComponentType,
-            metadata: mod.metadata as MdxPostMeta,
+            metadata,
         };
     } catch {
         return null;
