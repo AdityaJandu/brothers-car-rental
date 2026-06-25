@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { db } from "@/db";
 import { car, location } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
-import { getAllPublishedPosts } from "@/modules/info/blog/data/posts";
+import { getAllPublishedPosts } from "@/lib/mdx";
 
 const BASE_URL = "https://www.brothersgroupindia.online";
 
@@ -80,8 +80,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 .where(eq(location.isActive, true)),
         ]);
 
-        // Blog posts: published with a publishedAt date (static data)
-        const blogPosts = getAllPublishedPosts().filter(
+        const rawPosts = await getAllPublishedPosts();
+        const blogPosts = rawPosts.filter(
             (p) => p.publishedAt != null
         );
 

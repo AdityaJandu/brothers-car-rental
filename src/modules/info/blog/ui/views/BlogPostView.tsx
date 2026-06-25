@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
-import { notFound } from "next/navigation";
 import { InfoSection } from "../../../components/InfoSection";
 import { RelatedPosts } from "../components/RelatedPosts";
 import { ReadingProgressBar } from "../components/ReadingProgressBar";
-import { getPostBySlug } from "../../data/posts";
+import { EditorialTrustBlock } from "@/components/blog/seo/EditorialTrustBlock";
+import { TableOfContents } from "@/components/blog/TableOfContents";
+import type { MdxPostMeta, TocHeading } from "@/lib/mdx";
 
 /** Formats a tag slug into a human-readable label */
 function formatTag(tag: string): string {
@@ -15,9 +16,9 @@ function formatTag(tag: string): string {
         .join(" ");
 }
 
-/** Formats a date as "Month DD, YYYY" */
-function formatDate(date: Date): string {
-    return date.toLocaleDateString("en-US", {
+/** Formats an ISO date string as "Month DD, YYYY" */
+function formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
         year: "numeric",
@@ -25,16 +26,15 @@ function formatDate(date: Date): string {
 }
 
 interface BlogPostViewProps {
-    slug: string;
+    /** Post metadata from the MDX export */
+    meta: MdxPostMeta;
+    /** Rendered MDX content (children) */
+    children: React.ReactNode;
+    /** Headings extracted for Table of Contents */
+    headings?: TocHeading[];
 }
 
-export function BlogPostView({ slug }: BlogPostViewProps) {
-    const post = getPostBySlug(slug);
-
-    if (!post) {
-        notFound();
-    }
-
+export function BlogPostView({ meta, children, headings = [] }: BlogPostViewProps) {
     return (
         <>
             {/* Reading progress bar */}
@@ -44,8 +44,8 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                 {/* Hero Cover */}
                 <div className="relative h-[50vh] min-h-[400px] max-h-[560px] overflow-hidden">
                     <Image
-                        src={post.coverImage}
-                        alt={post.title}
+                        src={meta.coverImage}
+                        alt={meta.title}
                         fill
                         className="object-cover"
                         priority
@@ -72,7 +72,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                         <div className="max-w-4xl mx-auto">
                             {/* Tags */}
                             <div className="flex flex-wrap gap-2 mb-4">
-                                {post.tags.map((tag) => (
+                                {meta.tags.map((tag) => (
                                     <Link
                                         key={tag}
                                         href={`/blog?tag=${tag}`}
@@ -84,22 +84,22 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                             </div>
 
                             <h1 className="font-heading text-3xl md:text-5xl font-extrabold text-primary leading-tight tracking-tight mb-4">
-                                {post.title}
+                                {meta.title}
                             </h1>
 
                             {/* Meta info */}
                             <div className="flex flex-wrap items-center gap-5 text-sm text-muted-foreground">
                                 <span className="flex items-center gap-2">
                                     <User className="size-4 shrink-0" />
-                                    {post.authorName}
+                                    {meta.authorName}
                                 </span>
                                 <span className="flex items-center gap-2">
                                     <Calendar className="size-4 shrink-0" />
-                                    {formatDate(post.publishedAt)}
+                                    {formatDate(meta.publishedAt)}
                                 </span>
                                 <span className="flex items-center gap-2">
                                     <Clock className="size-4 shrink-0" />
-                                    {post.readingTime} min read
+                                    {meta.readingTime} min read
                                 </span>
                             </div>
                         </div>
@@ -108,14 +108,31 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
 
                 {/* Article Body */}
                 <InfoSection className="py-16">
-                    <div className="max-w-4xl mx-auto">
-                        <article
-                            className="blog-prose"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
-                        />
+                    <div className="max-w-6xl mx-auto flex gap-12">
+                        {/* Main content */}
+                        <div className="max-w-4xl flex-1 min-w-0">
+                            {/* Editorial Trust Block */}
+                            <EditorialTrustBlock
+                                authorName={meta.authorName}
+                                publishedAt={meta.publishedAt}
+                                readingTime={meta.readingTime}
+                            />
 
-                        {/* Related Posts */}
-                        <RelatedPosts currentSlug={slug} />
+                            {/* MDX rendered content */}
+                            <article className="blog-prose">
+                                {children}
+                            </article>
+
+                            {/* Related Posts */}
+                            <RelatedPosts currentSlug={meta.slug} />
+                        </div>
+
+                        {/* Sidebar — Table of Contents (desktop only) */}
+                        {headings.length >= 2 && (
+                            <aside className="hidden xl:block w-64 shrink-0">
+                                <TableOfContents headings={headings} />
+                            </aside>
+                        )}
                     </div>
                 </InfoSection>
             </main>

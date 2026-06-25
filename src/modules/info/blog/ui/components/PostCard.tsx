@@ -2,10 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { BlogPost } from "../../types";
+import type { MdxPostMeta } from "@/lib/mdx";
 
 interface PostCardProps {
-    post: BlogPost;
+    post: MdxPostMeta;
     /** Compact variant for related posts grid */
     compact?: boolean;
     /** Whether to load the image eagerly (LCP optimization) */
@@ -82,7 +82,7 @@ export function PostCard({ post, compact = false, priority = false }: PostCardPr
 
                     {!compact && (
                         <p className="font-sans text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-4">
-                            {post.excerpt}
+                            {post.description}
                         </p>
                     )}
 
@@ -90,7 +90,7 @@ export function PostCard({ post, compact = false, priority = false }: PostCardPr
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                             <Calendar className="size-3.5 shrink-0" />
-                            {formatDate(post.publishedAt)}
+                            {formatDate(new Date(post.publishedAt))}
                         </span>
                         <span className="flex items-center gap-1.5">
                             <Clock className="size-3.5 shrink-0" />

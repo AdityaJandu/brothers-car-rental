@@ -7,8 +7,13 @@ import { PostCard } from "../components/PostCard";
 import { BlogFilters } from "../components/BlogFilters";
 import { EmptyState } from "@/components/self/empty-state";
 import { useQueryState, parseAsString } from "nuqs";
-import { getAllPublishedPosts, getAllTags } from "../../data/posts";
 import type { BlogTag } from "../../types";
+import type { MdxPostMeta } from "@/lib/mdx";
+
+interface BlogViewProps {
+    allPosts: MdxPostMeta[];
+    allTags: BlogTag[];
+}
 
 const blogJsonLd = {
     "@context": "https://schema.org",
@@ -27,9 +32,7 @@ const blogJsonLd = {
     },
 };
 
-export function BlogView() {
-    const allPosts = useMemo(() => getAllPublishedPosts(), []);
-    const allTags = useMemo(() => getAllTags(), []);
+export function BlogView({ allPosts, allTags }: BlogViewProps) {
 
     const [activeTagStr, setActiveTagStr] = useQueryState("tag", parseAsString.withDefault(""));
     const activeTag = (activeTagStr || null) as BlogTag | null;
@@ -49,7 +52,7 @@ export function BlogView() {
             filtered = filtered.filter(
                 (p) =>
                     p.title.toLowerCase().includes(q) ||
-                    p.excerpt.toLowerCase().includes(q) ||
+                    p.description.toLowerCase().includes(q) ||
                     p.tags.some((t) => t.includes(q))
             );
         }
