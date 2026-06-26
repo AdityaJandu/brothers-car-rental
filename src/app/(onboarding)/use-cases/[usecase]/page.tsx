@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { LandingFaqSection } from "@/components/seo/LandingFaqSection";
 import { LandingStructuredData } from "@/components/seo/LandingStructuredData";
 import { LandingTrustBar } from "@/components/seo/LandingTrustBar";
@@ -9,6 +10,7 @@ import { InfoSection } from "@/modules/info/components/InfoSection";
 const USE_CASES = ["wedding", "corporate", "outstation", "airport-transfer", "weekend-getaway"];
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
     return USE_CASES.map((usecase) => ({ usecase }));
@@ -43,6 +45,11 @@ export async function generateMetadata({
     params: Promise<{ usecase: string }>;
 }): Promise<Metadata> {
     const { usecase } = await params;
+    
+    if (!USE_CASES.includes(usecase)) {
+        notFound();
+    }
+    
     const data = getUseCaseData(usecase);
 
     return {
@@ -60,6 +67,11 @@ export default async function UseCaseLandingPage({
     params: Promise<{ usecase: string }>;
 }) {
     const { usecase } = await params;
+    
+    if (!USE_CASES.includes(usecase)) {
+        notFound();
+    }
+    
     const data = getUseCaseData(usecase);
 
     return (
