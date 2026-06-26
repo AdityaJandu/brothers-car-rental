@@ -1,41 +1,56 @@
 import type { Metadata } from "next";
 import { BlogView } from "@/modules/info/blog/ui/views/BlogView";
 import { getAllPublishedPosts, getAllTags } from "@/lib/mdx";
+import { paginatePosts, getPageCount } from "@/lib/pagination";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
-    title: "Car Rental Tips, Guides & Road Trip Ideas",
-    description:
-        "Expert car rental advice, road trip guides, and money-saving tips from Brothers Car Rental — serving Dehradun, Hisar, and Sirsa.",
-    keywords: [
-        "car rental tips india",
-        "road trip guide india",
-        "brothers car rental blog",
-        "rent a car advice",
-        "car hire india guide",
-        "dehradun road trips",
-        "car rental hisar",
-    ],
-    openGraph: {
-        type: "website",
-        title: "Car Rental Tips, Guides & Road Trip Ideas | Brothers Car Rental",
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: Promise<{ tag?: string }>;
+}): Promise<Metadata> {
+    const { tag } = await searchParams;
+
+    return {
+        title: "Car Rental Tips, Guides & Road Trip Ideas",
         description:
-            "Expert car rental advice, road trip guides, and money-saving tips from Brothers Car Rental.",
-        url: "https://www.brothersgroupindia.online/blog",
-        images: [
-            {
-                url: "/images/og-default.jpg",
-                width: 1200,
-                height: 630,
-                alt: "Brothers Car Rental Blog",
-            },
+            "Expert car rental advice, road trip guides, and money-saving tips from Brothers Car Rental — serving Dehradun, Hisar, and Sirsa.",
+        keywords: [
+            "car rental tips india",
+            "road trip guide india",
+            "brothers car rental blog",
+            "rent a car advice",
+            "car hire india guide",
+            "dehradun road trips",
+            "car rental hisar",
         ],
-    },
-    alternates: {
-        canonical: "https://www.brothersgroupindia.online/blog",
-    },
-};
+        openGraph: {
+            type: "website",
+            title: "Car Rental Tips, Guides & Road Trip Ideas | Brothers Car Rental",
+            description:
+                "Expert car rental advice, road trip guides, and money-saving tips from Brothers Car Rental.",
+            url: "https://www.brothersgroupindia.online/blog",
+            images: [
+                {
+                    url: "/images/og-default.jpg",
+                    width: 1200,
+                    height: 630,
+                    alt: "Brothers Car Rental Blog",
+                },
+            ],
+        },
+        alternates: {
+            canonical: "https://www.brothersgroupindia.online/blog",
+        },
+        ...(tag && {
+            robots: {
+                index: false,
+                follow: true,
+            },
+        }),
+    };
+}
 
 const faqJsonLd = {
     "@context": "https://schema.org",
@@ -71,6 +86,9 @@ const faqJsonLd = {
 export default async function BlogPage() {
     const allPosts = await getAllPublishedPosts();
     const allTags = await getAllTags();
+    
+    const paginatedPosts = paginatePosts(allPosts, 1);
+    const totalPages = getPageCount(allPosts.length);
 
     return (
         <>
@@ -78,7 +96,13 @@ export default async function BlogPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
             />
-            <BlogView allPosts={allPosts} allTags={allTags} />
+            <BlogView 
+                allPosts={paginatedPosts} 
+                allTags={allTags} 
+                currentPage={1}
+                totalPages={totalPages}
+                basePath="/blog"
+            />
         </>
     );
 }

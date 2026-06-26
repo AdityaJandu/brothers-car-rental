@@ -6,6 +6,26 @@ interface ArticleStructuredDataProps {
 
 const BASE_URL = "https://www.brothersgroupindia.online";
 
+function getWordCount(slug: string, fallbackReadingTime: number): number {
+    try {
+        const fs = require("fs") as typeof import("fs");
+        const path = require("path") as typeof import("path");
+        const filePath = path.join(process.cwd(), "content", "blog", `${slug}.mdx`);
+        const source = fs.readFileSync(filePath, "utf-8");
+        const stripped = source
+            .replace(/^---[\s\S]*?---/m, "")
+            .replace(/^import\s.+$/gm, "")
+            .replace(/^export\s.+$/gm, "")
+            .replace(/<[^>]+>/g, "")
+            .replace(/[#*_`\[\]()>~|]/g, "")
+            .replace(/https?:\/\/\S+/g, "")
+            .trim();
+        return stripped.split(/\s+/).filter(Boolean).length;
+    } catch {
+        return fallbackReadingTime * 200;
+    }
+}
+
 /**
  * Injects Article + BreadcrumbList JSON-LD structured data into the page.
  * Server component — renders <script> tags with JSON-LD schema.
@@ -16,15 +36,22 @@ export function ArticleStructuredData({ meta }: ArticleStructuredDataProps) {
         "@type": "Article",
         headline: meta.title,
         description: meta.description,
-        image: meta.coverImage.startsWith("http")
-            ? meta.coverImage
-            : `${BASE_URL}${meta.coverImage}`,
+        image: {
+            "@type": "ImageObject",
+            url: meta.coverImage.startsWith("http")
+                ? meta.coverImage
+                : `${BASE_URL}${meta.coverImage}`,
+            width: 1200,
+            height: 630,
+            caption: meta.title,
+        },
         datePublished: meta.publishedAt,
-        dateModified: meta.publishedAt,
+        dateModified: meta.updatedAt ?? meta.publishedAt,
         author: {
             "@type": "Organization",
             name: meta.authorName,
             url: BASE_URL,
+            sameAs: "https://www.brothersgroupindia.online/authors/brothers-car-rental",
         },
         publisher: {
             "@type": "Organization",
@@ -38,8 +65,17 @@ export function ArticleStructuredData({ meta }: ArticleStructuredDataProps) {
             "@type": "WebPage",
             "@id": `${BASE_URL}/blog/${meta.slug}`,
         },
-        wordCount: meta.readingTime * 200,
+        isPartOf: {
+            "@type": "WebSite",
+            url: BASE_URL,
+        },
+        inLanguage: "en-IN",
+        wordCount: getWordCount(meta.slug, meta.readingTime),
         articleSection: meta.tags[0] || "General",
+        speakable: {
+            "@type": "SpeakableSpecification",
+            cssSelector: ["article", "h1", "h2"],
+        },
         keywords: meta.tags.join(", "),
     };
 

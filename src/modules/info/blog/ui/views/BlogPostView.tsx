@@ -49,6 +49,7 @@ export function BlogPostView({ meta, children, headings = [] }: BlogPostViewProp
                         fill
                         className="object-cover"
                         priority
+                        fetchPriority="high"
                         sizes="100vw"
                     />
                     {/* Multi-layer gradient overlay */}
@@ -82,6 +83,14 @@ export function BlogPostView({ meta, children, headings = [] }: BlogPostViewProp
                                     </Link>
                                 ))}
                             </div>
+
+                            <nav aria-label="Breadcrumb" className="sr-only">
+                                <ol>
+                                    <li><Link href="/">Home</Link></li>
+                                    <li><Link href="/blog">Blog</Link></li>
+                                    <li><span aria-current="page">{meta.title}</span></li>
+                                </ol>
+                            </nav>
 
                             <h1 className="font-heading text-3xl md:text-5xl font-extrabold text-primary leading-tight tracking-tight mb-4">
                                 {meta.title}

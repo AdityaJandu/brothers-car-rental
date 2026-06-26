@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { BlogTag } from "../../types";
 
@@ -71,8 +72,8 @@ export function BlogFilters({
 
             {/* Tag Pills */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
-                <button
-                    onClick={() => onTagChange(null)}
+                <Link
+                    href="/blog"
                     className={cn(
                         "shrink-0 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300",
                         activeTag === null
@@ -82,11 +83,11 @@ export function BlogFilters({
                     id="blog-filter-all"
                 >
                     All
-                </button>
+                </Link>
                 {sortedTags.map((tag) => (
-                    <button
+                    <Link
                         key={tag}
-                        onClick={() => onTagChange(activeTag === tag ? null : tag)}
+                        href={`/blog/tag/${tag}`}
                         className={cn(
                             "shrink-0 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300",
                             activeTag === tag
@@ -96,7 +97,7 @@ export function BlogFilters({
                         id={`blog-filter-${tag}`}
                     >
                         {formatTag(tag)}
-                    </button>
+                    </Link>
                 ))}
             </div>
 

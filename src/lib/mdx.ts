@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { cache } from "react";
 import type { BlogTag } from "@/modules/info/blog/types";
 
 /** Metadata exported from each MDX blog post file */
@@ -13,6 +14,8 @@ export interface MdxPostMeta {
     readingTime: number;
     /** ISO date string, e.g. "2025-11-15" */
     publishedAt: string;
+    /** ISO date string, e.g. "2026-05-15" */
+    updatedAt?: string;
     canonicalUrl: string;
 }
 
@@ -38,25 +41,17 @@ export function getAllPostSlugs(): string[] {
 
 // ── Metadata cache ─────────────────────────────────────────────────
 
-let cachedPosts: MdxPostMeta[] | null = null;
-
 /** Loads and caches all post metadata. Uses dynamic import to access `metadata` exports. */
-async function loadAllMetadata(): Promise<MdxPostMeta[]> {
-    if (cachedPosts) return cachedPosts;
-
+const loadAllMetadata = cache(async (): Promise<MdxPostMeta[]> => {
     const slugs = getAllPostSlugs();
     const metas: MdxPostMeta[] = [];
-
-    const now = new Date().getTime();
 
     for (const slug of slugs) {
         try {
             const mod = await import(`@content/blog/${slug}.mdx`);
             if (mod.metadata) {
                 const meta = mod.metadata as MdxPostMeta;
-                if (new Date(meta.publishedAt).getTime() <= now) {
-                    metas.push(meta);
-                }
+                metas.push(meta);
             }
         } catch (err) {
             console.error(`[mdx] Failed to load metadata for "${slug}":`, err);
@@ -69,20 +64,8 @@ async function loadAllMetadata(): Promise<MdxPostMeta[]> {
             new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
 
-    cachedPosts = metas;
     return metas;
-}
-
-// ── Synchronous helpers (for use in non-async contexts) ────────────
-
-/**
- * Synchronous version that returns cached posts.
- * Must be called after `loadAllMetadata()` has been awaited at least once.
- * Falls back to empty array if cache is not ready.
- */
-export function getAllPublishedPostsSync(): MdxPostMeta[] {
-    return cachedPosts ?? [];
-}
+});
 
 // ── Async helpers ──────────────────────────────────────────────────
 
@@ -145,11 +128,6 @@ export async function getMdxPost(slug: string) {
     try {
         const mod = await import(`@content/blog/${slug}.mdx`);
         const metadata = mod.metadata as MdxPostMeta;
-
-        // Return null if post is future-dated
-        if (new Date(metadata.publishedAt).getTime() > new Date().getTime()) {
-            return null;
-        }
 
         return {
             Component: mod.default as React.ComponentType,

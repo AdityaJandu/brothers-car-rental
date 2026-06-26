@@ -9,10 +9,14 @@ import { EmptyState } from "@/components/self/empty-state";
 import { useQueryState, parseAsString } from "nuqs";
 import type { BlogTag } from "../../types";
 import type { MdxPostMeta } from "@/lib/mdx";
+import { PaginationControls } from "@/components/self/pagination-controls";
 
 interface BlogViewProps {
-    allPosts: MdxPostMeta[];
+    allPosts: MdxPostMeta[]; // In paginated mode, this contains only the current page's posts
     allTags: BlogTag[];
+    currentPage?: number;
+    totalPages?: number;
+    basePath?: string;
 }
 
 const blogJsonLd = {
@@ -32,7 +36,7 @@ const blogJsonLd = {
     },
 };
 
-export function BlogView({ allPosts, allTags }: BlogViewProps) {
+export function BlogView({ allPosts, allTags, currentPage = 1, totalPages = 1, basePath = "/blog" }: BlogViewProps) {
 
     const [activeTagStr, setActiveTagStr] = useQueryState("tag", parseAsString.withDefault(""));
     const activeTag = (activeTagStr || null) as BlogTag | null;
@@ -59,6 +63,10 @@ export function BlogView({ allPosts, allTags }: BlogViewProps) {
 
         return filtered;
     }, [allPosts, activeTag, searchQuery]);
+
+    // Calculate result count before pagination to pass to filters
+    // Wait, allPosts is already paginated server-side! 
+    // The filter works ONLY on the current page.
 
     return (
         <>
@@ -104,11 +112,22 @@ export function BlogView({ allPosts, allTags }: BlogViewProps) {
                     />
 
                     {filteredPosts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-                            {filteredPosts.map((post, index) => (
-                                <PostCard key={post.slug} post={post} priority={index < 3} />
-                            ))}
-                        </div>
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+                                {filteredPosts.map((post, index) => (
+                                    <PostCard key={post.slug} post={post} priority={index < 3} />
+                                ))}
+                            </div>
+                            
+                            {/* Hide pagination if user is actively searching/filtering on client */}
+                            {!searchQuery && !activeTag && totalPages > 1 && (
+                                <PaginationControls 
+                                    currentPage={currentPage} 
+                                    totalPages={totalPages} 
+                                    basePath={basePath} 
+                                />
+                            )}
+                        </>
                     ) : (
                         <div className="mt-10">
                             <EmptyState

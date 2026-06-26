@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPostView } from "@/modules/info/blog/ui/views/BlogPostView";
-import { getMdxPost, getAllPostSlugs, type TocHeading } from "@/lib/mdx";
+import { getMdxPost, getAllPostSlugs, type TocHeading, MdxPostMeta } from "@/lib/mdx";
 import type { BlogTag } from "@/modules/info/blog/types";
 import { ArticleStructuredData } from "@/components/blog/seo/ArticleStructuredData";
 
@@ -22,6 +22,32 @@ const TAG_KEYWORDS: Record<BlogTag, string[]> = {
     "rental-guide": ["car rental rules india", "rental documents", "car hire process india"],
     airport: ["airport car rental india", "car rental near airport", "airport pickup car hire"],
 };
+
+const CITY_NAMES = [
+    "dehradun", "hisar", "sirsa", "delhi", "jaipur", "rishikesh",
+    "haridwar", "mussoorie", "shimla", "agra", "chandigarh", "nainital",
+    "noida", "gurgaon", "ghaziabad", "faridabad", "manali", "auli"
+];
+
+const VEHICLE_TYPES = ["suv", "sedan", "hatchback", "7-seater", "automatic", "diesel", "luxury"];
+
+const RENTAL_INTENT = ["rent", "rental", "hire", "book", "self drive"];
+
+function enrichKeywords(meta: MdxPostMeta): string[] {
+    const base = meta.tags.flatMap((tag) => TAG_KEYWORDS[tag] ?? []);
+    const titleLower = meta.title.toLowerCase();
+    const descLower = meta.description.toLowerCase();
+    const combined = `${titleLower} ${descLower}`;
+
+    const cities = CITY_NAMES.filter((c) => combined.includes(c))
+        .map((c) => `car rental ${c}`);
+
+    const vehicles = VEHICLE_TYPES.filter((v) => combined.includes(v))
+        .flatMap((v) => RENTAL_INTENT.map((i) => `${i} ${v} india`));
+
+    const all = [...new Set([...base, ...cities, ...vehicles])];
+    return all.slice(0, 15);
+}
 
 /** Extracts heading info from MDX content string for Table of Contents */
 function extractHeadings(slug: string): TocHeading[] {
@@ -53,6 +79,34 @@ function extractHeadings(slug: string): TocHeading[] {
     return headings;
 }
 
+function extractFaqItems(slug: string): Array<{ question: string; answer: string }> {
+    const fs = require("fs") as typeof import("fs");
+    const path = require("path") as typeof import("path");
+    const filePath = path.join(process.cwd(), "content", "blog", `${slug}.mdx`);
+    if (!fs.existsSync(filePath)) return [];
+
+    const source: string = fs.readFileSync(filePath, "utf-8");
+    const lines = source.split("\n");
+    const items: Array<{ question: string; answer: string }> = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const h3Match = lines[i].match(/^###\s+(.+\?)$/);
+        if (h3Match) {
+            const question = h3Match[1].trim();
+            const answerLines: string[] = [];
+            let j = i + 1;
+            while (j < lines.length && !lines[j].startsWith("#")) {
+                if (lines[j].trim()) answerLines.push(lines[j].trim());
+                j++;
+            }
+            if (answerLines.length > 0) {
+                items.push({ question, answer: answerLines.join(" ") });
+            }
+        }
+    }
+    return items;
+}
+
 export async function generateStaticParams() {
     const slugs = getAllPostSlugs();
     return slugs.map((slug) => ({ slug }));
@@ -69,7 +123,7 @@ export async function generateMetadata({
     if (!mdxPost) notFound();
 
     const { metadata: meta } = mdxPost;
-    const keywords = meta.tags.flatMap((tag) => TAG_KEYWORDS[tag]);
+    const keywords = enrichKeywords(meta);
     return {
         title: meta.title,
         description: meta.description,
@@ -114,10 +168,27 @@ export default async function BlogPostPage({
 
     const { Component, metadata: meta } = mdxPost;
     const headings = extractHeadings(slug);
+    const faqItems = extractFaqItems(slug);
 
     return (
         <>
             <ArticleStructuredData meta={meta} />
+            {faqItems.length > 0 && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "FAQPage",
+                            mainEntity: faqItems.map(({ question, answer }) => ({
+                                "@type": "Question",
+                                name: question,
+                                acceptedAnswer: { "@type": "Answer", text: answer }
+                            }))
+                        })
+                    }}
+                />
+            )}
             <BlogPostView meta={meta} headings={headings}>
                 <Component />
             </BlogPostView>
