@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { car, location } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getAllPublishedPosts, getAllTags } from "@/lib/mdx";
-
+import { PRIORITY_CITIES } from "@/lib/locations";
 const BASE_URL = "https://www.brothersgroupindia.online";
 
 export async function generateSitemaps() {
@@ -76,15 +76,15 @@ export default async function sitemap({
     ];
 
     // ── Programmatic Landing Pages ───────────────────────────────────
-    const CITIES = ["dehradun", "hisar", "sirsa", "delhi-ncr", "chandigarh", "rishikesh", "haridwar", "mussoorie", "shimla", "agra"];
     const CATEGORIES = ["suv", "sedan", "hatchback", "7-seater", "luxury", "automatic"];
     const USE_CASES = ["wedding", "corporate", "outstation", "airport-transfer", "weekend-getaway"];
 
-    const cityRoutes: MetadataRoute.Sitemap = CITIES.map((c) => ({
-        url: `${BASE_URL}/car-rental/${c}`,
+    const cityRoutes: MetadataRoute.Sitemap = PRIORITY_CITIES.map((c) => ({
+        url: `${BASE_URL}/car-rental/${c.slug}`,
         lastModified: STATIC_DATE,
         changeFrequency: "weekly",
         priority: 0.9,
+        images: c.ogImage ? [`${BASE_URL}${c.ogImage}`] : [`${BASE_URL}/images/og-default.jpg`]
     }));
 
     const categoryRoutes: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({

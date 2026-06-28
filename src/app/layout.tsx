@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { Toaster } from "@/components/ui/sonner";
-import { LocalBusinessSchema } from "@/components/seo/LocalBusinessSchema";
 
 // Inter: For clinical, fast reading (data, labels, paragraphs)
 const inter = Inter({
@@ -180,7 +179,7 @@ export default function RootLayout({
               type="application/ld+json"
               dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
             />
-            <LocalBusinessSchema />
+
             <TooltipProvider>
               {children}
             </TooltipProvider>
