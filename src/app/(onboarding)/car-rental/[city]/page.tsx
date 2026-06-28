@@ -79,9 +79,9 @@ export default async function CityLandingPage({ params }: Props) {
         <>
             {/* Structured Data */}
             <LocalBusinessSchema city={city} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }} />
             {faqSchema && (
-                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
             )}
 
             <main className="min-h-screen pt-20">
@@ -128,7 +128,7 @@ export default async function CityLandingPage({ params }: Props) {
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                        Starting from <strong>{city.priceRange}</strong> · Free cancellation · No credit card required
+                        Pricing: <strong>₹{city.startingPrice}/day</strong> · Free cancellation · No credit card required
                     </p>
                 </InfoSection>
 

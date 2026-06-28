@@ -32,6 +32,12 @@ export default async function sitemap({
             priority: 0.9,
         },
         {
+            url: `${BASE_URL}/car-rental`,
+            lastModified: STATIC_DATE,
+            changeFrequency: "weekly",
+            priority: 0.9,
+        },
+        {
             url: `${BASE_URL}/blog`,
             lastModified: STATIC_DATE,
             changeFrequency: "weekly",
@@ -84,7 +90,7 @@ export default async function sitemap({
         lastModified: STATIC_DATE,
         changeFrequency: "weekly",
         priority: 0.9,
-        images: c.ogImage ? [`${BASE_URL}${c.ogImage}`] : [`${BASE_URL}/images/og-default.jpg`]
+        images: c.ogImage ? [`${BASE_URL}${c.ogImage}`] : [`${BASE_URL}/car-rental/${c.slug}/opengraph-image`]
     }));
 
     const categoryRoutes: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({

@@ -20,6 +20,7 @@ export interface CityConfig {
     latitude: number;
     longitude: number;
     phone: string;             // Real number or shared constant — never placeholder
+    startingPrice: number;     // Base price for rendering
     priceRange: string;
     deliveryHubs: string[];
 
@@ -43,7 +44,7 @@ export interface CityConfig {
     heroImage?: string;         // Above-the-fold hero image for the page
 }
 
-export const COMPANY_PHONE = "+91-9999999999"; // TODO: Replace with centralized real phone number
+export const COMPANY_PHONE = "+91 98765 43210";
 
 export const PRIORITY_CITIES: CityConfig[] = [
     {
@@ -69,6 +70,7 @@ All vehicles include FASTag pre-installed, comprehensive insurance, and 24/7 roa
         latitude: 30.3165,
         longitude: 78.0322,
         phone: COMPANY_PHONE,
+        startingPrice: 749,
         priceRange: "₹749 – ₹5,999/day",
         deliveryHubs: [
             "Jolly Grant Airport (DED)",
@@ -138,6 +140,7 @@ We pride ourselves on maintaining our vehicles in pristine condition. Every car 
         latitude: 29.1492,
         longitude: 75.7217,
         phone: COMPANY_PHONE,
+        startingPrice: 749,
         priceRange: "₹749 – ₹5,999/day",
         deliveryHubs: [
             "Camp Chowk",
@@ -192,6 +195,7 @@ We guarantee the best rates in Sirsa, backed by a commitment to quality and safe
         latitude: 29.5336,
         longitude: 75.0177,
         phone: COMPANY_PHONE,
+        startingPrice: 749,
         priceRange: "₹749 – ₹5,999/day",
         deliveryHubs: [
             "Barnala Road",
@@ -246,6 +250,7 @@ For those planning longer trips out of Noida to the hills of Uttarakhand or the 
         latitude: 28.5355,
         longitude: 77.3910,
         phone: COMPANY_PHONE,
+        startingPrice: 899,
         priceRange: "₹899 – ₹6,499/day",
         deliveryHubs: [
             "Sector 15 / 16",
@@ -300,6 +305,7 @@ Planning a road trip? Gurgaon is perfectly positioned for drives to Rajasthan or
         latitude: 28.4595,
         longitude: 77.0266,
         phone: COMPANY_PHONE,
+        startingPrice: 899,
         priceRange: "₹899 – ₹6,999/day",
         deliveryHubs: [
             "Cyber City",
@@ -354,6 +360,7 @@ For those staying within the city, our hatchbacks and sedans provide a comfortab
         latitude: 30.7333,
         longitude: 76.7794,
         phone: COMPANY_PHONE,
+        startingPrice: 849,
         priceRange: "₹849 – ₹6,499/day",
         deliveryHubs: [
             "Chandigarh Airport (IXC)",
@@ -408,6 +415,7 @@ Our vehicles are thoroughly cleaned, regularly serviced, and come with unlimited
         latitude: 26.9124,
         longitude: 75.7873,
         phone: COMPANY_PHONE,
+        startingPrice: 799,
         priceRange: "₹799 – ₹6,499/day",
         deliveryHubs: [
             "Jaipur International Airport (JAI)",

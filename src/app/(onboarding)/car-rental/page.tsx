@@ -34,7 +34,7 @@ export default function CarRentalHubPage() {
                         <Link 
                             key={city.slug} 
                             href={`/car-rental/${city.slug}`}
-                            className="group block rounded-lg border border-border bg-card p-6 hover:shadow-md transition-shadow"
+                            className="group block rounded-md border border-border bg-card p-6 hover:shadow-md transition-shadow"
                         >
                             <h2 className="text-xl font-heading font-bold text-card-foreground mb-2 group-hover:text-primary transition-colors">
                                 {city.name}
@@ -44,7 +44,7 @@ export default function CarRentalHubPage() {
                             </p>
                             <div className="flex justify-between items-center text-sm font-medium">
                                 <span className="text-secondary">Explore Fleet</span>
-                                <span className="text-muted-foreground">From {city.priceRange.split(' ')[0]}</span>
+                                <span className="text-muted-foreground">From ₹{city.startingPrice}</span>
                             </div>
                         </Link>
                     ))}
