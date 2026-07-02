@@ -5,14 +5,12 @@ interface AdminBookingCustomerInfoProps {
     fullName: string;
     email: string;
     phoneNumber: string;
-    licenseNumber: string;
 }
 
 export const AdminBookingCustomerInfo = ({
     fullName,
     email,
     phoneNumber,
-    licenseNumber,
 }: AdminBookingCustomerInfoProps) => {
     return (
         <Card className="shadow-sm rounded-md bg-white dark:bg-zinc-950">
@@ -47,14 +45,7 @@ export const AdminBookingCustomerInfo = ({
                     </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                    <FileText className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                    <div>
-                        <p className="text-sm font-medium leading-none mb-1">License Number</p>
-                        <p className="text-sm text-muted-foreground break-all">{licenseNumber || "Not provided"}</p>
-                    </div>
-                </div>
             </CardContent>
-        </Card>
+        </Card >
     );
 };

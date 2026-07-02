@@ -37,7 +37,7 @@ export function CarBookingView({ carId }: CarBookingProps) {
         : "";
 
     // True when the profile is incomplete — triggers the banner in CheckoutForm
-    const missingProfile = !user.phone || !user.licenseNumber;
+    const missingProfile = !user.phone;
 
     const createBooking = useMutation(
         trpc.userCheckout.create.mutationOptions({
@@ -67,16 +67,15 @@ export function CarBookingView({ carId }: CarBookingProps) {
             fullName: user.name ?? "",
             email: user.email ?? "",
             phoneNumber: user.phone ?? "",
-            licenseNumber: user.licenseNumber ?? "",
             paymentMethod: "cash",
             status: "pending",
             startDate: new Date(),
             endDate: new Date(new Date().getTime() + 86400000),
             dailyRate: car.pricePerDay,
             days: 1,
-            protectionFee: 12000,
-            surchargeFee: 4500,
-            totalPrice: car.pricePerDay + 12000 + 4500,
+            protectionFee: 0,
+            surchargeFee: 0,
+            totalPrice: car.pricePerDay,
         },
     });
 
@@ -102,7 +101,6 @@ export function CarBookingView({ carId }: CarBookingProps) {
                                         fullName: !!user.name,
                                         email: !!user.email,
                                         phoneNumber: !!user.phone,
-                                        licenseNumber: !!user.licenseNumber,
                                     }}
                                 />
                             </div>

@@ -5,10 +5,9 @@ interface CustomerInfoCardProps {
     fullName: string;
     email: string;
     phoneNumber: string;
-    licenseNumber: string;
 }
 
-export const CustomerInfoCard = ({ fullName, email, phoneNumber, licenseNumber }: CustomerInfoCardProps) => {
+export const CustomerInfoCard = ({ fullName, email, phoneNumber }: CustomerInfoCardProps) => {
     return (
         <Card className="shadow-sm border-slate-100 bg-white group/card p-4">
             <CardHeader className="pb-4 border-b border-slate-100 mb-4 px-0 pt-0">
@@ -46,16 +45,6 @@ export const CustomerInfoCard = ({ fullName, email, phoneNumber, licenseNumber }
                     <div>
                         <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Phone Number</p>
                         <p className="font-semibold text-[#243949] text-sm">{phoneNumber}</p>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                    <div className="mt-0.5 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
-                        <IdCard className="w-4 h-4 text-slate-500" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Driver&apos;s License</p>
-                        <p className="font-mono text-[#243949] text-sm tracking-widest">{licenseNumber}</p>
                     </div>
                 </div>
 

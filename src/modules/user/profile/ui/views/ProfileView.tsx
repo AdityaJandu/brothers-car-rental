@@ -69,7 +69,7 @@ export const ProfileView = () => {
                 </section>
 
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                    <PersonalInfoCard name={name} phone={userData.phone || null} licenseNumber={userData.licenseNumber || null} />
+                    <PersonalInfoCard name={name} phone={userData.phone || null} />
                     <PaymentMethodsCard />
                 </section>
 

@@ -50,7 +50,6 @@ export const bookingRouter = createTRPCRouter({
                     name: user.name,
                     email: user.email,
                     phone: user.phone,
-                    licenseNumber: user.licenseNumber,
                 })
                 .from(user)
                 .where(eq(user.id, userId));

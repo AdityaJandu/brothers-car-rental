@@ -65,7 +65,7 @@ export function SpecificationsCard({ form }: SpecificationsCardProps) {
                                 <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                     Transmission
                                 </FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
                                     <FormControl>
                                         <SelectTrigger className="bg-[#ebe9ff] border-transparent focus:border-primary/30 h-11 transition-all duration-200">
                                             <SelectValue placeholder="Select..." />
@@ -88,7 +88,7 @@ export function SpecificationsCard({ form }: SpecificationsCardProps) {
                                 <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                     Fuel Type
                                 </FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
                                     <FormControl>
                                         <SelectTrigger className="bg-[#ebe9ff] border-transparent focus:border-primary/30 h-11 transition-all duration-200">
                                             <SelectValue placeholder="Select..." />

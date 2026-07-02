@@ -31,7 +31,6 @@ export const userProfile = createTRPCRouter({
     updateProfile: protectedProcedure
         .input(z.object({
             phone: z.string().min(6, "Enter a valid phone number").optional(),
-            licenseNumber: z.string().min(3, "Enter a valid license number").optional(),
         }))
         .mutation(async ({ input, ctx }) => {
             const userId = ctx.auth.user.id;
@@ -40,7 +39,6 @@ export const userProfile = createTRPCRouter({
                 .update(user)
                 .set({
                     ...(input.phone !== undefined && { phone: input.phone }),
-                    ...(input.licenseNumber !== undefined && { licenseNumber: input.licenseNumber }),
                 })
                 .where(eq(user.id, userId))
                 .returning();

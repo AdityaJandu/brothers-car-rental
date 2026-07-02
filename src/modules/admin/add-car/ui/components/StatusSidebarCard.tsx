@@ -41,7 +41,7 @@ export function StatusSidebarCard({ form }: StatusSidebarCardProps) {
                         name="status"
                         render={({ field }) => (
                             <FormItem>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
                                     <FormControl>
                                         <SelectTrigger className="h-11 bg-[#ebe9ff] border-transparent focus:border-primary/30 transition-all duration-200">
                                             <SelectValue placeholder="Select status" />

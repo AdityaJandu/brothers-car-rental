@@ -13,6 +13,20 @@ import { type DateRange } from "react-day-picker";
 import { useFormContext } from "react-hook-form";
 import * as z from "zod";
 import { bookingInsertSchema } from "../../schemas";
+import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+import { toast } from "sonner";
+import { useState } from "react";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 // UI Components
 import {
@@ -45,7 +59,6 @@ interface CheckoutFormProps {
         fullName: boolean;
         email: boolean;
         phoneNumber: boolean;
-        licenseNumber: boolean;
     };
 }
 
@@ -101,6 +114,31 @@ function getNextAvailableDate(
 export function CheckoutForm({ isPending, unavailableDates, activeLocations, missingProfile, prefilled }: CheckoutFormProps) {
     // Tap into the parent's form state
     const form = useFormContext<z.infer<typeof bookingInsertSchema>>();
+    const trpc = useTRPC();
+    
+    const [isPhoneDialogOpen, setIsPhoneDialogOpen] = useState(false);
+    const [tempPhone, setTempPhone] = useState("");
+
+    const updateProfile = useMutation(
+        trpc.userProfile.updateProfile.mutationOptions({
+            onSuccess: () => {
+                toast.success("Phone number saved to profile");
+                form.setValue("phoneNumber", tempPhone, { shouldValidate: true });
+                setIsPhoneDialogOpen(false);
+            },
+            onError: (err) => {
+                toast.error(err.message || "Failed to save phone number");
+            }
+        })
+    );
+
+    const handleSavePhone = () => {
+        if (tempPhone.length < 10) {
+            toast.error("Please enter a valid phone number");
+            return;
+        }
+        updateProfile.mutate({ phone: tempPhone });
+    };
 
     // Watchers for reactive UI updates
     const paymentMethod = form.watch("paymentMethod");
@@ -291,11 +329,7 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations, mis
                         <div>
                             <p className="font-semibold">Your profile is incomplete</p>
                             <p className="text-xs mt-0.5 opacity-80">
-                                Save your phone number and driving licence on your{" "}
-                                <a href="/profile" className="underline font-semibold hover:text-amber-900">
-                                    profile
-                                </a>{" "}
-                                to skip this section on future bookings.
+                                Save your phone number to skip this section on future bookings.
                             </p>
                         </div>
                     </div>
@@ -305,15 +339,13 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations, mis
                     {([
                         { name: "fullName", label: "Full Name", type: "text" },
                         { name: "email", label: "Email Address", type: "email" },
-                        { name: "phoneNumber", label: "Phone Number", type: "tel" },
-                        { name: "licenseNumber", label: "License Number", type: "text" },
                     ] as const).map((field) => {
                         const isSaved = prefilled[field.name as keyof typeof prefilled];
                         return (
                             <FormField
                                 key={field.name}
                                 control={form.control}
-                                name={field.name as "fullName" | "email" | "phoneNumber" | "licenseNumber"}
+                                name={field.name as "fullName" | "email"}
                                 render={({ field: formField }) => (
                                     <FormItem className="flex flex-col gap-1 space-y-0">
                                         <div className="flex items-center justify-between">
@@ -340,7 +372,89 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations, mis
                             />
                         );
                     })}
+
+                    {/* Phone Number Field / Button */}
+                    <div className="flex flex-col gap-1 space-y-0">
+                        <div className="flex items-center justify-between">
+                            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                                Phone Number
+                            </label>
+                            {form.watch("phoneNumber") && (
+                                <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
+                                    <BadgeCheck className="w-3.5 h-3.5" />
+                                    Saved
+                                </span>
+                            )}
+                        </div>
+                        {form.watch("phoneNumber") ? (
+                            <div className="bg-[#F8F9FA] rounded-md px-4 py-3.5 text-sm border border-transparent w-full flex justify-between items-center text-slate-700">
+                                {form.watch("phoneNumber")}
+                                <Button 
+                                    type="button" 
+                                    variant="link" 
+                                    className="h-auto p-0 text-xs text-[#517fa4]"
+                                    onClick={() => {
+                                        setTempPhone(form.watch("phoneNumber") || "");
+                                        setIsPhoneDialogOpen(true);
+                                    }}
+                                >
+                                    Edit
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button 
+                                type="button"
+                                variant="outline"
+                                className="w-full h-[50px] border-dashed border-2 border-slate-300 text-slate-500 hover:text-slate-700 hover:border-slate-400"
+                                onClick={() => setIsPhoneDialogOpen(true)}
+                            >
+                                + Add Phone Number
+                            </Button>
+                        )}
+                        {form.formState.errors.phoneNumber && (
+                            <p className="text-xs text-red-500">{form.formState.errors.phoneNumber.message}</p>
+                        )}
+                    </div>
                 </div>
+
+                <Dialog open={isPhoneDialogOpen} onOpenChange={setIsPhoneDialogOpen}>
+                    <DialogContent className="sm:max-w-md font-display">
+                        <DialogHeader>
+                            <DialogTitle>Add Phone Number</DialogTitle>
+                            <DialogDescription>
+                                We need your phone number to contact you regarding your booking.
+                                This will be saved to your profile for future bookings.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4">
+                            <Input
+                                id="phone"
+                                type="tel"
+                                placeholder="Enter your phone number"
+                                value={tempPhone}
+                                onChange={(e) => setTempPhone(e.target.value)}
+                            />
+                        </div>
+                        <DialogFooter>
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => setIsPhoneDialogOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button 
+                                type="button" 
+                                onClick={handleSavePhone}
+                                disabled={updateProfile.isPending}
+                                className="bg-[#1a2f3d] text-white hover:bg-[#0F172A]"
+                            >
+                                {updateProfile.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                                Save & Continue
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </section>
 
             {/* PAYMENT METHOD */}

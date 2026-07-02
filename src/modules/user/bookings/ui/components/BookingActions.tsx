@@ -46,7 +46,6 @@ export const BookingActions = ({ bookingData }: BookingActionsProps) => {
         fullName: booking.fullName || "",
         email: booking.email || "",
         phoneNumber: booking.phoneNumber || "",
-        licenseNumber: booking.licenseNumber || "",
 
         carMake: car?.make || "",
         carModel: car?.model || "",

@@ -25,7 +25,6 @@ export const bookingInsertSchema = z.object({
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
     email: z.email("Please enter a valid email address"),
     phoneNumber: z.string().min(10, "Please enter a valid phone number"),
-    licenseNumber: z.string().min(5, "License number is required"),
 
     // --- FORM: PAYMENT ---
     paymentMethod: z.enum(["card", "wallet", "cash"], {
@@ -66,7 +65,6 @@ export const bookingFormSchema = z.object({
     fullName: z.string().min(2, "Full name must be at least 2 characters"),
     email: z.email("Please enter a valid email address"),
     phoneNumber: z.string().min(10, "Please enter a valid phone number"),
-    licenseNumber: z.string().min(5, "License number is required"),
     paymentMethod: z.enum(["card", "wallet", "cash"], {
         error: "Please choose a valid payment method",
     }),
