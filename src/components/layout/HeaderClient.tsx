@@ -40,7 +40,7 @@ export function HeaderClient({ session }: HeaderClientProps) {
 
                 {/* Logo */}
                 <Link href="/" prefetch className="text-2xl font-bold text-primary font-heading">
-                    <Image src={"/app-logo.svg"} alt={"logo"} width={70} height={70} className="rounded-xl" />
+                    <Image src={"/app-logo.svg"} alt={"logo"} width={70} height={70} className="rounded-xl" priority={true} />
                 </Link>
 
                 {/* Nav */}

@@ -78,7 +78,7 @@ export function CarCard({ car }: CarCardProps) {
 
                     <Link href={`/browse/${car.id}`}>
                         <Button className={`h-11 px-6 rounded-md font-semibold transition-all ${car.category?.toLowerCase() === 'electric'
-                            ? 'bg-[#FF8C00] hover:bg-[#E67E00] text-white shadow-[0_4px_14px_0_rgba(255,140,0,0.39)]'
+                            ? 'bg-[#517fa4] hover:bg-[#243949] text-white shadow-[0_4px_14px_0_rgba(81,127,164,0.39)]'
                             : 'bg-[#0F172A] hover:bg-[#1E293B] text-white'
                             }`}>
                             Book Now

@@ -23,7 +23,7 @@ export async function OnboardingView() {
                         "name": "Brothers Car Rental",
                         "url": "https://www.brothersgroupindia.online",
                         "logo": "https://www.brothersgroupindia.online/app-logo.svg",
-                        "telephone": "+91-7906891427",
+                        "telephone": COMPANY_PHONE,
                         "priceRange": "₹₹",
                         "areaServed": ["Dehradun", "Hisar", "Sirsa"],
                         "address": {
@@ -57,7 +57,7 @@ export async function OnboardingView() {
 
                     <div className="flex flex-col max-w-xl">
                         <h1 className="text-[3.5rem] leading-[1.05] lg:text-[4.5rem] font-bold font-heading mb-4 tracking-tight">
-                            <span className="bg-gradient-to-r from-[#243949] to-[#517fa4] bg-clip-text text-transparent block pb-2">Brothers Car Rental</span>
+                            <span className="bg-linear-to-r from-[#243949] to-[#517fa4] bg-clip-text text-transparent block pb-2">Brothers Car Rental</span>
                         </h1>
 
                         <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-6">
@@ -71,7 +71,7 @@ export async function OnboardingView() {
                         <div className="mb-10">
                             <a 
                                 href={`tel:${COMPANY_PHONE.replace(/\s+/g, '')}`}
-                                className="inline-flex items-center gap-3 bg-gradient-to-r from-[#243949] to-[#517fa4] text-white px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                className="inline-flex items-center gap-3 bg-linear-to-r from-[#243949] to-[#517fa4] text-white px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                             >
                                 <PhoneCall className="w-5 h-5 animate-pulse" />
                                 <span>Call Now: {COMPANY_PHONE}</span>

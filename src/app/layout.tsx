@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { Toaster } from "@/components/ui/sonner";
+import { COMPANY_PHONE } from "@/lib/locations";
 
 // Inter: For clinical, fast reading (data, labels, paragraphs)
 const inter = Inter({
@@ -115,7 +116,7 @@ export default function RootLayout({
       width: 200,
       height: 60,
     },
-    telephone: "+91-7906891427", // REPLACE with actual
+    telephone: COMPANY_PHONE,
     email: "support@brothersgroupindia.online",
     foundingDate: "2020",
     description:

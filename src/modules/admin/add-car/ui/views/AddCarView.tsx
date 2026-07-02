@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 // Schema
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { supabaseClient } from "@/lib/supabase-client";
@@ -34,10 +34,12 @@ export default function AddCarView({ carId }: { carId?: string }) {
         trpc.adminLocations.getAll.queryOptions()
     );
 
-    const { data: initialCar, isLoading: isLoadingInitialCar } = useQuery({
+    const { data: initialCar, isLoading: isLoadingInitialCar, isError: isErrorInitialCar, error: initialCarError } = useQuery({
         ...trpc.adminDashboard.getOneAdmin.queryOptions({ id: carId! }),
         enabled: !!carId
     });
+
+    const isInitialized = useRef(false);
 
     const form = useForm<z.infer<typeof carInsertSchema>>({
         resolver: zodResolver(carInsertSchema),
@@ -65,12 +67,13 @@ export default function AddCarView({ carId }: { carId?: string }) {
     });
 
     useEffect(() => {
-        if (initialCar) {
+        if (initialCar && !isInitialized.current) {
             form.reset({
                 ...initialCar,
                 imageUrls: initialCar.imageUrls || [],
                 features: initialCar.features || []
             });
+            isInitialized.current = true;
         }
     }, [initialCar, form]);
 
@@ -189,6 +192,16 @@ export default function AddCarView({ carId }: { carId?: string }) {
                 <h3 className="font-bold">Failed to connect to active deployment hubs</h3>
                 <p className="text-sm mt-1">{locationsError?.message || "Unknown fetching error"}</p>
                 <Button className="mt-4" onClick={() => window.location.reload()} variant="outline">Retry connection</Button>
+            </div>
+        </div>;
+    }
+
+    if (isErrorInitialCar) {
+        return <div className="p-8">
+            <div className="bg-destructive/10 border border-destructive text-destructive p-4 rounded-md">
+                <h3 className="font-bold">Failed to load car details</h3>
+                <p className="text-sm mt-1">{initialCarError?.message || "Unknown fetching error"}</p>
+                <Button className="mt-4" onClick={() => router.push("/dashboard")} variant="outline">Back to Dashboard</Button>
             </div>
         </div>;
     }

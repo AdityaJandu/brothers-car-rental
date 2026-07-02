@@ -168,9 +168,15 @@
 
 @layer components {
 
+  /* ─── Shared Brand Gradient ─── */
+  .btn-executive-primary,
+  .blog-cta-button {
+    @apply bg-linear-to-r from-[#243949] to-[#517fa4] text-white;
+  }
+
   /* ─── Button: Executive Primary ─── */
   .btn-executive-primary {
-    @apply bg-gradient-to-r from-[#243949] to-[#517fa4] text-white rounded-md border-0 transition-all duration-300 flex items-center justify-center font-medium;
+    @apply rounded-md border-0 transition-all duration-300 flex items-center justify-center font-medium;
   }
 
   .btn-executive-primary:hover {
@@ -277,7 +283,6 @@
   /* Inlined from btn-executive-primary to avoid Tailwind v4 @apply limitation */
   .blog-cta-button {
     @apply inline-block px-8 py-3 text-base font-semibold rounded-md no-underline;
-    @apply bg-gradient-to-r from-[#243949] to-[#517fa4] text-white;
     @apply border-0 transition-all duration-300 items-center justify-center;
   }
 

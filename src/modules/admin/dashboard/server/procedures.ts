@@ -1,5 +1,5 @@
 
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, protectedProcedure, adminProcedure } from "@/trpc/init";
 import { car } from "@/db/schema";
 import { db } from "@/db";
 
@@ -79,7 +79,7 @@ export const adminDashboardRouter = createTRPCRouter({
             return response;
         }),
 
-    getOneAdmin: protectedProcedure
+    getOneAdmin: adminProcedure
         .input(z.object({
             id: z.string()
         }))
