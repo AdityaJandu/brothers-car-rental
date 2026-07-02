@@ -35,7 +35,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
         <div className="flex flex-col gap-4">
 
             {/* Dark Card */}
-            <div className="bg-[#172033] rounded-md overflow-hidden shadow-xl border border-slate-800">
+            <div className="bg-[#1a2f3d] rounded-md overflow-hidden shadow-xl border border-slate-800">
 
                 {/* Image */}
                 <div className="relative w-full h-56 bg-[#0A0F1A]">
@@ -48,9 +48,9 @@ export function SummaryCard({ car }: SummaryCardProps) {
                         className="object-cover opacity-90"
                     />
 
-                    <div className="absolute inset-0 bg-linear-to-t from-[#172033] to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-[#1a2f3d] to-transparent" />
 
-                    <div className="absolute bottom-4 left-0 bg-[#D97706] text-white text-[10px] font-bold px-3 py-1.5 rounded-r-md">
+                    <div className="absolute bottom-4 left-0 bg-[#517fa4] text-white text-[10px] font-bold px-3 py-1.5 rounded-r-md">
                         {car.category}
                     </div>
                 </div>
@@ -76,7 +76,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
                                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Pick-Up</span>
                                     <span className="text-sm font-bold text-white mb-0.5">{format(startDate, "MMM dd")}</span>
                                 </div>
-                                <div className="flex items-center justify-center text-[#D97706] px-2">
+                                <div className="flex items-center justify-center text-[#6BAED6] px-2">
                                     <ChevronsRight className="w-5 h-5 opacity-70" />
                                 </div>
                                 <div className="flex flex-col w-[45%] text-right">
@@ -114,7 +114,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
                             Total Price
                         </span>
                         <div className="flex flex-col items-end">
-                            <span className="text-3xl font-extrabold text-[#D97706]">
+                            <span className="text-3xl font-extrabold text-[#6BAED6]">
                                 {formatINR(totalPrice)}
                             </span>
                             <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
@@ -128,7 +128,7 @@ export function SummaryCard({ car }: SummaryCardProps) {
 
             {/* Refund Notice */}
             <div className="bg-[#F8F9FA] border rounded-md p-4 flex gap-3">
-                <ShieldCheck className="w-5 h-5 text-[#D97706] shrink-0 mt-0.5" />
+                <ShieldCheck className="w-5 h-5 text-[#517fa4] shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-600 leading-relaxed">
                     Full refund available if cancelled 24 hours prior to pick-up.
                 </p>

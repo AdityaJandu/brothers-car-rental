@@ -38,7 +38,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         (
             <div
                 style={{
-                    background: "linear-gradient(to bottom right, #111827, #000000)",
+                    background: "linear-gradient(to bottom right, #243949, #517fa4)",
                     width: "100%",
                     height: "100%",
                     display: "flex",

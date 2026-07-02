@@ -166,7 +166,7 @@ export const auditColumns: ColumnDef<AuditLogEntry>[] = [
                     <DialogContent className="min-w-[60vw] bg-white border-slate-200">
                         <DialogHeader>
                             <DialogTitle className="flex items-center gap-2 text-xl">
-                                <ShieldAlert className="w-5 h-5 text-[#0B0F3B]" />
+                                <ShieldAlert className="w-5 h-5 text-[#243949]" />
                                 Audit Log Details
                             </DialogTitle>
                             <VisuallyHidden>

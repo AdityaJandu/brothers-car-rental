@@ -58,4 +58,50 @@ export const adminAddCarRouter = createTRPCRouter({
             return newCar;
 
         }),
+
+    update: rateLimitedProtectedProcedure
+        .input(
+            carInsertSchema
+        )
+        .mutation(async ({ ctx, input }) => {
+            if (!input.id) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Car ID is required for updating.",
+                });
+            }
+
+            const updatedCar = await db.transaction(async (tx) => {
+                const [carResult] = await tx
+                    .update(car)
+                    .set({
+                        ...input,
+                        updatedAt: new Date(),
+                    })
+                    .where(eq(car.id, input.id!))
+                    .returning();
+
+                if (!carResult) {
+                    throw new TRPCError({
+                        code: "NOT_FOUND",
+                        message: "No car found to update",
+                    });
+                }
+
+                await tx.insert(auditLog).values({
+                    adminId: ctx.auth.user.id,
+                    adminName: ctx.auth.user.name,
+                    adminEmail: ctx.auth.user.email,
+                    action: "car.updated",
+                    targetType: "car",
+                    targetId: carResult.id,
+                    newValue: JSON.stringify(carResult),
+                });
+
+                return carResult;
+            });
+
+            await invalidateCacheGroup("cars:");
+            return updatedCar;
+        }),
 });

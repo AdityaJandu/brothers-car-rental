@@ -16,7 +16,7 @@ export const bookingColumns: ColumnDef<BookingRow>[] = [
             const booking = row.original;
             return (
                 <div className="flex flex-col justify-center">
-                    <p className="font-extrabold text-[#0B0F3B] text-sm">{booking.fullName}</p>
+                    <p className="font-extrabold text-[#243949] text-sm">{booking.fullName}</p>
                     <p className="text-xs text-slate-400 font-medium">{booking.email}</p>
                 </div>
             );
@@ -92,7 +92,7 @@ export const bookingColumns: ColumnDef<BookingRow>[] = [
                 <div className="flex justify-end">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 text-slate-400 hover:text-[#0B0F3B] hover:bg-slate-100 rounded-full transition-colors">
+                            <Button variant="ghost" className="h-8 w-8 p-0 text-slate-400 hover:text-[#243949] hover:bg-slate-100 rounded-full transition-colors">
                                 <span className="sr-only">Open menu</span>
                                 <MoreVertical className="h-5 w-5" />
                             </Button>

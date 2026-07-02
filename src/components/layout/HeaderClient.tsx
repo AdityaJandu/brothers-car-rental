@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Image from 'next/image';
 
 interface HeaderClientProps {
     session: {
@@ -39,7 +40,7 @@ export function HeaderClient({ session }: HeaderClientProps) {
 
                 {/* Logo */}
                 <Link href="/" prefetch className="text-2xl font-bold text-primary font-heading">
-                    Brothers
+                    <Image src={"/app-logo.svg"} alt={"logo"} width={70} height={70} className="rounded-xl" />
                 </Link>
 
                 {/* Nav */}

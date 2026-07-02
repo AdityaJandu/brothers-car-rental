@@ -51,7 +51,7 @@ const getStatusConfig = (status: string) => {
 // ─── STYLES ─────────────────────────────────────────────────────
 
 const COLORS = {
-    navy: '#0B0F3B',
+    navy: '#243949',
     darkBlue: '#1C2333',
     gold: '#B87A3D',
     slate50: '#F8FAFC',

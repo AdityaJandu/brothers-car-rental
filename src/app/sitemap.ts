@@ -173,7 +173,7 @@ export default async function sitemap({
 
         const tagRoutes: MetadataRoute.Sitemap = [];
         const tagPaginationRoutes: MetadataRoute.Sitemap = [];
-        
+
         for (const t of tags) {
             tagRoutes.push({
                 url: `${BASE_URL}/blog/tag/${t}`,

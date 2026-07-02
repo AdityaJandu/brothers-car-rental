@@ -25,7 +25,7 @@ export const CustomerInfoCard = ({ fullName, email, phoneNumber, licenseNumber }
                     </div>
                     <div>
                         <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Full Name</p>
-                        <p className="font-semibold text-[#0B0F3B] text-sm">{fullName}</p>
+                        <p className="font-semibold text-[#243949] text-sm">{fullName}</p>
                     </div>
                 </div>
 
@@ -35,7 +35,7 @@ export const CustomerInfoCard = ({ fullName, email, phoneNumber, licenseNumber }
                     </div>
                     <div>
                         <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Email Address</p>
-                        <p className="font-semibold text-[#0B0F3B] text-sm break-all">{email}</p>
+                        <p className="font-semibold text-[#243949] text-sm break-all">{email}</p>
                     </div>
                 </div>
 
@@ -45,7 +45,7 @@ export const CustomerInfoCard = ({ fullName, email, phoneNumber, licenseNumber }
                     </div>
                     <div>
                         <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Phone Number</p>
-                        <p className="font-semibold text-[#0B0F3B] text-sm">{phoneNumber}</p>
+                        <p className="font-semibold text-[#243949] text-sm">{phoneNumber}</p>
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@ export const CustomerInfoCard = ({ fullName, email, phoneNumber, licenseNumber }
                     </div>
                     <div>
                         <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">Driver&apos;s License</p>
-                        <p className="font-mono text-[#0B0F3B] text-sm tracking-widest">{licenseNumber}</p>
+                        <p className="font-mono text-[#243949] text-sm tracking-widest">{licenseNumber}</p>
                     </div>
                 </div>
 

@@ -14,7 +14,7 @@ export function CarCard({ car }: CarCardProps) {
     // Determines badge style based on fuel type to match the image
     const getBadgeStyle = (category: string) => {
         const cat = category?.toLowerCase();
-        if (cat === 'electric') return 'bg-[#FDF3E7] text-[#D97706]';
+        if (cat === 'electric') return 'bg-[#E0EEF7] text-[#517fa4]';
         return 'bg-slate-100 text-slate-500';
     };
 

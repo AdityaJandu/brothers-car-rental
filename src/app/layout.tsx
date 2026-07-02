@@ -115,7 +115,7 @@ export default function RootLayout({
       width: 200,
       height: 60,
     },
-    telephone: "+91-9999999999", // REPLACE with actual
+    telephone: "+91-7906891427", // REPLACE with actual
     email: "support@brothersgroupindia.online",
     foundingDate: "2020",
     description:
@@ -134,7 +134,7 @@ export default function RootLayout({
     },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+91-9999999999", // REPLACE with actual
+      telephone: "+91-7906891427", // REPLACE with actual
       contactType: "customer service",
       areaServed: "IN",
       availableLanguage: ["English", "Hindi"],

@@ -25,13 +25,13 @@ export function BookingStepper() {
                     <div className="flex flex-col items-center gap-3 relative z-10">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm border-[3px] transition-colors
                             ${step.status === 'complete' ? 'bg-[#0F172A] text-white border-white' : ''}
-                            ${step.status === 'current' ? 'bg-[#D97706] text-white border-white' : ''}
+                            ${step.status === 'current' ? 'bg-[#517fa4] text-white border-white' : ''}
                             ${step.status === 'upcoming' ? 'bg-[#F4F5F7] text-slate-400 border-white' : ''}
                         `}>
                             {step.status === 'complete' ? <Check className="w-5 h-5" /> : step.id}
                         </div>
                         <span className={`text-[10px] font-bold uppercase tracking-wider absolute -bottom-6 whitespace-nowrap
-                            ${step.status === 'current' ? 'text-[#D97706]' : 'text-slate-900'}
+                            ${step.status === 'current' ? 'text-[#517fa4]' : 'text-slate-900'}
                             ${step.status === 'upcoming' ? 'text-slate-400' : ''}
                         `}>
                             {step.title}

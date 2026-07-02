@@ -11,7 +11,7 @@ export function ContactInfo() {
                     <ContactMethod
                         icon={<Phone className="w-5 h-5 fill-current" />}
                         label="Concierge Desk"
-                        value="+91 98765 43210"
+                        value="+91 79068 91427"
                     />
                     <ContactMethod
                         icon={<Mail className="w-5 h-5 fill-current" />}

@@ -17,7 +17,7 @@ export const createLocationColumns = (onEdit: (loc: LocationRow) => void): Colum
         accessorKey: "name",
         header: "Hub Name",
         cell: ({ row }) => (
-            <span className="font-extrabold text-[#0B0F3B] text-sm">{row.original.name}</span>
+            <span className="font-extrabold text-[#243949] text-sm">{row.original.name}</span>
         ),
     },
     {
@@ -53,7 +53,7 @@ export const createLocationColumns = (onEdit: (loc: LocationRow) => void): Colum
                 <div className="flex justify-end">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 text-slate-400 hover:text-[#0B0F3B] hover:bg-slate-100 rounded-full">
+                            <Button variant="ghost" className="h-8 w-8 p-0 text-slate-400 hover:text-[#243949] hover:bg-slate-100 rounded-full">
                                 <span className="sr-only">Open menu</span>
                                 <MoreVertical className="h-5 w-5" />
                             </Button>

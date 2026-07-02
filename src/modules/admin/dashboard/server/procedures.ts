@@ -78,4 +78,33 @@ export const adminDashboardRouter = createTRPCRouter({
             }
             return response;
         }),
+
+    getOneAdmin: protectedProcedure
+        .input(z.object({
+            id: z.string()
+        }))
+        .query(async ({ input }) => {
+            const { id } = input;
+
+            const [data] = await db
+                .select({
+                    ...getTableColumns(car),
+                })
+                .from(car)
+                .where(
+                    and(
+                        eq(car.id, id),
+                        isNull(car.deletedAt)
+                    )
+                );
+
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Car not found",
+                });
+            }
+
+            return data;
+        }),
 });

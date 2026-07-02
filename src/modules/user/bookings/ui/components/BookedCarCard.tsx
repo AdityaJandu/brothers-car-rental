@@ -38,7 +38,7 @@ export const BookedCarCard = ({ car }: BookedCarCardProps) => {
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-[#0B0F3B] via-[#0B0F3B]/50 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-[#243949] via-[#243949]/50 to-transparent" />
 
                 <div className="absolute bottom-5 left-6 right-6">
                     <h2 className="text-white text-3xl font-extrabold tracking-tight mb-1">
@@ -55,25 +55,25 @@ export const BookedCarCard = ({ car }: BookedCarCardProps) => {
                 <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
                     <Zap className="w-4 h-4 text-[#FF8C00] mb-2" />
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Transmission</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.transmission}</span>
+                    <span className="font-bold text-[#243949] capitalize text-[13px]">{car.transmission}</span>
                 </div>
 
                 <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
                     <BatteryCharging className="w-4 h-4 text-[#B87A3D] mb-2" />
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Fuel Type</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.fuelType}</span>
+                    <span className="font-bold text-[#243949] capitalize text-[13px]">{car.fuelType}</span>
                 </div>
 
                 <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
                     <Gauge className="w-4 h-4 text-[#B87A3D] mb-2" />
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Category</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.category}</span>
+                    <span className="font-bold text-[#243949] capitalize text-[13px]">{car.category}</span>
                 </div>
 
                 <div className="bg-[#F8F9FA] rounded-[16px] p-4 flex flex-col justify-center">
                     <Users className="w-4 h-4 text-[#B87A3D] mb-2" />
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Capacity</span>
-                    <span className="font-bold text-[#0B0F3B] capitalize text-[13px]">{car.seats} Seats</span>
+                    <span className="font-bold text-[#243949] capitalize text-[13px]">{car.seats} Seats</span>
                 </div>
             </div>
         </div>

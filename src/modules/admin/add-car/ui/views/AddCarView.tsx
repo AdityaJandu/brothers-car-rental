@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 // Schema
 import { carInsertSchema } from "@/modules/admin/dashboard/schemas";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { supabaseClient } from "@/lib/supabase-client";
@@ -24,7 +24,7 @@ import { MediaGalleryCard } from "../components/MediaGalleryCard";
 import { StatusSidebarCard } from "../components/StatusSidebarCard";
 import { useRouter } from "next/navigation";
 
-export default function AddCarView() {
+export default function AddCarView({ carId }: { carId?: string }) {
     const router = useRouter();
     const trpc = useTRPC();
     const queryClient = useQueryClient();
@@ -33,6 +33,11 @@ export default function AddCarView() {
     const { data: locations, isLoading: isLoadingLocations, isError: isErrorLocations, error: locationsError } = useQuery(
         trpc.adminLocations.getAll.queryOptions()
     );
+
+    const { data: initialCar, isLoading: isLoadingInitialCar } = useQuery({
+        ...trpc.adminDashboard.getOneAdmin.queryOptions({ id: carId! }),
+        enabled: !!carId
+    });
 
     const form = useForm<z.infer<typeof carInsertSchema>>({
         resolver: zodResolver(carInsertSchema),
@@ -59,6 +64,16 @@ export default function AddCarView() {
         },
     });
 
+    useEffect(() => {
+        if (initialCar) {
+            form.reset({
+                ...initialCar,
+                imageUrls: initialCar.imageUrls || [],
+                features: initialCar.features || []
+            });
+        }
+    }, [initialCar, form]);
+
     const createCar = useMutation(
         trpc.adminAddCar.create.mutationOptions({
             onSuccess: async () => {
@@ -75,14 +90,33 @@ export default function AddCarView() {
         })
     );
 
-    const isCreatePending = createCar.isPending;
+    const updateCar = useMutation(
+        trpc.adminAddCar.update.mutationOptions({
+            onSuccess: async () => {
+                await queryClient.invalidateQueries(
+                    trpc.adminDashboard.getAllAdmin.queryOptions({ pageSize: 50 })
+                );
+                toast.success("Vehicle successfully updated!");
+                router.push("/dashboard");
+            },
+            onError: (error) => {
+                toast.error(`Failed to update car: ${error.message}`);
+            },
+        })
+    );
+
+    const isPending = createCar.isPending || updateCar.isPending;
 
     const onSubmit = (values: z.infer<typeof carInsertSchema>) => {
         if (isUploading) {
             toast.error("Please wait for images to finish uploading.");
             return;
         }
-        createCar.mutate(values);
+        if (carId) {
+            updateCar.mutate({ ...values, id: carId });
+        } else {
+            createCar.mutate(values);
+        }
     };
 
     const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,8 +179,8 @@ export default function AddCarView() {
     const currentHeaderImage = form.watch("headerImage");
     const currentImageUrls = form.watch("imageUrls") || [];
 
-    if (isLoadingLocations) {
-        return <LoadingState title="Loading Hubs" descr="Synchronizing locations configuration..." />;
+    if (isLoadingLocations || isLoadingInitialCar) {
+        return <LoadingState title={isLoadingInitialCar ? "Loading Car" : "Loading Hubs"} descr="Please wait..." />;
     }
 
     if (isErrorLocations) {
@@ -159,9 +193,9 @@ export default function AddCarView() {
         </div>;
     }
 
-    if (isCreatePending) {
+    if (isPending) {
         return (
-            <LoadingState title={"Adding data"} descr={"Please wait while we're adding the cars. It may take a bit of time."} />
+            <LoadingState title={carId ? "Updating data" : "Adding data"} descr={"Please wait while we process the car data. It may take a bit of time."} />
         );
     }
 
@@ -170,8 +204,9 @@ export default function AddCarView() {
 
             <AddCarHeader
                 form={form}
-                isCreatePending={isCreatePending}
+                isCreatePending={isPending}
                 isUploading={isUploading}
+                isEditMode={!!carId}
             />
 
             <Form {...form}>

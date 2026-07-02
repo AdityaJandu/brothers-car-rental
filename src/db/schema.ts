@@ -167,7 +167,7 @@ export const accountRelations = relations(account, ({ one }) => ({
 
 export const carStatusEnum = pgEnum("car_status", ["available", "rented", "maintenance"]);
 export const transmissionEnum = pgEnum("transmission", ["automatic", "manual"]);
-export const fuelTypeEnum = pgEnum("fuel_type", ["petrol", "ev", "hybrid"]);
+export const fuelTypeEnum = pgEnum("fuel_type", ["petrol", "diesel", "ev", "hybrid"]);
 
 // UPDATE: Added "cash" to the payment methods
 export const paymentMethodEnum = pgEnum("payment_method", ["card", "wallet", "cash"]);
