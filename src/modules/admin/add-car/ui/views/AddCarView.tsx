@@ -39,8 +39,6 @@ export default function AddCarView({ carId }: { carId?: string }) {
         enabled: !!carId
     });
 
-    const isInitialized = useRef(false);
-
     const form = useForm<z.infer<typeof carInsertSchema>>({
         resolver: zodResolver(carInsertSchema),
         defaultValues: {
@@ -66,15 +64,71 @@ export default function AddCarView({ carId }: { carId?: string }) {
         },
     });
 
+    // Track whether we've already hydrated the form for this car so we
+    // don't clobber user edits if the query refetches in the background.
+    const hasHydratedRef = useRef(false);
+
+    // Narrow an arbitrary incoming string down to one of the Select's
+    // literal option values, case-insensitively. Falls back to the given
+    // default if nothing matches, so the Select never silently renders
+    // blank because of a casing/format mismatch (e.g. "Petrol" vs "petrol").
+    function normalizeEnum<T extends string>(
+        value: unknown,
+        allowed: readonly T[],
+        fallback: T
+    ): T {
+        const str = value?.toString().toLowerCase().trim();
+        const match = allowed.find((option) => option.toLowerCase() === str);
+        return match ?? fallback;
+    }
+
     useEffect(() => {
-        if (initialCar && !isInitialized.current) {
-            form.reset({
-                ...initialCar,
-                imageUrls: initialCar.imageUrls || [],
-                features: initialCar.features || []
-            });
-            isInitialized.current = true;
-        }
+        if (!initialCar || hasHydratedRef.current) return;
+
+        // Build the reset payload explicitly against the form's own type
+        // rather than spreading `initialCar` directly. `initialCar` comes
+        // from the DB and carries extra fields (e.g. `deletedAt`, raw `id`
+        // types) that don't exist on the form schema, which is what was
+        // causing the `form.reset(...)` type error.
+        const normalized: z.infer<typeof carInsertSchema> = {
+            id: initialCar.id ?? undefined,
+            name: initialCar.name ?? "",
+            make: initialCar.make ?? "",
+            model: initialCar.model ?? "",
+            year: initialCar.year ?? new Date().getFullYear(),
+            locationId: initialCar.locationId?.toString() ?? "",
+            tier: initialCar.tier ?? "",
+            description: initialCar.description ?? "",
+            category: initialCar.category ?? "",
+            pricePerDay: initialCar.pricePerDay ?? 0,
+            transmission: normalizeEnum(
+                initialCar.transmission,
+                ["automatic", "manual"] as const,
+                "automatic"
+            ),
+            fuelType: normalizeEnum(
+                initialCar.fuelType,
+                ["petrol", "diesel", "ev", "hybrid"] as const,
+                "petrol"
+            ),
+            seats: initialCar.seats ?? 4,
+            headerImage: initialCar.headerImage ?? "",
+            imageUrls: initialCar.imageUrls ?? [],
+            features: initialCar.features ?? [],
+            plateNumber: initialCar.plateNumber ?? "",
+            status: normalizeEnum(
+                initialCar.status,
+                ["available", "rented", "maintenance"] as const,
+                "available"
+            ),
+            isActive: initialCar.isActive ?? true,
+        };
+
+        // Explicit reset (rather than the `values` prop) guarantees every
+        // field -- including Select-driven ones -- is populated in one
+        // synchronous pass once the async data actually arrives.
+        form.reset(normalized);
+        hasHydratedRef.current = true;
     }, [initialCar, form]);
 
     const createCar = useMutation(

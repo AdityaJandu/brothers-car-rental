@@ -207,7 +207,7 @@ export function GeneralInfoCard({ form, locations }: GeneralInfoCardProps) {
                                 <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                     Physical Hub
                                 </FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
                                     <FormControl>
                                         <SelectTrigger className="bg-[#ebe9ff] border-transparent focus:bg-white transition-all duration-200 h-11">
                                             <SelectValue placeholder="Select assigned location" />
@@ -220,7 +220,7 @@ export function GeneralInfoCard({ form, locations }: GeneralInfoCardProps) {
                                             </SelectItem>
                                         ) : (
                                             locations.map((loc) => (
-                                                <SelectItem key={loc.id} value={loc.id}>
+                                                <SelectItem key={loc.id} value={loc.id.toString()}>
                                                     {loc.name} ({loc.city})
                                                 </SelectItem>
                                             ))

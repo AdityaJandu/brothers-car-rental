@@ -40,9 +40,6 @@ export const user = pgTable("user", {
     // NEW: future 2FA support
     twoFactorEnabled: boolean("two_factor_enabled").default(false),
 
-    // NEW: pre-saved license number to speed up checkout
-    licenseNumber: text("license_number"),
-
     // NEW: track last login (analytics / security)
     lastLoginAt: timestamp("last_login_at"),
 }, (table) => [
@@ -261,7 +258,6 @@ export const booking = pgTable("booking", {
     fullName: text("full_name").notNull(),
     email: text("email").notNull(),
     phoneNumber: text("phone_number").notNull(),
-    licenseNumber: text("license_number").notNull(),
 
     // --- FORM: PAYMENT ---
     // UPDATE: Set default to "cash"

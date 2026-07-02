@@ -8,7 +8,6 @@ export interface BookingPdfDataInterface {
     fullName: string;
     email: string;
     phoneNumber: string;
-    licenseNumber: string;
     carMake: string;
     carModel: string;
     carYear: number;
@@ -280,7 +279,6 @@ export const BookingPDFDocument = ({ data }: { data: BookingPdfDataInterface }) 
                                         { label: "Full Name", value: data.fullName },
                                         { label: "Email", value: data.email },
                                         { label: "Phone", value: data.phoneNumber },
-                                        { label: "License No.", value: data.licenseNumber },
                                     ].map((field, i) => (
                                         <View key={i} style={styles.fieldBlock} >
                                             <Text style={styles.fieldLabel} > {field.label} </Text>

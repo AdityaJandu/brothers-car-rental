@@ -104,7 +104,6 @@ export const AdminBookingIdView = ({ bookingId }: AdminBookingIdViewProps) => {
                             fullName={data.fullName}
                             email={data.email}
                             phoneNumber={data.phoneNumber}
-                            licenseNumber={data.licenseNumber}
                         />
                         <AdminBookingRentalInfo
                             carId={data.carId}

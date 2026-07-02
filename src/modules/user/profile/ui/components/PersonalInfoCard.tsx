@@ -13,7 +13,6 @@ type UpdateProfileOutput = inferRouterOutputs<AppRouter>["userProfile"]["updateP
 interface PersonalInfoCardProps {
     name: string;
     phone: string | null;
-    licenseNumber: string | null;
 }
 
 // ─── Inline editable row ─────────────────────────────────────────────────────
@@ -114,7 +113,7 @@ const EditableRow = ({
 
 // ─── Main card ────────────────────────────────────────────────────────────────
 
-export const PersonalInfoCard = ({ name, phone, licenseNumber }: PersonalInfoCardProps) => {
+export const PersonalInfoCard = ({ name, phone }: PersonalInfoCardProps) => {
     const trpc = useTRPC();
     const queryClient = useQueryClient();
 
@@ -157,15 +156,6 @@ export const PersonalInfoCard = ({ name, phone, licenseNumber }: PersonalInfoCar
                     placeholder="+91 79068 91427"
                     inputType="tel"
                     onSave={(val) => updateProfile({ phone: val })}
-                    isSaving={isPending}
-                />
-
-                <EditableRow
-                    label="Driver's License"
-                    icon={FileText}
-                    value={licenseNumber}
-                    placeholder="Enter your license number"
-                    onSave={(val) => updateProfile({ licenseNumber: val })}
                     isSaving={isPending}
                 />
             </div>

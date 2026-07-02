@@ -40,8 +40,8 @@ export const BookingIdView = ({ bookingId }: BookingIdViewProps) => {
                     <PaymentSummaryCard
                         dailyRate={booking.dailyRate}
                         days={booking.days}
-                        protectionFee={booking.protectionFee}
-                        surchargeFee={booking.surchargeFee}
+                        protectionFee={0}
+                        surchargeFee={0}
                         totalPrice={booking.totalPrice}
                         status={booking.status}
                     />
