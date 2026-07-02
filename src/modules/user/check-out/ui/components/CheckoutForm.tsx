@@ -375,7 +375,7 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations, mis
                                         <p className="text-xs text-slate-500">{method.desc}</p>
                                     </div>
                                 </div>
-                                {active && <CheckCircle2 className="w-5 h-5 text-[#D97706]" />}
+                                {active && <CheckCircle2 className="w-5 h-5 text-[#517fa4]" />}
                             </button>
                         );
                     })}
@@ -394,7 +394,7 @@ export function CheckoutForm({ isPending, unavailableDates, activeLocations, mis
                 <Button
                     type="submit"
                     disabled={isPending || selectionHasConflict}
-                    className="w-full sm:col-span-5 h-14 bg-[#172033] hover:bg-[#0F172A] text-white flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-70"
+                    className="w-full sm:col-span-5 h-14 bg-[#1a2f3d] hover:bg-[#0F172A] text-white flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-70"
                 >
                     {isPending ? (
                         <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>

@@ -10,9 +10,10 @@ interface AddCarHeaderProps {
     form: UseFormReturn<z.infer<typeof carInsertSchema>>;
     isCreatePending: boolean;
     isUploading: boolean;
+    isEditMode?: boolean;
 }
 
-export function AddCarHeader({ form, isCreatePending, isUploading }: AddCarHeaderProps) {
+export function AddCarHeader({ form, isCreatePending, isUploading, isEditMode }: AddCarHeaderProps) {
 
     return (
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between mb-8 gap-4">
@@ -24,11 +25,11 @@ export function AddCarHeader({ form, isCreatePending, isUploading }: AddCarHeade
                         <Car className="h-4 w-4 text-primary" />
                     </div>
                     <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
-                        Add New Vehicle
+                        {isEditMode ? "Edit Vehicle" : "Add New Vehicle"}
                     </h1>
                 </div>
                 <p className="text-muted-foreground text-sm mt-1 ml-[42px]">
-                    Introduce a new asset to your premium rental gallery.
+                    {isEditMode ? "Update details for this asset." : "Introduce a new asset to your premium rental gallery."}
                 </p>
             </div>
 
@@ -51,10 +52,10 @@ export function AddCarHeader({ form, isCreatePending, isUploading }: AddCarHeade
                     {isCreatePending ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Adding...
+                            {isEditMode ? "Updating..." : "Adding..."}
                         </>
                     ) : (
-                        "Add Vehicle"
+                        isEditMode ? "Update Vehicle" : "Add Vehicle"
                     )}
                 </Button>
             </div>

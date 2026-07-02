@@ -37,7 +37,7 @@ export default async function Image({ params }: { params: Promise<{ city: string
         (
             <div
                 style={{
-                    background: "linear-gradient(to right, #1e3a8a, #3b82f6)", // Example brand gradient (Tailwind blue-900 to blue-500)
+                    background: "linear-gradient(to right, #243949 0%, #517fa4 100%)",
                     width: "100%",
                     height: "100%",
                     display: "flex",
@@ -52,7 +52,7 @@ export default async function Image({ params }: { params: Promise<{ city: string
                         style={{
                             fontSize: "32px",
                             fontWeight: 600,
-                            color: "#93c5fd", // Tailwind blue-300
+                            color: "#6BAED6",
                             textTransform: "uppercase",
                             letterSpacing: "0.2em",
                             marginBottom: "16px",
@@ -86,7 +86,7 @@ export default async function Image({ params }: { params: Promise<{ city: string
                         <p style={{ fontSize: "28px", color: "white", margin: 0, marginBottom: "8px" }}>
                             {city.tagline}
                         </p>
-                        <p style={{ fontSize: "36px", fontWeight: 700, color: "#facc15", margin: 0 }}> {/* Tailwind yellow-400 */}
+                        <p style={{ fontSize: "36px", fontWeight: 700, color: "#6BAED6", margin: 0 }}>
                             Starting from {city.priceRange.split(' ')[0]} / day
                         </p>
                     </div>
@@ -94,7 +94,7 @@ export default async function Image({ params }: { params: Promise<{ city: string
                     <div
                         style={{
                             background: "white",
-                            color: "#1e3a8a",
+                            color: "#243949",
                             padding: "16px 32px",
                             borderRadius: "12px",
                             fontSize: "24px",

@@ -33,7 +33,7 @@ export const ScheduleLocationCard = ({
                         </div>
                         <div className="pt-0.5">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1.5 block">Pick-up</span>
-                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">{pickUpLocation}</h3>
+                            <h3 className="text-[16px] font-bold text-[#243949] mb-0.5">{pickUpLocation}</h3>
                             <p className="text-slate-500 font-medium text-[13px]">
                                 {format(sDate, "MMM dd, yyyy")} • {format(sDate, "hh:mm a")}
                             </p>
@@ -50,7 +50,7 @@ export const ScheduleLocationCard = ({
                         </div>
                         <div className="pt-0.5">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1.5 block">Drop-off</span>
-                            <h3 className="text-[16px] font-bold text-[#0B0F3B] mb-0.5">{dropOffLocation}</h3>
+                            <h3 className="text-[16px] font-bold text-[#243949] mb-0.5">{dropOffLocation}</h3>
                             <p className="text-slate-500 font-medium text-[13px]">
                                 {format(eDate, "MMM dd, yyyy")} • {format(eDate, "hh:mm a")}
                             </p>
@@ -72,7 +72,7 @@ export const ScheduleLocationCard = ({
                 <MapPin className="w-24 h-24 text-[#353C47] fill-[#232830] absolute" />
 
                 {/* Overlay Button */}
-                <button className="relative z-10 bg-white hover:bg-slate-50 text-[#0B0F3B] font-bold text-[14px] px-6 py-3 rounded-full flex items-center gap-2 shadow-xl transition-transform hover:scale-[1.02]">
+                <button className="relative z-10 bg-white hover:bg-slate-50 text-[#243949] font-bold text-[14px] px-6 py-3 rounded-full flex items-center gap-2 shadow-xl transition-transform hover:scale-[1.02]">
                     <Map className="w-4 h-4 text-[#B87A3D]" />
                     View Route Details
                 </button>

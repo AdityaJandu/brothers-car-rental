@@ -6,6 +6,7 @@ import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DataTable } from "@/components/self/data-table";
 import { EmptyState } from "@/components/self/empty-state";
+import { useRouter } from "next/navigation";
 import { DataPagination } from "@/components/self/data-pagination";
 import { useCarFilters } from "../../hooks/user-car-filters";
 import { carColumns } from "../components/car-columns";
@@ -14,6 +15,7 @@ import { carColumns } from "../components/car-columns";
 export function FleetClientView() {
 
     const [filters, setFilters] = useCarFilters();
+    const router = useRouter();
 
 
     const trpc = useTRPC();
@@ -38,7 +40,7 @@ export function FleetClientView() {
             <DataTable
                 columns={carColumns}
                 data={data.items}
-                onRowClick={() => { }}
+                onRowClick={(item) => router.push(`/edit-car/${item.id}`)}
             />
             <DataPagination
                 page={filters.page}

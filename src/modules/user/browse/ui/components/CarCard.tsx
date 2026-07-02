@@ -14,7 +14,7 @@ export function CarCard({ car }: CarCardProps) {
     // Determines badge style based on fuel type to match the image
     const getBadgeStyle = (category: string) => {
         const cat = category?.toLowerCase();
-        if (cat === 'electric') return 'bg-[#FDF3E7] text-[#D97706]';
+        if (cat === 'electric') return 'bg-[#E0EEF7] text-[#517fa4]';
         return 'bg-slate-100 text-slate-500';
     };
 
@@ -78,7 +78,7 @@ export function CarCard({ car }: CarCardProps) {
 
                     <Link href={`/browse/${car.id}`}>
                         <Button className={`h-11 px-6 rounded-md font-semibold transition-all ${car.category?.toLowerCase() === 'electric'
-                            ? 'bg-[#FF8C00] hover:bg-[#E67E00] text-white shadow-[0_4px_14px_0_rgba(255,140,0,0.39)]'
+                            ? 'bg-[#517fa4] hover:bg-[#243949] text-white shadow-[0_4px_14px_0_rgba(81,127,164,0.39)]'
                             : 'bg-[#0F172A] hover:bg-[#1E293B] text-white'
                             }`}>
                             Book Now

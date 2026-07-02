@@ -28,8 +28,8 @@ export const carInsertSchema = z.object({
     transmission: z.enum(["automatic", "manual"],
         "Please choose a transmission type"
     ),
-    fuelType: z.enum(["petrol", "ev", "hybrid"],
-        "Please choose a fuel type"
+    fuelType: z.enum(["petrol", "diesel", "ev", "hybrid"],
+        "Please select a fuel type."
     ),
     seats: z
         .number()

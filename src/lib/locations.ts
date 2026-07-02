@@ -44,7 +44,7 @@ export interface CityConfig {
     heroImage?: string;         // Above-the-fold hero image for the page
 }
 
-export const COMPANY_PHONE = "+91 98765 43210";
+export const COMPANY_PHONE = "+91 79068 91427";
 
 export const PRIORITY_CITIES: CityConfig[] = [
     {

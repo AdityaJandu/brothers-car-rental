@@ -25,7 +25,7 @@ export async function CTASection() {
 
                 <Link href="/sign-up">
                     <Button
-                        className="bg-[#935B25] hover:bg-[#7a4b1e] text-white h-14 px-10 text-base font-bold rounded-md transition-colors"
+                        className="bg-[#517fa4] hover:bg-[#3d6a8a] text-white h-14 px-10 text-base font-bold rounded-md transition-colors"
 
                     >
                         Sign Up Now

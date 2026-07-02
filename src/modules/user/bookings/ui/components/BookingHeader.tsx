@@ -25,9 +25,9 @@ export const BookingHeader = ({ id, status }: BookingHeaderProps) => {
                 <div className="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-slate-500">
                     <Link href="/bookings" className="hover:text-slate-800 transition-colors">Bookings</Link>
                     <ChevronRight className="w-3.5 h-3.5 mt-0.5" />
-                    <span className="text-[#0B0F3B]">Booking #BR-{displayId}</span>
+                    <span className="text-[#243949]">Booking #BR-{displayId}</span>
                 </div>
-                <h1 className="text-[32px] md:text-[40px] font-bold text-[#0B0F3B] tracking-tight leading-none">
+                <h1 className="text-[32px] md:text-[40px] font-bold text-[#243949] tracking-tight leading-none">
                     Booking #BR-{displayId}
                 </h1>
             </div>
@@ -38,7 +38,7 @@ export const BookingHeader = ({ id, status }: BookingHeaderProps) => {
                 </div>
                 <div className="flex flex-col">
                     <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 tracking-widest uppercase mb-0.5">Current Status</span>
-                    <span className="text-lg font-bold text-[#0B0F3B] capitalize leading-none">{config.text}</span>
+                    <span className="text-lg font-bold text-[#243949] capitalize leading-none">{config.text}</span>
                 </div>
             </div>
         </div>

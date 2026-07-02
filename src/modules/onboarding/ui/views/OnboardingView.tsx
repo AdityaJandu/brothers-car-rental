@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import { PhoneCall } from 'lucide-react';
+import { COMPANY_PHONE } from '@/lib/locations';
 import { StepComponent } from "../components/StepComponent";
 import { steps } from "../../data/onboarding_step";
 import { LocationComponent } from '../components/LocationComponent';
@@ -21,7 +23,7 @@ export async function OnboardingView() {
                         "name": "Brothers Car Rental",
                         "url": "https://www.brothersgroupindia.online",
                         "logo": "https://www.brothersgroupindia.online/app-logo.svg",
-                        "telephone": "+91-9785324323",
+                        "telephone": COMPANY_PHONE,
                         "priceRange": "₹₹",
                         "areaServed": ["Dehradun", "Hisar", "Sirsa"],
                         "address": {
@@ -54,14 +56,27 @@ export async function OnboardingView() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
                     <div className="flex flex-col max-w-xl">
-                        <h1 className="text-[3.5rem] leading-[1.05] lg:text-[4.5rem] font-bold font-heading mb-6 tracking-tight">
-                            <span className="text-primary block">Rent Cars</span>
-                            <span className="text-[#935B25] block">Anytime, Anywhere</span>
+                        <h1 className="text-[3.5rem] leading-[1.05] lg:text-[4.5rem] font-bold font-heading mb-4 tracking-tight">
+                            <span className="bg-linear-to-r from-[#243949] to-[#517fa4] bg-clip-text text-transparent block pb-2">Brothers Car Rental</span>
                         </h1>
 
-                        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-lg">
+                        <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-6">
+                            Rent Cars Anytime, Anywhere
+                        </h2>
+
+                        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-8 max-w-lg">
                             Experience the pinnacle of mobility with Brothers. From executive sedans to rugged SUVs, we curate the precision of your journey.
                         </p>
+
+                        <div className="mb-10">
+                            <a 
+                                href={`tel:${COMPANY_PHONE.replace(/\s+/g, '')}`}
+                                className="inline-flex items-center gap-3 bg-linear-to-r from-[#243949] to-[#517fa4] text-white px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                            >
+                                <PhoneCall className="w-5 h-5 animate-pulse" />
+                                <span>Call Now: {COMPANY_PHONE}</span>
+                            </a>
+                        </div>
 
                         {/* --- INJECT SUSPENSE HERE --- */}
                         <Suspense fallback={<AuthButtonsSkeleton />}>
@@ -89,7 +104,7 @@ export async function OnboardingView() {
                     <h2 className="text-3xl font-bold text-primary font-heading mb-4">
                         How It Works
                     </h2>
-                    <div className="w-16 h-1 bg-[#935B25] rounded-full"></div>
+                    <div className="w-16 h-1 bg-[#517fa4] rounded-full"></div>
                 </section>
 
                 <div className="mt-10 lg:mt-20">
@@ -105,7 +120,7 @@ export async function OnboardingView() {
                 <FeaturedFleet />
             </section>
 
-            <section className="w-full py-10  bg-[#F4F6F9]">
+            <section className="w-full py-10  bg-[#EDF3F8]">
                 <FeaturesSection />
             </section>
 

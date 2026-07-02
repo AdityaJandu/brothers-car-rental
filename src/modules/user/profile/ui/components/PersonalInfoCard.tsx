@@ -154,7 +154,7 @@ export const PersonalInfoCard = ({ name, phone, licenseNumber }: PersonalInfoCar
                     label="Phone Number"
                     icon={Phone}
                     value={phone}
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 79068 91427"
                     inputType="tel"
                     onSave={(val) => updateProfile({ phone: val })}
                     isSaving={isPending}

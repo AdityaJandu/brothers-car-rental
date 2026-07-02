@@ -1,5 +1,6 @@
 
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { COMPANY_PHONE } from '@/lib/locations';
 
 export function ContactInfo() {
     return (
@@ -11,7 +12,7 @@ export function ContactInfo() {
                     <ContactMethod
                         icon={<Phone className="w-5 h-5 fill-current" />}
                         label="Concierge Desk"
-                        value="+91 98765 43210"
+                        value={COMPANY_PHONE}
                     />
                     <ContactMethod
                         icon={<Mail className="w-5 h-5 fill-current" />}

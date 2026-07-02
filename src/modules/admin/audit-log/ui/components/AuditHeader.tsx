@@ -11,7 +11,7 @@ export function AuditHeader({ totalEntries, latestDate }: AuditHeaderProps) {
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             {/* Title Area */}
             <div className="flex items-start gap-3">
-                <div className="bg-[#0B0F3B] p-2.5 rounded-lg shadow-md">
+                <div className="bg-[#243949] p-2.5 rounded-lg shadow-md">
                     <ShieldAlert className="h-6 w-6 text-white" />
                 </div>
                 <div>

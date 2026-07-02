@@ -92,11 +92,11 @@ export const BookingActions = ({ bookingData }: BookingActionsProps) => {
                     )}
                 </ClientPDFDownloadLink>
 
-                <button className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#0B0F3B] font-bold text-[14px] px-6 py-3.5 rounded-[12px] border border-slate-200 transition-colors w-full sm:w-auto shadow-sm">
+                <button className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#243949] font-bold text-[14px] px-6 py-3.5 rounded-[12px] border border-slate-200 transition-colors w-full sm:w-auto shadow-sm">
                     <CalendarClock className="w-4 h-4" />
                     Modify Booking
                 </button>
-                <button className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#0B0F3B] font-bold text-[14px] px-6 py-3.5 rounded-[12px] border border-slate-200 transition-colors w-full sm:w-auto shadow-sm">
+                <button className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#243949] font-bold text-[14px] px-6 py-3.5 rounded-[12px] border border-slate-200 transition-colors w-full sm:w-auto shadow-sm">
                     <Headphones className="w-4 h-4" />
                     Contact Support
                 </button>

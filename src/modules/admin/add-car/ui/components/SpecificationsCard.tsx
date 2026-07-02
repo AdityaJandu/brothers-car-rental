@@ -96,7 +96,8 @@ export function SpecificationsCard({ form }: SpecificationsCardProps) {
                                     </FormControl>
                                     <SelectContent>
                                         <SelectItem value="petrol">Petrol</SelectItem>
-                                        <SelectItem value="ev">EV</SelectItem>
+                                        <SelectItem value="diesel">Diesel</SelectItem>
+                                        <SelectItem value="ev">Electric</SelectItem>
                                         <SelectItem value="hybrid">Hybrid</SelectItem>
                                     </SelectContent>
                                 </Select>

@@ -12,7 +12,7 @@ export const Spec = ({
     value,
 }: SpecProps) => (
     <div className="bg-white border rounded-md p-4 flex flex-col items-center gap-2">
-        <Icon className="w-5 h-5 text-[#D97706]" />
+        <Icon className="w-5 h-5 text-[#517fa4]" />
         <span className="text-xs uppercase text-slate-500">{label}</span>
         <span className="font-semibold">{value}</span>
     </div>

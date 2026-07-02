@@ -31,7 +31,7 @@ export function FeaturesSection() {
                                 {/* Icon */}
                                 <div className="mb-6">
                                     <Icon
-                                        className={`w-8 h-8 ${feature.isDark ? "text-[#D97706]" : "text-[#935B25]"}`}
+                                        className={`w-8 h-8 ${feature.isDark ? "text-[#6BAED6]" : "text-[#517fa4]"}`}
                                         strokeWidth={2}
                                     />
                                 </div>
@@ -63,8 +63,8 @@ export function FeaturesSection() {
                     <div className="flex flex-col gap-5">
                         {benefits.map((benefit, index) => (
                             <div key={index} className="flex items-center gap-4">
-                                <div className="w-8 h-8 rounded-full bg-[#FCECD9] flex items-center justify-center shrink-0">
-                                    <Check className="w-4 h-4 text-[#935B25]" strokeWidth={3} />
+                                <div className="w-8 h-8 rounded-full bg-[#E0EEF7] flex items-center justify-center shrink-0">
+                                    <Check className="w-4 h-4 text-[#517fa4]" strokeWidth={3} />
                                 </div>
                                 <span className="text-base font-bold text-primary">
                                     {benefit}
